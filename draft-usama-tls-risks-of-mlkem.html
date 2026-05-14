@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta content="Common,Latin" name="scripts">
 <meta content="initial-scale=1.0" name="viewport">
-<title>Risks of ML-KEM in TLS 1.3</title>
+<title>Risks of Standalone ML-KEM in TLS 1.3</title>
 <meta content="Muhammad Usama Sardar" name="author">
 <meta content="
        We attest that standalone ML-KEM in TLS breaks the existing proofs of TLS 1.3 in ProVerif.
@@ -1045,7 +1045,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <table class="ears">
 <thead><tr>
 <td class="left">Internet-Draft</td>
-<td class="center">Risks of ML-KEM in TLS 1.3</td>
+<td class="center">Risks of Standalone ML-KEM in TLS 1.3</td>
 <td class="right">May 2026</td>
 </tr></thead>
 <tfoot><tr>
@@ -1078,7 +1078,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </dd>
 </dl>
 </div>
-<h1 id="title">Risks of ML-KEM in TLS 1.3</h1>
+<h1 id="title">Risks of Standalone ML-KEM in TLS 1.3</h1>
 <section id="section-abstract">
       <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
 <p id="section-abstract-1">We attest that standalone ML-KEM in TLS breaks the existing proofs of TLS 1.3 in ProVerif.
@@ -1161,7 +1161,7 @@ We, therefore, kindly ask for FATT review of standalone ML-KEM in TLS.<a href="#
             <p id="section-toc.1-1.2.1"><a href="#section-2" class="auto internal xref">2</a>.  <a href="#name-conventions-and-definitions" class="internal xref">Conventions and Definitions</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.1">
-                <p id="section-toc.1-1.2.2.1.1" class="keepWithNext"><a href="#section-2.1" class="auto internal xref">2.1</a>.  <a href="#name-where-the-proverif-proofs-b" class="internal xref">Where The ProVerif Proofs Break</a></p>
+                <p id="section-toc.1-1.2.2.1.1" class="keepWithNext"><a href="#section-2.1" class="auto internal xref">2.1</a>.  <a href="#name-where-proverif-proofs-break" class="internal xref">Where ProVerif Proofs Break</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.2">
                 <p id="section-toc.1-1.2.2.2.1"><a href="#section-2.2" class="auto internal xref">2.2</a>.  <a href="#name-current-status" class="internal xref">Current Status</a></p>
@@ -1191,15 +1191,7 @@ We, therefore, kindly ask for FATT review of standalone ML-KEM in TLS.<a href="#
             <p id="section-toc.1-1.4.1"><a href="#section-4" class="auto internal xref">4</a>.  <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5">
-            <p id="section-toc.1-1.5.1"><a href="#section-5" class="auto internal xref">5</a>.  <a href="#name-references" class="internal xref">References</a></p>
-<ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.1">
-                <p id="section-toc.1-1.5.2.1.1"><a href="#section-5.1" class="auto internal xref">5.1</a>.  <a href="#name-normative-references" class="internal xref">Normative References</a></p>
-</li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.2">
-                <p id="section-toc.1-1.5.2.2.1"><a href="#section-5.2" class="auto internal xref">5.2</a>.  <a href="#name-informative-references" class="internal xref">Informative References</a></p>
-</li>
-            </ul>
+            <p id="section-toc.1-1.5.1"><a href="#section-5" class="auto internal xref">5</a>.  <a href="#name-normative-references" class="internal xref">Normative References</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6">
             <p id="section-toc.1-1.6.1"><a href="#appendix-A" class="auto internal xref"></a><a href="#name-authors-address" class="internal xref">Author's Address</a></p>
@@ -1216,13 +1208,13 @@ We, therefore, kindly ask for FATT review of standalone ML-KEM in TLS.<a href="#
 <p id="section-1-1">Readers are assumed to be familiar with <span>[<a href="#NistFips203" class="cite xref">NistFips203</a>]</span> and <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span>.<a href="#section-1-1" class="pilcrow">¶</a></p>
 <p id="section-1-2">We assert that the security considerations of <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span> are insufficient.
 We believe that symbolic and computational analysis of ML-KEM in the context of TLS is helpful here.
-We also request that if the author has done any formal analysis, it would be helpful to present the current state of formal analysis in the next meeting for discussion.<a href="#section-1-2" class="pilcrow">¶</a></p>
+We request that if the author has done any formal analysis, it would be helpful to present the current state of formal analysis in the next meeting for discussion.<a href="#section-1-2" class="pilcrow">¶</a></p>
 <div id="motivation">
 <section id="section-1.1">
         <h3 id="name-motivation">
 <a href="#section-1.1" class="section-number selfRef">1.1. </a><a href="#name-motivation" class="section-name selfRef">Motivation</a>
         </h3>
-<p id="section-1.1-1">The draft aims to formally study the security of standalone ML-KEM is TLS 1.3.<a href="#section-1.1-1" class="pilcrow">¶</a></p>
+<p id="section-1.1-1">The draft aims to formally study the security of standalone ML-KEM in TLS 1.3 <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span>.<a href="#section-1.1-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1238,10 +1230,13 @@ described in BCP 14 <span>[<a href="#RFC2119" class="cite xref">RFC2119</a>]</s
 appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶</a></p>
 <div id="sec-ml-kem">
 <section id="section-2.1">
-        <h3 id="name-where-the-proverif-proofs-b">
-<a href="#section-2.1" class="section-number selfRef">2.1. </a><a href="#name-where-the-proverif-proofs-b" class="section-name selfRef">Where The ProVerif Proofs Break</a>
+        <h3 id="name-where-proverif-proofs-break">
+<a href="#section-2.1" class="section-number selfRef">2.1. </a><a href="#name-where-proverif-proofs-break" class="section-name selfRef">Where ProVerif Proofs Break</a>
         </h3>
-<p id="section-2.1-1">While ML-KEM <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span> looks like just a "trivial" addition, it makes changes as deep as the key schedule of TLS. It essentially replaces the <em>key exchange</em> by <em>key encapsulation</em>. While the former is symmetric, the latter is asymmetric. This symmetry is in terms of exchange of roles, and that the order does not matter. The proof in ProVerif is, therefore, based on the commutativity of the components g<sup>x</sup> and g<sup>y</sup>. In ProVerif syntax:
+<p id="section-2.1-1">While ML-KEM <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span> looks like just a "trivial" addition, it makes changes as deep as the key schedule of TLS. It essentially replaces the <em>key exchange</em> by <em>key encapsulation</em>. While the former is symmetric, the latter is asymmetric.
+This symmetry is in terms of exchange of roles, and that the order does not matter.
+The proof in ProVerif is, therefore, based on the commutativity of the components g<sup>x</sup> and g<sup>y</sup>, where g<sup>x</sup> and g<sup>y</sup> represent the public keys of the endpoints.
+In ProVerif syntax:
 (see details <a href="https://github.com/CCC-Attestation/formal-spec-id-crisis/blob/6c3d17a428198aa058f805d16fe6baef7894028f/TLS-a/fix/tls-lib-simple.pvl#L38-L41">here</a>)<a href="#section-2.1-1" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-2.1-2">
 <pre>
@@ -1251,7 +1246,8 @@ equation forall x:bitstring, y:bitstring;
          dh_ideal(dh_ideal(G,y),x).
 </pre><a href="#section-2.1-2" class="pilcrow">¶</a>
 </div>
-<p id="section-2.1-3">Key encapsulation does not enjoy this property. There is essentially only one endpoint (say client) which generates the key pair <code>(dk,ek)</code> where <code>dk</code> represents the secret decapsulation key and <code>ek</code> represents the public encapsulation key. As opposed to both endpoints sending their public keys in key exchange, only one of the endpoints (client in above example) sends the public encapsulation key. This asymmetry breaks the existing proofs of TLS 1.3 in ProVerif and requires a new proof.<a href="#section-2.1-3" class="pilcrow">¶</a></p>
+<p id="section-2.1-3">Key encapsulation does not enjoy this property. There is essentially only one endpoint (say client) which generates the key pair <code>(dk,ek)</code> where <code>dk</code> represents the secret decapsulation key and <code>ek</code> represents the public encapsulation key.
+As opposed to both endpoints sending their public keys g<sup>x</sup> and g<sup>y</sup> in key exchange, only one of the endpoints (client in above example) sends the public encapsulation key. This asymmetry breaks the existing proofs of TLS 1.3 in ProVerif and requires a new proof.<a href="#section-2.1-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="current-status">
@@ -1305,7 +1301,10 @@ See <a href="https://mailarchive.ietf.org/arch/msg/tls/rClgrWm2hnhESXHx56U8InbwQ
           <h4 id="name-expected-learning">
 <a href="#section-2.3.1" class="section-number selfRef">2.3.1. </a><a href="#name-expected-learning" class="section-name selfRef">Expected Learning</a>
           </h4>
-<p id="section-2.3.1-1">We believe formal methods can provide additional value for security considerations of this draft in order to maintain the high cryptographic assurance of TLS. Since we have no guarantee on whether ECDHE will break before ML-KEM, it seems appropriate to do thorough cryptographic analysis. The Harvest Now, Decrypt Later (HNDL) attack applies equally well to non-hybrid ML-KEM. Adversary can record all traffic and decrypt it when ML-KEM is broken (or probably it is already broken; who knows?)<a href="#section-2.3.1-1" class="pilcrow">¶</a></p>
+<p id="section-2.3.1-1">We believe formal methods can provide additional value for security considerations of this draft in order to maintain the high cryptographic assurance of TLS.
+Since we have no guarantee on whether ECDHE will break before ML-KEM, it seems appropriate to do thorough cryptographic analysis.
+We believe the Harvest Now, Decrypt Later (HNDL) attack applies equally well to standalone ML-KEM.
+Adversary can record all traffic and decrypt it when ML-KEM is broken (or probably it is already broken; who knows?)<a href="#section-2.3.1-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-2.3.1-2.1">
               <p id="section-2.3.1-2.1.1">As an example, it can help justify design choices, such as the preference for hybrids.
@@ -1326,8 +1325,7 @@ It can also help identify all the assumptions under which the properties hold.<a
           <h4 id="name-formal-analysis-work-in-pro">
 <a href="#section-2.3.2" class="section-number selfRef">2.3.2. </a><a href="#name-formal-analysis-work-in-pro" class="section-name selfRef">Formal Analysis (Work-in-progress)</a>
           </h4>
-<p id="section-2.3.2-1">We have presented observation from our ongoing symbolic security analysis
-(cf. limitations in <a href="#sec-sec-cons" class="auto internal xref">Section 3</a>) using ProVerif on the mailing list.<a href="#section-2.3.2-1" class="pilcrow">¶</a></p>
+<p id="section-2.3.2-1">We have presented observation from our ongoing symbolic security analysis (cf. limitations in <a href="#sec-sec-cons" class="auto internal xref">Section 3</a>) using ProVerif on the mailing list.<a href="#section-2.3.2-1" class="pilcrow">¶</a></p>
 <p id="section-2.3.2-2">We argue that in general:<a href="#section-2.3.2-2" class="pilcrow">¶</a></p>
 <ol start="1" type="1" class="normal type-1" id="section-2.3.2-3">
 <li id="section-2.3.2-3.1">
@@ -1348,20 +1346,20 @@ It can also help identify all the assumptions under which the properties hold.<a
 Hybrid PQ/T is secure unless both ECDHE and ML-KEM are broken.
 </pre><a href="#section-2.3.2.1-2" class="pilcrow">¶</a>
 </div>
-<p id="section-2.3.2.1-3">Hybrid preserves ECDHE, and adds ML-KEM as an additional factor. So as
-long as one of them is not broken, the system is secure. In particular, even if ML-KEM is
-completely broken, the system retains the security level of ECDHE.<a href="#section-2.3.2.1-3" class="pilcrow">¶</a></p>
+<p id="section-2.3.2.1-3">Hybrid preserves ECDHE, and adds ML-KEM as an additional factor.
+So as long as one of them is not broken, the system is secure.
+In particular, even if ML-KEM is completely broken, the system retains the security level of ECDHE.<a href="#section-2.3.2.1-3" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="non-hybrid-pq">
+<div id="standalone-pq">
 <section id="section-2.3.2.2">
-            <h5 id="name-non-hybrid-pq">
-<a href="#section-2.3.2.2" class="section-number selfRef">2.3.2.2. </a><a href="#name-non-hybrid-pq" class="section-name selfRef">Non-hybrid PQ</a>
+            <h5 id="name-standalone-pq">
+<a href="#section-2.3.2.2" class="section-number selfRef">2.3.2.2. </a><a href="#name-standalone-pq" class="section-name selfRef">Standalone PQ</a>
             </h5>
-<p id="section-2.3.2.2-1">On the other hand, the formal property non-hybrid PQ provides is:<a href="#section-2.3.2.2-1" class="pilcrow">¶</a></p>
+<p id="section-2.3.2.2-1">On the other hand, the formal property standalone PQ provides is:<a href="#section-2.3.2.2-1" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-2.3.2.2-2">
 <pre>
-Non-hybrid PQ is secure unless ML-KEM is broken.
+Standalone PQ is secure unless ML-KEM is broken.
 </pre><a href="#section-2.3.2.2-2" class="pilcrow">¶</a>
 </div>
 <p id="section-2.3.2.2-3">If ML-KEM is broken, the whole system is broken.<a href="#section-2.3.2.2-3" class="pilcrow">¶</a></p>
@@ -1372,10 +1370,8 @@ Non-hybrid PQ is secure unless ML-KEM is broken.
             <h5 id="name-comparison">
 <a href="#section-2.3.2.3" class="section-number selfRef">2.3.2.3. </a><a href="#name-comparison" class="section-name selfRef">Comparison</a>
             </h5>
-<p id="section-2.3.2.3-1">Leak out the ECDHE key from hybrid PQ/T and you get a standalone ML-KEM. Clearly, hybrid is
-in general more secure, unless ECDHE is fully broken, in which case it still falls
-equivalent to standalone ML-KEM, or in the hypothetical scenario that there is an implementation
-bug in the ECDHE part which is triggered only in composition.<a href="#section-2.3.2.3-1" class="pilcrow">¶</a></p>
+<p id="section-2.3.2.3-1">Leak out the ECDHE key from hybrid PQ/T and you get a standalone ML-KEM.
+Clearly, hybrid isin general more secure, unless ECDHE is fully broken, in which case it still falls equivalent to standalone ML-KEM, or in the hypothetical scenario that there is an implementation bug in the ECDHE part which is triggered only in composition.<a href="#section-2.3.2.3-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1390,7 +1386,9 @@ bug in the ECDHE part which is triggered only in composition.<a href="#section-2
 <a href="#section-3" class="section-number selfRef">3. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
       </h2>
 <p id="section-3-1">The whole document is about improving security considerations.<a href="#section-3-1" class="pilcrow">¶</a></p>
-<p id="section-3-2">Like all security proofs, formal analysis is only as strong as its assumptions and model. The scope is typically limited, and the model does not necessarily capture real-world deployment complexity, implementation details, operational constraints, or misuse scenarios. Formal methods should be used as complementary and not as subtitute of other analysis methods.<a href="#section-3-2" class="pilcrow">¶</a></p>
+<p id="section-3-2">Like all security proofs, formal analysis is only as strong as its assumptions and model.
+The scope is typically limited, and the model does not necessarily capture real-world deployment complexity, implementation details, operational constraints, or misuse scenarios.
+Formal methods should be used as complementary and not as subtitute of other analysis methods.<a href="#section-3-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="iana-considerations">
@@ -1401,45 +1399,29 @@ bug in the ECDHE part which is triggered only in composition.<a href="#section-2
 <p id="section-4-1">This document has no IANA actions.<a href="#section-4-1" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="sec-combined-references">
-<section id="section-5">
-      <h2 id="name-references">
-<a href="#section-5" class="section-number selfRef">5. </a><a href="#name-references" class="section-name selfRef">References</a>
-      </h2>
 <div id="sec-normative-references">
-<section id="section-5.1">
-        <h3 id="name-normative-references">
-<a href="#section-5.1" class="section-number selfRef">5.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
-        </h3>
-<dl class="references">
-<dt id="RFC2119">[RFC2119]</dt>
-        <dd>
-<span class="refAuthor">Bradner, S.</span>, <span class="refTitle">"Key words for use in RFCs to Indicate Requirement Levels"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 2119</span>, <span class="seriesInfo">DOI 10.17487/RFC2119</span>, <time datetime="1997-03" class="refDate">March 1997</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc2119">https://www.rfc-editor.org/rfc/rfc2119</a>&gt;</span>. </dd>
-<dd class="break"></dd>
-<dt id="RFC8174">[RFC8174]</dt>
-      <dd>
-<span class="refAuthor">Leiba, B.</span>, <span class="refTitle">"Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 8174</span>, <span class="seriesInfo">DOI 10.17487/RFC8174</span>, <time datetime="2017-05" class="refDate">May 2017</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8174">https://www.rfc-editor.org/rfc/rfc8174</a>&gt;</span>. </dd>
-<dd class="break"></dd>
-</dl>
-</section>
-</div>
-<div id="sec-informative-references">
-<section id="section-5.2">
-        <h3 id="name-informative-references">
-<a href="#section-5.2" class="section-number selfRef">5.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
-        </h3>
+<section id="section-5">
+      <h2 id="name-normative-references">
+<a href="#section-5" class="section-number selfRef">5. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
+      </h2>
 <dl class="references">
 <dt id="I-D.ietf-tls-mlkem">[I-D.ietf-tls-mlkem]</dt>
-        <dd>
+      <dd>
 <span class="refAuthor">Connolly, D.</span>, <span class="refTitle">"ML-KEM Post-Quantum Key Agreement for TLS 1.3"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-tls-mlkem-07</span>, <time datetime="2026-02-12" class="refDate">12 February 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-mlkem-07">https://datatracker.ietf.org/doc/html/draft-ietf-tls-mlkem-07</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="NistFips203">[NistFips203]</dt>
       <dd>
 <span class="refTitle">"Module-lattice-based key-encapsulation mechanism standard"</span>, <span class="refContent">National Institute of Standards and Technology (U.S.)</span>, <span class="seriesInfo">DOI 10.6028/nist.fips.203</span>, <time datetime="2024-08" class="refDate">August 2024</time>, <span>&lt;<a href="https://doi.org/10.6028/nist.fips.203">https://doi.org/10.6028/nist.fips.203</a>&gt;</span>. </dd>
 <dd class="break"></dd>
+<dt id="RFC2119">[RFC2119]</dt>
+      <dd>
+<span class="refAuthor">Bradner, S.</span>, <span class="refTitle">"Key words for use in RFCs to Indicate Requirement Levels"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 2119</span>, <span class="seriesInfo">DOI 10.17487/RFC2119</span>, <time datetime="1997-03" class="refDate">March 1997</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc2119">https://www.rfc-editor.org/rfc/rfc2119</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8174">[RFC8174]</dt>
+    <dd>
+<span class="refAuthor">Leiba, B.</span>, <span class="refTitle">"Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 8174</span>, <span class="seriesInfo">DOI 10.17487/RFC8174</span>, <time datetime="2017-05" class="refDate">May 2017</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8174">https://www.rfc-editor.org/rfc/rfc8174</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 </dl>
-</section>
-</div>
 </section>
 </div>
 <div id="authors-addresses">
