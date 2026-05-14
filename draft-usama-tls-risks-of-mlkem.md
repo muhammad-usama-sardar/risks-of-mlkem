@@ -1,5 +1,5 @@
 ---
-title: "Risks of ML-KEM in TLS 1.3"
+title: "Risks of Standalone ML-KEM in TLS 1.3"
 category: info
 
 docname: draft-usama-tls-risks-of-mlkem-latest
@@ -25,10 +25,10 @@ author:
     email: "muhammad_usama.sardar@tu-dresden.de"
 
 normative:
-
-informative:
   NistFips203: DOI.10.6028/NIST.FIPS.203
   I-D.ietf-tls-mlkem:
+
+informative:
 
 ...
 
@@ -47,12 +47,12 @@ Readers are assumed to be familiar with {{NistFips203}} and {{I-D.ietf-tls-mlkem
 
 We assert that the security considerations of {{I-D.ietf-tls-mlkem}} are insufficient.
 We believe that symbolic and computational analysis of ML-KEM in the context of TLS is helpful here.
-We also request that if the author has done any formal analysis, it would be helpful to present the current state of formal analysis in the next meeting for discussion.
+We request that if the author has done any formal analysis, it would be helpful to present the current state of formal analysis in the next meeting for discussion.
 
 
 ## Motivation
 
-The draft aims to formally study the security of standalone ML-KEM is TLS 1.3.
+The draft aims to formally study the security of standalone ML-KEM in TLS 1.3 {{I-D.ietf-tls-mlkem}}.
 
 
 # Conventions and Definitions
@@ -60,10 +60,13 @@ The draft aims to formally study the security of standalone ML-KEM is TLS 1.3.
 {::boilerplate bcp14-tagged}
 
 
-## Where The ProVerif Proofs Break
+## Where ProVerif Proofs Break
 {: #sec-ml-kem }
 
-While ML-KEM {{I-D.ietf-tls-mlkem}} looks like just a "trivial" addition, it makes changes as deep as the key schedule of TLS. It essentially replaces the *key exchange* by *key encapsulation*. While the former is symmetric, the latter is asymmetric. This symmetry is in terms of exchange of roles, and that the order does not matter. The proof in ProVerif is, therefore, based on the commutativity of the components g<sup>x</sup> and g<sup>y</sup>. In ProVerif syntax:
+While ML-KEM {{I-D.ietf-tls-mlkem}} looks like just a "trivial" addition, it makes changes as deep as the key schedule of TLS. It essentially replaces the *key exchange* by *key encapsulation*. While the former is symmetric, the latter is asymmetric.
+This symmetry is in terms of exchange of roles, and that the order does not matter.
+The proof in ProVerif is, therefore, based on the commutativity of the components g<sup>x</sup> and g<sup>y</sup>, where g<sup>x</sup> and g<sup>y</sup> represent the public keys of the endpoints.
+In ProVerif syntax:
 (see details [here](https://github.com/CCC-Attestation/formal-spec-id-crisis/blob/6c3d17a428198aa058f805d16fe6baef7894028f/TLS-a/fix/tls-lib-simple.pvl#L38-L41))
 
 ~~~
@@ -73,7 +76,8 @@ equation forall x:bitstring, y:bitstring;
 	 dh_ideal(dh_ideal(G,y),x).
 ~~~
 
-Key encapsulation does not enjoy this property. There is essentially only one endpoint (say client) which generates the key pair `(dk,ek)` where `dk` represents the secret decapsulation key and `ek` represents the public encapsulation key. As opposed to both endpoints sending their public keys in key exchange, only one of the endpoints (client in above example) sends the public encapsulation key. This asymmetry breaks the existing proofs of TLS 1.3 in ProVerif and requires a new proof.
+Key encapsulation does not enjoy this property. There is essentially only one endpoint (say client) which generates the key pair `(dk,ek)` where `dk` represents the secret decapsulation key and `ek` represents the public encapsulation key.
+As opposed to both endpoints sending their public keys g<sup>x</sup> and g<sup>y</sup> in key exchange, only one of the endpoints (client in above example) sends the public encapsulation key. This asymmetry breaks the existing proofs of TLS 1.3 in ProVerif and requires a new proof.
 
 ## Current Status
 
@@ -107,7 +111,10 @@ We have formally requested the chairs to initiate the FATT process for {{I-D.iet
 See [this](https://mailarchive.ietf.org/arch/msg/tls/rClgrWm2hnhESXHx56U8InbwQQs/) and [this](https://mailarchive.ietf.org/arch/msg/tls/7lj6fYAweMBwNMxFerNl7xhY0pk/).
 
 ### Expected Learning
-We believe formal methods can provide additional value for security considerations of this draft in order to maintain the high cryptographic assurance of TLS. Since we have no guarantee on whether ECDHE will break before ML-KEM, it seems appropriate to do thorough cryptographic analysis. The Harvest Now, Decrypt Later (HNDL) attack applies equally well to non-hybrid ML-KEM. Adversary can record all traffic and decrypt it when ML-KEM is broken (or probably it is already broken; who knows?)
+We believe formal methods can provide additional value for security considerations of this draft in order to maintain the high cryptographic assurance of TLS.
+Since we have no guarantee on whether ECDHE will break before ML-KEM, it seems appropriate to do thorough cryptographic analysis.
+We believe the Harvest Now, Decrypt Later (HNDL) attack applies equally well to standalone ML-KEM.
+Adversary can record all traffic and decrypt it when ML-KEM is broken (or probably it is already broken; who knows?)
 
 * As an example, it can help justify design choices, such as the preference for hybrids.
 It can help identify ways in which ML-KEM can break.
@@ -116,8 +123,7 @@ It can also help identify all the assumptions under which the properties hold.
 * *Computational* analysis (cf. [SoK](https://eprint.iacr.org/2019/1393.pdf))-- using tools such as CryptoVerif -- seems like a reasonable approach to ensure security of ML-KEM in TLS, such as binding.
 
 ### Formal Analysis (Work-in-progress)
-We have presented observation from our ongoing symbolic security analysis
-(cf. limitations in {{sec-sec-cons}}) using ProVerif on the mailing list.
+We have presented observation from our ongoing symbolic security analysis (cf. limitations in {{sec-sec-cons}}) using ProVerif on the mailing list.
 
 We argue that in general:
 
@@ -133,32 +139,32 @@ More formally, the property hybrid PQ/T should provide is:
 Hybrid PQ/T is secure unless both ECDHE and ML-KEM are broken.
 ~~~
 
-Hybrid preserves ECDHE, and adds ML-KEM as an additional factor. So as
-long as one of them is not broken, the system is secure. In particular, even if ML-KEM is
-completely broken, the system retains the security level of ECDHE.
+Hybrid preserves ECDHE, and adds ML-KEM as an additional factor.
+So as long as one of them is not broken, the system is secure.
+In particular, even if ML-KEM is completely broken, the system retains the security level of ECDHE.
 
-#### Non-hybrid PQ
+#### Standalone PQ
 
-On the other hand, the formal property non-hybrid PQ provides is:
+On the other hand, the formal property standalone PQ provides is:
 
 ~~~
-Non-hybrid PQ is secure unless ML-KEM is broken.
+Standalone PQ is secure unless ML-KEM is broken.
 ~~~
 
 If ML-KEM is broken, the whole system is broken.
 
 #### Comparison
-Leak out the ECDHE key from hybrid PQ/T and you get a standalone ML-KEM. Clearly, hybrid is
-in general more secure, unless ECDHE is fully broken, in which case it still falls
-equivalent to standalone ML-KEM, or in the hypothetical scenario that there is an implementation
-bug in the ECDHE part which is triggered only in composition.
+Leak out the ECDHE key from hybrid PQ/T and you get a standalone ML-KEM.
+Clearly, hybrid isin general more secure, unless ECDHE is fully broken, in which case it still falls equivalent to standalone ML-KEM, or in the hypothetical scenario that there is an implementation bug in the ECDHE part which is triggered only in composition.
 
 # Security Considerations
 {: #sec-sec-cons }
 
 The whole document is about improving security considerations.
 
-Like all security proofs, formal analysis is only as strong as its assumptions and model. The scope is typically limited, and the model does not necessarily capture real-world deployment complexity, implementation details, operational constraints, or misuse scenarios. Formal methods should be used as complementary and not as subtitute of other analysis methods.
+Like all security proofs, formal analysis is only as strong as its assumptions and model.
+The scope is typically limited, and the model does not necessarily capture real-world deployment complexity, implementation details, operational constraints, or misuse scenarios.
+Formal methods should be used as complementary and not as subtitute of other analysis methods.
 
 
 
