@@ -70,12 +70,12 @@ The draft aims to formally study the security of standalone ML-KEM in TLS 1.3 {{
 * Symbolic analysis: see [SoK](https://eprint.iacr.org/2019/1393.pdf)
 * Computational analysis: see [SoK](https://eprint.iacr.org/2019/1393.pdf)
 
-## Where ProVerif Proofs Break
+# Where ProVerif Proofs Break
 {: #sec-proof-break }
 
 While ML-KEM {{I-D.ietf-tls-mlkem}} looks like just a "trivial" addition, it makes changes as deep as the key schedule of TLS. It essentially replaces the *key exchange* by *key encapsulation*. While the former is symmetric, the latter is asymmetric.
 This symmetry is in terms of exchange of roles, and that the order does not matter.
-The proof in ProVerif is, therefore, utilizes this symmetry for the commutativity of the components g<sup>x</sup> and g<sup>y</sup>, where g<sup>x</sup> and g<sup>y</sup> represent the public keys of the endpoints.
+The proof in ProVerif, therefore, utilizes this symmetry for the commutativity of the components g<sup>x</sup> and g<sup>y</sup>, where g<sup>x</sup> and g<sup>y</sup> represent the public keys of the endpoints.
 In ProVerif syntax:
 (see details [here](https://github.com/CCC-Attestation/formal-spec-id-crisis/blob/6c3d17a428198aa058f805d16fe6baef7894028f/TLS-a/fix/tls-lib-simple.pvl#L38-L41))
 
@@ -89,7 +89,7 @@ equation forall x:bitstring, y:bitstring;
 Key encapsulation does not enjoy this commutativity property, or even an analogous symmetry argument. There is essentially only one endpoint (say client) which generates the key pair `(dk,ek)` where `dk` represents the secret decapsulation key and `ek` represents the public encapsulation key.
 As opposed to both endpoints sending their public keys g<sup>x</sup> and g<sup>y</sup> in the key exchange, only one of the endpoints (client in above example) sends the public encapsulation key and peer sends a ciphertext. This asymmetry breaks the existing proofs of TLS 1.3 in ProVerif and requires a new proof.
 
-## Current Status and Next Steps
+# Current Status and Next Steps
 
 {{I-D.ietf-tls-mlkem}} had an opposition of several (ca. 25 in our understanding) WG participants -- even more than the supporters (ca. 21 in our understanding) -- in the last WGLC. We see 2 possible options:
 
@@ -108,20 +108,20 @@ almost none of that is actually reflected in the updated editor's
 version.
 ~~~
 
-### "Cost"
+## "Cost"
 "Cost" has been presented on the list as the motivation for ML-KEM but no reference has yet been presented.
 We believe costs will depend on several factors -- including but not limited to implementation details and deployment scenario -- and it is quite subjective.
 
 There seems to be a need for a thorough study to understand the "cost."
 We invite the WG participants to perform this analysis and share the results with the WG.
 
-## ML-KEM: FATT Review
+# ML-KEM: FATT Review
 {: #sec-sol-ml-kem }
 
 We have formally requested the chairs to initiate the FATT process for {{I-D.ietf-tls-mlkem}}.
 See [this](https://mailarchive.ietf.org/arch/msg/tls/rClgrWm2hnhESXHx56U8InbwQQs/) and [this](https://mailarchive.ietf.org/arch/msg/tls/7lj6fYAweMBwNMxFerNl7xhY0pk/).
 
-### Expected Learning
+## Expected Learning
 We believe formal methods can provide additional value for security considerations of this draft in order to maintain the high cryptographic assurance of TLS.
 Since we have no guarantee on whether ECDHE will break before ML-KEM, it seems appropriate to do thorough cryptographic analysis.
 We believe the Harvest Now, Decrypt Later (HNDL) attack applies equally well to standalone ML-KEM.
@@ -133,7 +133,7 @@ It can also help identify all the assumptions under which the properties hold.
 * As a relevant data point in the context of standardization, LAKE WG has done formal analysis for EDHOC-PSK with KEM ([ref](https://mailarchive.ietf.org/arch/msg/lake/2XGOI9OCwylJUfSCasvvwM2FXmw/)).
 * *Computational* analysis (cf. [SoK](https://eprint.iacr.org/2019/1393.pdf))-- using tools such as CryptoVerif -- seems like a reasonable approach to ensure security of ML-KEM in TLS, such as binding.
 
-### Formal Analysis (Work-in-progress)
+## Formal Analysis (Work-in-progress)
 We have presented observation from our ongoing symbolic security analysis (cf. limitations in {{sec-sec-cons}}) using ProVerif on the mailing list.
 
 We argue that in general:
@@ -142,7 +142,7 @@ We argue that in general:
 2. Migration from hybrid to standalone ML-KEM is security regression.
 
 
-#### Hybrid PQ/T
+### Hybrid PQ/T
 
 More formally, the property hybrid PQ/T should provide is:
 
@@ -154,7 +154,7 @@ Hybrid preserves ECDHE, and adds ML-KEM as an additional factor.
 So as long as one of them is not broken, the system is secure.
 In particular, even if ML-KEM is completely broken, the system retains the security level of ECDHE.
 
-#### Standalone PQ
+### Standalone PQ
 
 On the other hand, the formal property standalone PQ provides is:
 
@@ -164,7 +164,7 @@ Standalone PQ is secure unless ML-KEM is broken.
 
 If ML-KEM is broken, the whole system is broken.
 
-#### Comparison
+### Comparison
 Leak out the ECDHE key from hybrid PQ/T and you get a standalone ML-KEM.
 Clearly, hybrid is in general more secure, unless ECDHE is fully broken, in which case it still falls equivalent to standalone ML-KEM, or in the hypothetical scenario that there is an implementation bug in the ECDHE part which is triggered only in composition.
 
