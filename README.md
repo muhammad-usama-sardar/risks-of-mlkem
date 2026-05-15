@@ -29,3 +29,19 @@ $ make
 Command line usage requires that you have the necessary software installed.  See
 [the instructions](https://github.com/martinthomson/i-d-template/blob/main/doc/SETUP.md).
 
+## Publishing Updated Version on Datatracker
+
+- Commit the final changes.
+- Ensure that the changes are reflected in the [Editor's Copy](https://muhammad-usama-sardar.github.io/risks-of-mlkem/#go.draft-usama-tls-risks-of-mlkem.html).
+
+s/00/next version
+- Publish
+```sh
+$ git push origin main
+$ git tag -a draft-usama-tls-risks-of-mlkem-00 -m "v00"
+$ git push origin draft-usama-tls-risks-of-mlkem-00
+```
+
+- Confirm the email
+
+If it doesn't work, see [alternate methods](https://github.com/martinthomson/i-d-template/blob/main/doc/SUBMITTING.md).
