@@ -21,33 +21,41 @@ venue:
 author:
  -
     fullname: "Muhammad Usama Sardar"
-    organization: TU Dresden
+    organization: TU Dresden, Germany
     email: "muhammad_usama.sardar@tu-dresden.de"
 
 normative:
   NistFips203: DOI.10.6028/NIST.FIPS.203
   I-D.ietf-tls-mlkem:
+  I-D.ietf-tls-rfc8446bis:
+  TLS-FATT:
+     author:
+        org: IETF TLS WG
+     title: TLS FATT Process
+     target: https://github.com/tlswg/tls-fatt
+     date: June 2025
 
 informative:
+  I-D.usama-tls-fatt-extension:
 
 ...
 
 --- abstract
 
-We attest that standalone ML-KEM in TLS breaks the existing proofs of TLS 1.3 in ProVerif.
-We also attest that this is a much bigger change than RFC8773bis, which indeed went for FATT review.
-We, therefore, kindly ask for FATT review of standalone ML-KEM in TLS.
+We attest that standalone ML-KEM in TLS 1.3 breaks the existing formal proofs of TLS in state-of-the-art symbolic security analysis tool, ProVerif.
+We also attest that from a formal analysis perspective, this is a much bigger change than RFC8773bis, which indeed went for FATT review (cf. {{TLS-FATT}}).
+We, therefore, kindly ask the chairs to initiate the FATT review of standalone ML-KEM in TLS.
 
 
 --- middle
 
 # Introduction
 
-Readers are assumed to be familiar with {{NistFips203}} and {{I-D.ietf-tls-mlkem}}.
+Readers are assumed to be familiar with {{NistFips203}}, {{I-D.ietf-tls-rfc8446bis}}, and {{I-D.ietf-tls-mlkem}}.
 
 We assert that the security considerations of {{I-D.ietf-tls-mlkem}} are insufficient.
 We believe that symbolic and computational analysis of ML-KEM in the context of TLS is helpful here.
-We request that if the author has done any formal analysis, it would be helpful to present the current state of formal analysis in the next meeting for discussion.
+We request that if the author has done any formal analysis, it would be very helpful to present the current state of formal analysis in the next meeting for discussion.
 
 
 ## Motivation
@@ -59,13 +67,15 @@ The draft aims to formally study the security of standalone ML-KEM in TLS 1.3 {{
 
 {::boilerplate bcp14-tagged}
 
+* Symbolic analysis: see [SoK](https://eprint.iacr.org/2019/1393.pdf)
+* Computational analysis: see [SoK](https://eprint.iacr.org/2019/1393.pdf)
 
 ## Where ProVerif Proofs Break
-{: #sec-ml-kem }
+{: #sec-proof-break }
 
 While ML-KEM {{I-D.ietf-tls-mlkem}} looks like just a "trivial" addition, it makes changes as deep as the key schedule of TLS. It essentially replaces the *key exchange* by *key encapsulation*. While the former is symmetric, the latter is asymmetric.
 This symmetry is in terms of exchange of roles, and that the order does not matter.
-The proof in ProVerif is, therefore, based on the commutativity of the components g<sup>x</sup> and g<sup>y</sup>, where g<sup>x</sup> and g<sup>y</sup> represent the public keys of the endpoints.
+The proof in ProVerif is, therefore, utilizes this symmetry for the commutativity of the components g<sup>x</sup> and g<sup>y</sup>, where g<sup>x</sup> and g<sup>y</sup> represent the public keys of the endpoints.
 In ProVerif syntax:
 (see details [here](https://github.com/CCC-Attestation/formal-spec-id-crisis/blob/6c3d17a428198aa058f805d16fe6baef7894028f/TLS-a/fix/tls-lib-simple.pvl#L38-L41))
 
@@ -76,15 +86,15 @@ equation forall x:bitstring, y:bitstring;
 	 dh_ideal(dh_ideal(G,y),x).
 ~~~
 
-Key encapsulation does not enjoy this property. There is essentially only one endpoint (say client) which generates the key pair `(dk,ek)` where `dk` represents the secret decapsulation key and `ek` represents the public encapsulation key.
-As opposed to both endpoints sending their public keys g<sup>x</sup> and g<sup>y</sup> in key exchange, only one of the endpoints (client in above example) sends the public encapsulation key. This asymmetry breaks the existing proofs of TLS 1.3 in ProVerif and requires a new proof.
+Key encapsulation does not enjoy this commutativity property, or even an analogous symmetry argument. There is essentially only one endpoint (say client) which generates the key pair `(dk,ek)` where `dk` represents the secret decapsulation key and `ek` represents the public encapsulation key.
+As opposed to both endpoints sending their public keys g<sup>x</sup> and g<sup>y</sup> in the key exchange, only one of the endpoints (client in above example) sends the public encapsulation key and peer sends a ciphertext. This asymmetry breaks the existing proofs of TLS 1.3 in ProVerif and requires a new proof.
 
-## Current Status
+## Current Status and Next Steps
 
-{{I-D.ietf-tls-mlkem}} had an opposition of several (ca. 25 in our understanding) WG members in the last WGLC. We see 2 possible options:
+{{I-D.ietf-tls-mlkem}} had an opposition of several (ca. 25 in our understanding) WG participants -- even more than the supporters (ca. 21 in our understanding) -- in the last WGLC. We see 2 possible options:
 
 * Continue tabletop discussions on subjective calculation of risks, costs, tradeoffs, etc., and keep burning WG energy.
-* Do some technical analysis using formal methods (such as symbolic and computational) to get a confirmation on the security of ML-KEM in the context of TLS and offer a statement for security considerations, and move on to more critical works like hybrid authentication.
+* Do some technical analysis using formal methods (symbolic and computational) to get a confirmation on the security of ML-KEM in the context of TLS and offer a statement for security considerations, and move on to more critical works like hybrid authentication.
 
 We believe the former cannot resolve the dispute. We believe the latter *may* help.
 
@@ -100,7 +110,8 @@ version.
 
 ### "Cost"
 "Cost" has been presented on the list as the motivation for ML-KEM but no reference has yet been presented.
-We believe costs will depend on several factors and it is quite subjective.
+We believe costs will depend on several factors -- including but not limited to implementation details and deployment scenario -- and it is quite subjective.
+
 There seems to be a need for a thorough study to understand the "cost."
 We invite the WG participants to perform this analysis and share the results with the WG.
 
@@ -155,7 +166,7 @@ If ML-KEM is broken, the whole system is broken.
 
 #### Comparison
 Leak out the ECDHE key from hybrid PQ/T and you get a standalone ML-KEM.
-Clearly, hybrid isin general more secure, unless ECDHE is fully broken, in which case it still falls equivalent to standalone ML-KEM, or in the hypothetical scenario that there is an implementation bug in the ECDHE part which is triggered only in composition.
+Clearly, hybrid is in general more secure, unless ECDHE is fully broken, in which case it still falls equivalent to standalone ML-KEM, or in the hypothetical scenario that there is an implementation bug in the ECDHE part which is triggered only in composition.
 
 # Security Considerations
 {: #sec-sec-cons }
@@ -176,3 +187,17 @@ This document has no IANA actions.
 --- back
 
 [comment]: <> (# Acknowledgments)
+
+# Acknowledgments
+{:numbered="false"}
+
+The research work is funded by German Research Foundation ("Deutsche Forschungsgemeinschaft.")
+
+# History
+{:numbered="false"}
+
+-00
+
+* On popular demand, moved from {{I-D.usama-tls-fatt-extension}} to an independent I-D
+* Major change: added {{sec-proof-break}}
+* Some minor clarifications
