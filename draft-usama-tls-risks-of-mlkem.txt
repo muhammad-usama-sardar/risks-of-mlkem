@@ -3,9 +3,9 @@
 
 
 Transport Layer Security                                    M. U. Sardar
-Internet-Draft                                                TU Dresden
-Intended status: Informational                               14 May 2026
-Expires: 15 November 2026
+Internet-Draft                                       TU Dresden, Germany
+Intended status: Informational                               15 May 2026
+Expires: 16 November 2026
 
 
                  Risks of Standalone ML-KEM in TLS 1.3
@@ -13,10 +13,13 @@ Expires: 15 November 2026
 
 Abstract
 
-   We attest that standalone ML-KEM in TLS breaks the existing proofs of
-   TLS 1.3 in ProVerif.  We also attest that this is a much bigger
-   change than RFC8773bis, which indeed went for FATT review.  We,
-   therefore, kindly ask for FATT review of standalone ML-KEM in TLS.
+   We attest that standalone ML-KEM in TLS 1.3 breaks the existing
+   formal proofs of TLS in state-of-the-art symbolic security analysis
+   tool, ProVerif.  We also attest that from a formal analysis
+   perspective, this is a much bigger change than RFC8773bis, which
+   indeed went for FATT review (cf. [TLS-FATT]).  We, therefore, kindly
+   ask the chairs to initiate the FATT review of standalone ML-KEM in
+   TLS.
 
 About This Document
 
@@ -50,7 +53,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 15 November 2026.
+   This Internet-Draft will expire on 16 November 2026.
 
 Copyright Notice
 
@@ -72,27 +75,31 @@ Table of Contents
      1.1.  Motivation
    2.  Conventions and Definitions
      2.1.  Where ProVerif Proofs Break
-     2.2.  Current Status
+     2.2.  Current Status and Next Steps
        2.2.1.  "Cost"
      2.3.  ML-KEM: FATT Review
        2.3.1.  Expected Learning
        2.3.2.  Formal Analysis (Work-in-progress)
    3.  Security Considerations
    4.  IANA Considerations
-   5.  Normative References
+   5.  References
+     5.1.  Normative References
+     5.2.  Informative References
+   Acknowledgments
+   History
    Author's Address
 
 1.  Introduction
 
-   Readers are assumed to be familiar with [NistFips203] and
-   [I-D.ietf-tls-mlkem].
+   Readers are assumed to be familiar with [NistFips203],
+   [I-D.ietf-tls-rfc8446bis], and [I-D.ietf-tls-mlkem].
 
    We assert that the security considerations of [I-D.ietf-tls-mlkem]
    are insufficient.  We believe that symbolic and computational
    analysis of ML-KEM in the context of TLS is helpful here.  We request
-   that if the author has done any formal analysis, it would be helpful
-   to present the current state of formal analysis in the next meeting
-   for discussion.
+   that if the author has done any formal analysis, it would be very
+   helpful to present the current state of formal analysis in the next
+   meeting for discussion.
 
 1.1.  Motivation
 
@@ -107,6 +114,11 @@ Table of Contents
    BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all
    capitals, as shown here.
 
+   *  Symbolic analysis: see SoK (https://eprint.iacr.org/2019/1393.pdf)
+
+   *  Computational analysis: see SoK
+      (https://eprint.iacr.org/2019/1393.pdf)
+
 2.1.  Where ProVerif Proofs Break
 
    While ML-KEM [I-D.ietf-tls-mlkem] looks like just a "trivial"
@@ -114,10 +126,10 @@ Table of Contents
    essentially replaces the _key exchange_ by _key encapsulation_. While
    the former is symmetric, the latter is asymmetric.  This symmetry is
    in terms of exchange of roles, and that the order does not matter.
-   The proof in ProVerif is, therefore, based on the commutativity of
-   the components g^x and g^y, where g^x and g^y represent the public
-   keys of the endpoints.  In ProVerif syntax: (see details here
-   (https://github.com/CCC-Attestation/formal-spec-id-
+   The proof in ProVerif is, therefore, utilizes this symmetry for the
+   commutativity of the components g^x and g^y, where g^x and g^y
+   represent the public keys of the endpoints.  In ProVerif syntax: (see
+   details here (https://github.com/CCC-Attestation/formal-spec-id-
    crisis/blob/6c3d17a428198aa058f805d16fe6baef7894028f/TLS-a/fix/tls-
    lib-simple.pvl#L38-L41))
 
@@ -126,27 +138,29 @@ Table of Contents
             dh_ideal(dh_ideal(G,x),y) =
             dh_ideal(dh_ideal(G,y),x).
 
-   Key encapsulation does not enjoy this property.  There is essentially
-   only one endpoint (say client) which generates the key pair (dk,ek)
-   where dk represents the secret decapsulation key and ek represents
-   the public encapsulation key.  As opposed to both endpoints sending
-   their public keys g^x and g^y in key exchange, only one of the
-   endpoints (client in above example) sends the public encapsulation
-   key.  This asymmetry breaks the existing proofs of TLS 1.3 in
-   ProVerif and requires a new proof.
+   Key encapsulation does not enjoy this commutativity property, or even
+   an analogous symmetry argument.  There is essentially only one
+   endpoint (say client) which generates the key pair (dk,ek) where dk
+   represents the secret decapsulation key and ek represents the public
+   encapsulation key.  As opposed to both endpoints sending their public
+   keys g^x and g^y in the key exchange, only one of the endpoints
+   (client in above example) sends the public encapsulation key and peer
+   sends a ciphertext.  This asymmetry breaks the existing proofs of TLS
+   1.3 in ProVerif and requires a new proof.
 
-2.2.  Current Status
+2.2.  Current Status and Next Steps
 
    [I-D.ietf-tls-mlkem] had an opposition of several (ca. 25 in our
-   understanding) WG members in the last WGLC.  We see 2 possible
+   understanding) WG participants -- even more than the supporters (ca.
+   21 in our understanding) -- in the last WGLC.  We see 2 possible
    options:
 
    *  Continue tabletop discussions on subjective calculation of risks,
       costs, tradeoffs, etc., and keep burning WG energy.
 
-   *  Do some technical analysis using formal methods (such as symbolic
-      and computational) to get a confirmation on the security of ML-KEM
-      in the context of TLS and offer a statement for security
+   *  Do some technical analysis using formal methods (symbolic and
+      computational) to get a confirmation on the security of ML-KEM in
+      the context of TLS and offer a statement for security
       considerations, and move on to more critical works like hybrid
       authentication.
 
@@ -165,10 +179,13 @@ Table of Contents
 
    "Cost" has been presented on the list as the motivation for ML-KEM
    but no reference has yet been presented.  We believe costs will
-   depend on several factors and it is quite subjective.  There seems to
-   be a need for a thorough study to understand the "cost."  We invite
-   the WG participants to perform this analysis and share the results
-   with the WG.
+   depend on several factors -- including but not limited to
+   implementation details and deployment scenario -- and it is quite
+   subjective.
+
+   There seems to be a need for a thorough study to understand the
+   "cost."  We invite the WG participants to perform this analysis and
+   share the results with the WG.
 
 2.3.  ML-KEM: FATT Review
 
@@ -240,10 +257,11 @@ Table of Contents
 2.3.2.3.  Comparison
 
    Leak out the ECDHE key from hybrid PQ/T and you get a standalone ML-
-   KEM.  Clearly, hybrid isin general more secure, unless ECDHE is fully
-   broken, in which case it still falls equivalent to standalone ML-KEM,
-   or in the hypothetical scenario that there is an implementation bug
-   in the ECDHE part which is triggered only in composition.
+   KEM.  Clearly, hybrid is in general more secure, unless ECDHE is
+   fully broken, in which case it still falls equivalent to standalone
+   ML-KEM, or in the hypothetical scenario that there is an
+   implementation bug in the ECDHE part which is triggered only in
+   composition.
 
 3.  Security Considerations
 
@@ -260,7 +278,9 @@ Table of Contents
 
    This document has no IANA actions.
 
-5.  Normative References
+5.  References
+
+5.1.  Normative References
 
    [I-D.ietf-tls-mlkem]
               Connolly, D., "ML-KEM Post-Quantum Key Agreement for TLS
@@ -268,6 +288,13 @@ Table of Contents
               mlkem-07, 12 February 2026,
               <https://datatracker.ietf.org/doc/html/draft-ietf-tls-
               mlkem-07>.
+
+   [I-D.ietf-tls-rfc8446bis]
+              Rescorla, E., "The Transport Layer Security (TLS) Protocol
+              Version 1.3", Work in Progress, Internet-Draft, draft-
+              ietf-tls-rfc8446bis-14, 13 September 2025,
+              <https://datatracker.ietf.org/doc/html/draft-ietf-tls-
+              rfc8446bis-14>.
 
    [NistFips203]
               "Module-lattice-based key-encapsulation mechanism
@@ -284,8 +311,35 @@ Table of Contents
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
               May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
 
+   [TLS-FATT] IETF TLS WG, "TLS FATT Process", June 2025,
+              <https://github.com/tlswg/tls-fatt>.
+
+5.2.  Informative References
+
+   [I-D.usama-tls-fatt-extension]
+              Sardar, M. U., "Extensions to TLS FATT Process", Work in
+              Progress, Internet-Draft, draft-usama-tls-fatt-extension-
+              07, 2 May 2026, <https://datatracker.ietf.org/doc/html/
+              draft-usama-tls-fatt-extension-07>.
+
+Acknowledgments
+
+   The research work is funded by German Research Foundation ("Deutsche
+   Forschungsgemeinschaft.")
+
+History
+
+   -00
+
+   *  On popular demand, moved from [I-D.usama-tls-fatt-extension] to an
+      independent I-D
+
+   *  Major change: added Section 2.1
+
+   *  Some minor clarifications
+
 Author's Address
 
    Muhammad Usama Sardar
-   TU Dresden
+   TU Dresden, Germany
    Email: muhammad_usama.sardar@tu-dresden.de

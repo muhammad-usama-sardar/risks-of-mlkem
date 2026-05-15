@@ -7,9 +7,9 @@
 <title>Risks of Standalone ML-KEM in TLS 1.3</title>
 <meta content="Muhammad Usama Sardar" name="author">
 <meta content="
-       We attest that standalone ML-KEM in TLS breaks the existing proofs of TLS 1.3 in ProVerif.
-We also attest that this is a much bigger change than RFC8773bis, which indeed went for FATT review.
-We, therefore, kindly ask for FATT review of standalone ML-KEM in TLS. 
+       We attest that standalone ML-KEM in TLS 1.3 breaks the existing formal proofs of TLS in state-of-the-art symbolic security analysis tool, ProVerif.
+We also attest that from a formal analysis perspective, this is a much bigger change than RFC8773bis, which indeed went for FATT review (cf.  ).
+We, therefore, kindly ask the chairs to initiate the FATT review of standalone ML-KEM in TLS. 
     " name="description">
 <meta content="xml2rfc 3.33.0" name="generator">
 <meta content="draft-usama-tls-risks-of-mlkem-latest" name="ietf.draft">
@@ -1050,7 +1050,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Sardar</td>
-<td class="center">Expires 15 November 2026</td>
+<td class="center">Expires 16 November 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1063,17 +1063,17 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-usama-tls-risks-of-mlkem-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-05-14" class="published">14 May 2026</time>
+<time datetime="2026-05-15" class="published">15 May 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Informational</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-11-15">15 November 2026</time></dd>
+<dd class="expires"><time datetime="2026-11-16">16 November 2026</time></dd>
 <dt class="label-authors">Author:</dt>
 <dd class="authors">
 <div class="author">
       <div class="author-name">M. U. Sardar</div>
-<div class="org">TU Dresden</div>
+<div class="org">TU Dresden, Germany</div>
 </div>
 </dd>
 </dl>
@@ -1081,9 +1081,9 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <h1 id="title">Risks of Standalone ML-KEM in TLS 1.3</h1>
 <section id="section-abstract">
       <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
-<p id="section-abstract-1">We attest that standalone ML-KEM in TLS breaks the existing proofs of TLS 1.3 in ProVerif.
-We also attest that this is a much bigger change than RFC8773bis, which indeed went for FATT review.
-We, therefore, kindly ask for FATT review of standalone ML-KEM in TLS.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+<p id="section-abstract-1">We attest that standalone ML-KEM in TLS 1.3 breaks the existing formal proofs of TLS in state-of-the-art symbolic security analysis tool, ProVerif.
+We also attest that from a formal analysis perspective, this is a much bigger change than RFC8773bis, which indeed went for FATT review (cf. <span>[<a href="#TLS-FATT" class="cite xref">TLS-FATT</a>]</span>).
+We, therefore, kindly ask the chairs to initiate the FATT review of standalone ML-KEM in TLS.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
 </section>
 <section class="note rfcEditorRemove" id="section-note.1">
       <h2 id="name-about-this-document">
@@ -1120,7 +1120,7 @@ We, therefore, kindly ask for FATT review of standalone ML-KEM in TLS.<a href="#
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 15 November 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 16 November 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1164,7 +1164,7 @@ We, therefore, kindly ask for FATT review of standalone ML-KEM in TLS.<a href="#
                 <p id="section-toc.1-1.2.2.1.1" class="keepWithNext"><a href="#section-2.1" class="auto internal xref">2.1</a>.  <a href="#name-where-proverif-proofs-break" class="internal xref">Where ProVerif Proofs Break</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.2">
-                <p id="section-toc.1-1.2.2.2.1"><a href="#section-2.2" class="auto internal xref">2.2</a>.  <a href="#name-current-status" class="internal xref">Current Status</a></p>
+                <p id="section-toc.1-1.2.2.2.1"><a href="#section-2.2" class="auto internal xref">2.2</a>.  <a href="#name-current-status-and-next-ste" class="internal xref">Current Status and Next Steps</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.2.2.1">
                     <p id="section-toc.1-1.2.2.2.2.1.1"><a href="#section-2.2.1" class="auto internal xref">2.2.1</a>.  <a href="#name-cost" class="internal xref">"Cost"</a></p>
@@ -1191,10 +1191,24 @@ We, therefore, kindly ask for FATT review of standalone ML-KEM in TLS.<a href="#
             <p id="section-toc.1-1.4.1"><a href="#section-4" class="auto internal xref">4</a>.  <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5">
-            <p id="section-toc.1-1.5.1"><a href="#section-5" class="auto internal xref">5</a>.  <a href="#name-normative-references" class="internal xref">Normative References</a></p>
+            <p id="section-toc.1-1.5.1"><a href="#section-5" class="auto internal xref">5</a>.  <a href="#name-references" class="internal xref">References</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.1">
+                <p id="section-toc.1-1.5.2.1.1"><a href="#section-5.1" class="auto internal xref">5.1</a>.  <a href="#name-normative-references" class="internal xref">Normative References</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.2">
+                <p id="section-toc.1-1.5.2.2.1"><a href="#section-5.2" class="auto internal xref">5.2</a>.  <a href="#name-informative-references" class="internal xref">Informative References</a></p>
+</li>
+            </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6">
-            <p id="section-toc.1-1.6.1"><a href="#appendix-A" class="auto internal xref"></a><a href="#name-authors-address" class="internal xref">Author's Address</a></p>
+            <p id="section-toc.1-1.6.1"><a href="#appendix-A" class="auto internal xref"></a><a href="#name-acknowledgments" class="internal xref">Acknowledgments</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7">
+            <p id="section-toc.1-1.7.1"><a href="#appendix-B" class="auto internal xref"></a><a href="#name-history" class="internal xref">History</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8">
+            <p id="section-toc.1-1.8.1"><a href="#appendix-C" class="auto internal xref"></a><a href="#name-authors-address" class="internal xref">Author's Address</a></p>
 </li>
         </ul>
 </nav>
@@ -1205,10 +1219,10 @@ We, therefore, kindly ask for FATT review of standalone ML-KEM in TLS.<a href="#
       <h2 id="name-introduction">
 <a href="#section-1" class="section-number selfRef">1. </a><a href="#name-introduction" class="section-name selfRef">Introduction</a>
       </h2>
-<p id="section-1-1">Readers are assumed to be familiar with <span>[<a href="#NistFips203" class="cite xref">NistFips203</a>]</span> and <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span>.<a href="#section-1-1" class="pilcrow">¶</a></p>
+<p id="section-1-1">Readers are assumed to be familiar with <span>[<a href="#NistFips203" class="cite xref">NistFips203</a>]</span>, <span>[<a href="#I-D.ietf-tls-rfc8446bis" class="cite xref">I-D.ietf-tls-rfc8446bis</a>]</span>, and <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span>.<a href="#section-1-1" class="pilcrow">¶</a></p>
 <p id="section-1-2">We assert that the security considerations of <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span> are insufficient.
 We believe that symbolic and computational analysis of ML-KEM in the context of TLS is helpful here.
-We request that if the author has done any formal analysis, it would be helpful to present the current state of formal analysis in the next meeting for discussion.<a href="#section-1-2" class="pilcrow">¶</a></p>
+We request that if the author has done any formal analysis, it would be very helpful to present the current state of formal analysis in the next meeting for discussion.<a href="#section-1-2" class="pilcrow">¶</a></p>
 <div id="motivation">
 <section id="section-1.1">
         <h3 id="name-motivation">
@@ -1228,14 +1242,22 @@ We request that if the author has done any formal analysis, it would be helpful 
 "<span class="bcp14">MAY</span>", and "<span class="bcp14">OPTIONAL</span>" in this document are to be interpreted as
 described in BCP 14 <span>[<a href="#RFC2119" class="cite xref">RFC2119</a>]</span> <span>[<a href="#RFC8174" class="cite xref">RFC8174</a>]</span> when, and only when, they
 appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶</a></p>
-<div id="sec-ml-kem">
+<ul class="normal">
+<li class="normal" id="section-2-2.1">
+          <p id="section-2-2.1.1">Symbolic analysis: see <a href="https://eprint.iacr.org/2019/1393.pdf">SoK</a><a href="#section-2-2.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-2-2.2">
+          <p id="section-2-2.2.1">Computational analysis: see <a href="https://eprint.iacr.org/2019/1393.pdf">SoK</a><a href="#section-2-2.2.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
+<div id="sec-proof-break">
 <section id="section-2.1">
         <h3 id="name-where-proverif-proofs-break">
 <a href="#section-2.1" class="section-number selfRef">2.1. </a><a href="#name-where-proverif-proofs-break" class="section-name selfRef">Where ProVerif Proofs Break</a>
         </h3>
 <p id="section-2.1-1">While ML-KEM <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span> looks like just a "trivial" addition, it makes changes as deep as the key schedule of TLS. It essentially replaces the <em>key exchange</em> by <em>key encapsulation</em>. While the former is symmetric, the latter is asymmetric.
 This symmetry is in terms of exchange of roles, and that the order does not matter.
-The proof in ProVerif is, therefore, based on the commutativity of the components g<sup>x</sup> and g<sup>y</sup>, where g<sup>x</sup> and g<sup>y</sup> represent the public keys of the endpoints.
+The proof in ProVerif is, therefore, utilizes this symmetry for the commutativity of the components g<sup>x</sup> and g<sup>y</sup>, where g<sup>x</sup> and g<sup>y</sup> represent the public keys of the endpoints.
 In ProVerif syntax:
 (see details <a href="https://github.com/CCC-Attestation/formal-spec-id-crisis/blob/6c3d17a428198aa058f805d16fe6baef7894028f/TLS-a/fix/tls-lib-simple.pvl#L38-L41">here</a>)<a href="#section-2.1-1" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-2.1-2">
@@ -1246,22 +1268,22 @@ equation forall x:bitstring, y:bitstring;
          dh_ideal(dh_ideal(G,y),x).
 </pre><a href="#section-2.1-2" class="pilcrow">¶</a>
 </div>
-<p id="section-2.1-3">Key encapsulation does not enjoy this property. There is essentially only one endpoint (say client) which generates the key pair <code>(dk,ek)</code> where <code>dk</code> represents the secret decapsulation key and <code>ek</code> represents the public encapsulation key.
-As opposed to both endpoints sending their public keys g<sup>x</sup> and g<sup>y</sup> in key exchange, only one of the endpoints (client in above example) sends the public encapsulation key. This asymmetry breaks the existing proofs of TLS 1.3 in ProVerif and requires a new proof.<a href="#section-2.1-3" class="pilcrow">¶</a></p>
+<p id="section-2.1-3">Key encapsulation does not enjoy this commutativity property, or even an analogous symmetry argument. There is essentially only one endpoint (say client) which generates the key pair <code>(dk,ek)</code> where <code>dk</code> represents the secret decapsulation key and <code>ek</code> represents the public encapsulation key.
+As opposed to both endpoints sending their public keys g<sup>x</sup> and g<sup>y</sup> in the key exchange, only one of the endpoints (client in above example) sends the public encapsulation key and peer sends a ciphertext. This asymmetry breaks the existing proofs of TLS 1.3 in ProVerif and requires a new proof.<a href="#section-2.1-3" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="current-status">
+<div id="current-status-and-next-steps">
 <section id="section-2.2">
-        <h3 id="name-current-status">
-<a href="#section-2.2" class="section-number selfRef">2.2. </a><a href="#name-current-status" class="section-name selfRef">Current Status</a>
+        <h3 id="name-current-status-and-next-ste">
+<a href="#section-2.2" class="section-number selfRef">2.2. </a><a href="#name-current-status-and-next-ste" class="section-name selfRef">Current Status and Next Steps</a>
         </h3>
-<p id="section-2.2-1"><span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span> had an opposition of several (ca. 25 in our understanding) WG members in the last WGLC. We see 2 possible options:<a href="#section-2.2-1" class="pilcrow">¶</a></p>
+<p id="section-2.2-1"><span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span> had an opposition of several (ca. 25 in our understanding) WG participants -- even more than the supporters (ca. 21 in our understanding) -- in the last WGLC. We see 2 possible options:<a href="#section-2.2-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-2.2-2.1">
             <p id="section-2.2-2.1.1">Continue tabletop discussions on subjective calculation of risks, costs, tradeoffs, etc., and keep burning WG energy.<a href="#section-2.2-2.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-2.2-2.2">
-            <p id="section-2.2-2.2.1">Do some technical analysis using formal methods (such as symbolic and computational) to get a confirmation on the security of ML-KEM in the context of TLS and offer a statement for security considerations, and move on to more critical works like hybrid authentication.<a href="#section-2.2-2.2.1" class="pilcrow">¶</a></p>
+            <p id="section-2.2-2.2.1">Do some technical analysis using formal methods (symbolic and computational) to get a confirmation on the security of ML-KEM in the context of TLS and offer a statement for security considerations, and move on to more critical works like hybrid authentication.<a href="#section-2.2-2.2.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 <p id="section-2.2-3">We believe the former cannot resolve the dispute. We believe the latter <em>may</em> help.<a href="#section-2.2-3" class="pilcrow">¶</a></p>
@@ -1282,9 +1304,9 @@ version.
 <a href="#section-2.2.1" class="section-number selfRef">2.2.1. </a><a href="#name-cost" class="section-name selfRef">"Cost"</a>
           </h4>
 <p id="section-2.2.1-1">"Cost" has been presented on the list as the motivation for ML-KEM but no reference has yet been presented.
-We believe costs will depend on several factors and it is quite subjective.
-There seems to be a need for a thorough study to understand the "cost."
-We invite the WG participants to perform this analysis and share the results with the WG.<a href="#section-2.2.1-1" class="pilcrow">¶</a></p>
+We believe costs will depend on several factors -- including but not limited to implementation details and deployment scenario -- and it is quite subjective.<a href="#section-2.2.1-1" class="pilcrow">¶</a></p>
+<p id="section-2.2.1-2">There seems to be a need for a thorough study to understand the "cost."
+We invite the WG participants to perform this analysis and share the results with the WG.<a href="#section-2.2.1-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1371,7 +1393,7 @@ Standalone PQ is secure unless ML-KEM is broken.
 <a href="#section-2.3.2.3" class="section-number selfRef">2.3.2.3. </a><a href="#name-comparison" class="section-name selfRef">Comparison</a>
             </h5>
 <p id="section-2.3.2.3-1">Leak out the ECDHE key from hybrid PQ/T and you get a standalone ML-KEM.
-Clearly, hybrid isin general more secure, unless ECDHE is fully broken, in which case it still falls equivalent to standalone ML-KEM, or in the hypothetical scenario that there is an implementation bug in the ECDHE part which is triggered only in composition.<a href="#section-2.3.2.3-1" class="pilcrow">¶</a></p>
+Clearly, hybrid is in general more secure, unless ECDHE is fully broken, in which case it still falls equivalent to standalone ML-KEM, or in the hypothetical scenario that there is an implementation bug in the ECDHE part which is triggered only in composition.<a href="#section-2.3.2.3-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1399,39 +1421,94 @@ Formal methods should be used as complementary and not as subtitute of other ana
 <p id="section-4-1">This document has no IANA actions.<a href="#section-4-1" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="sec-normative-references">
+<div id="sec-combined-references">
 <section id="section-5">
-      <h2 id="name-normative-references">
-<a href="#section-5" class="section-number selfRef">5. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
+      <h2 id="name-references">
+<a href="#section-5" class="section-number selfRef">5. </a><a href="#name-references" class="section-name selfRef">References</a>
       </h2>
+<div id="sec-normative-references">
+<section id="section-5.1">
+        <h3 id="name-normative-references">
+<a href="#section-5.1" class="section-number selfRef">5.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
+        </h3>
 <dl class="references">
 <dt id="I-D.ietf-tls-mlkem">[I-D.ietf-tls-mlkem]</dt>
-      <dd>
+        <dd>
 <span class="refAuthor">Connolly, D.</span>, <span class="refTitle">"ML-KEM Post-Quantum Key Agreement for TLS 1.3"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-tls-mlkem-07</span>, <time datetime="2026-02-12" class="refDate">12 February 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-mlkem-07">https://datatracker.ietf.org/doc/html/draft-ietf-tls-mlkem-07</a>&gt;</span>. </dd>
 <dd class="break"></dd>
+<dt id="I-D.ietf-tls-rfc8446bis">[I-D.ietf-tls-rfc8446bis]</dt>
+        <dd>
+<span class="refAuthor">Rescorla, E.</span>, <span class="refTitle">"The Transport Layer Security (TLS) Protocol Version 1.3"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-tls-rfc8446bis-14</span>, <time datetime="2025-09-13" class="refDate">13 September 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-rfc8446bis-14">https://datatracker.ietf.org/doc/html/draft-ietf-tls-rfc8446bis-14</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="NistFips203">[NistFips203]</dt>
-      <dd>
+        <dd>
 <span class="refTitle">"Module-lattice-based key-encapsulation mechanism standard"</span>, <span class="refContent">National Institute of Standards and Technology (U.S.)</span>, <span class="seriesInfo">DOI 10.6028/nist.fips.203</span>, <time datetime="2024-08" class="refDate">August 2024</time>, <span>&lt;<a href="https://doi.org/10.6028/nist.fips.203">https://doi.org/10.6028/nist.fips.203</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC2119">[RFC2119]</dt>
-      <dd>
+        <dd>
 <span class="refAuthor">Bradner, S.</span>, <span class="refTitle">"Key words for use in RFCs to Indicate Requirement Levels"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 2119</span>, <span class="seriesInfo">DOI 10.17487/RFC2119</span>, <time datetime="1997-03" class="refDate">March 1997</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc2119">https://www.rfc-editor.org/rfc/rfc2119</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC8174">[RFC8174]</dt>
-    <dd>
+        <dd>
 <span class="refAuthor">Leiba, B.</span>, <span class="refTitle">"Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 8174</span>, <span class="seriesInfo">DOI 10.17487/RFC8174</span>, <time datetime="2017-05" class="refDate">May 2017</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8174">https://www.rfc-editor.org/rfc/rfc8174</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="TLS-FATT">[TLS-FATT]</dt>
+      <dd>
+<span class="refAuthor">IETF TLS WG</span>, <span class="refTitle">"TLS FATT Process"</span>, <time datetime="2025-06" class="refDate">June 2025</time>, <span>&lt;<a href="https://github.com/tlswg/tls-fatt">https://github.com/tlswg/tls-fatt</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 </dl>
 </section>
 </div>
-<div id="authors-addresses">
+<div id="sec-informative-references">
+<section id="section-5.2">
+        <h3 id="name-informative-references">
+<a href="#section-5.2" class="section-number selfRef">5.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
+        </h3>
+<dl class="references">
+<dt id="I-D.usama-tls-fatt-extension">[I-D.usama-tls-fatt-extension]</dt>
+      <dd>
+<span class="refAuthor">Sardar, M. U.</span>, <span class="refTitle">"Extensions to TLS FATT Process"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-usama-tls-fatt-extension-07</span>, <time datetime="2026-05-02" class="refDate">2 May 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-usama-tls-fatt-extension-07">https://datatracker.ietf.org/doc/html/draft-usama-tls-fatt-extension-07</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+</dl>
+</section>
+</div>
+</section>
+</div>
+<div id="acknowledgments">
 <section id="appendix-A">
+      <h2 id="name-acknowledgments">
+<a href="#name-acknowledgments" class="section-name selfRef">Acknowledgments</a>
+      </h2>
+<p id="appendix-A-1">The research work is funded by German Research Foundation ("Deutsche Forschungsgemeinschaft.")<a href="#appendix-A-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="history">
+<section id="appendix-B">
+      <h2 id="name-history">
+<a href="#name-history" class="section-name selfRef">History</a>
+      </h2>
+<p id="appendix-B-1">-00<a href="#appendix-B-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="appendix-B-2.1">
+          <p id="appendix-B-2.1.1">On popular demand, moved from <span>[<a href="#I-D.usama-tls-fatt-extension" class="cite xref">I-D.usama-tls-fatt-extension</a>]</span> to an independent I-D<a href="#appendix-B-2.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-B-2.2">
+          <p id="appendix-B-2.2.1">Major change: added <a href="#sec-proof-break" class="auto internal xref">Section 2.1</a><a href="#appendix-B-2.2.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-B-2.3">
+          <p id="appendix-B-2.3.1">Some minor clarifications<a href="#appendix-B-2.3.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
+</section>
+</div>
+<div id="authors-addresses">
+<section id="appendix-C">
       <h2 id="name-authors-address">
 <a href="#name-authors-address" class="section-name selfRef">Author's Address</a>
       </h2>
 <address class="vcard">
         <div dir="auto" class="left"><span class="fn nameRole">Muhammad Usama Sardar</span></div>
-<div dir="auto" class="left"><span class="org">TU Dresden</span></div>
+<div dir="auto" class="left"><span class="org">TU Dresden, Germany</span></div>
 <div class="email">
 <span>Email:</span>
 <a href="mailto:muhammad_usama.sardar@tu-dresden.de" class="email">muhammad_usama.sardar@tu-dresden.de</a>
