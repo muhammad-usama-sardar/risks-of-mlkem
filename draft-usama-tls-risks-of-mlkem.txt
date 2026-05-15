@@ -74,17 +74,20 @@ Table of Contents
    1.  Introduction
      1.1.  Motivation
    2.  Conventions and Definitions
-     2.1.  Where ProVerif Proofs Break
-     2.2.  Current Status and Next Steps
-       2.2.1.  "Cost"
-     2.3.  ML-KEM: FATT Review
-       2.3.1.  Expected Learning
-       2.3.2.  Formal Analysis (Work-in-progress)
-   3.  Security Considerations
-   4.  IANA Considerations
-   5.  References
-     5.1.  Normative References
-     5.2.  Informative References
+   3.  Where ProVerif Proofs Break
+   4.  Current Status and Next Steps
+     4.1.  "Cost"
+   5.  ML-KEM: FATT Review
+     5.1.  Expected Learning
+     5.2.  Formal Analysis (Work-in-progress)
+       5.2.1.  Hybrid PQ/T
+       5.2.2.  Standalone PQ
+       5.2.3.  Comparison
+   6.  Security Considerations
+   7.  IANA Considerations
+   8.  References
+     8.1.  Normative References
+     8.2.  Informative References
    Acknowledgments
    History
    Author's Address
@@ -119,14 +122,14 @@ Table of Contents
    *  Computational analysis: see SoK
       (https://eprint.iacr.org/2019/1393.pdf)
 
-2.1.  Where ProVerif Proofs Break
+3.  Where ProVerif Proofs Break
 
    While ML-KEM [I-D.ietf-tls-mlkem] looks like just a "trivial"
    addition, it makes changes as deep as the key schedule of TLS.  It
    essentially replaces the _key exchange_ by _key encapsulation_. While
    the former is symmetric, the latter is asymmetric.  This symmetry is
    in terms of exchange of roles, and that the order does not matter.
-   The proof in ProVerif is, therefore, utilizes this symmetry for the
+   The proof in ProVerif, therefore, utilizes this symmetry for the
    commutativity of the components g^x and g^y, where g^x and g^y
    represent the public keys of the endpoints.  In ProVerif syntax: (see
    details here (https://github.com/CCC-Attestation/formal-spec-id-
@@ -148,7 +151,7 @@ Table of Contents
    sends a ciphertext.  This asymmetry breaks the existing proofs of TLS
    1.3 in ProVerif and requires a new proof.
 
-2.2.  Current Status and Next Steps
+4.  Current Status and Next Steps
 
    [I-D.ietf-tls-mlkem] had an opposition of several (ca. 25 in our
    understanding) WG participants -- even more than the supporters (ca.
@@ -175,7 +178,7 @@ Table of Contents
    almost none of that is actually reflected in the updated editor's
    version.
 
-2.2.1.  "Cost"
+4.1.  "Cost"
 
    "Cost" has been presented on the list as the motivation for ML-KEM
    but no reference has yet been presented.  We believe costs will
@@ -187,7 +190,7 @@ Table of Contents
    "cost."  We invite the WG participants to perform this analysis and
    share the results with the WG.
 
-2.3.  ML-KEM: FATT Review
+5.  ML-KEM: FATT Review
 
    We have formally requested the chairs to initiate the FATT process
    for [I-D.ietf-tls-mlkem].  See this
@@ -196,7 +199,7 @@ Table of Contents
    (https://mailarchive.ietf.org/arch/msg/
    tls/7lj6fYAweMBwNMxFerNl7xhY0pk/).
 
-2.3.1.  Expected Learning
+5.1.  Expected Learning
 
    We believe formal methods can provide additional value for security
    considerations of this draft in order to maintain the high
@@ -222,10 +225,10 @@ Table of Contents
       CryptoVerif -- seems like a reasonable approach to ensure security
       of ML-KEM in TLS, such as binding.
 
-2.3.2.  Formal Analysis (Work-in-progress)
+5.2.  Formal Analysis (Work-in-progress)
 
    We have presented observation from our ongoing symbolic security
-   analysis (cf. limitations in Section 3) using ProVerif on the mailing
+   analysis (cf. limitations in Section 6) using ProVerif on the mailing
    list.
 
    We argue that in general:
@@ -235,7 +238,7 @@ Table of Contents
    2.  Migration from hybrid to standalone ML-KEM is security
        regression.
 
-2.3.2.1.  Hybrid PQ/T
+5.2.1.  Hybrid PQ/T
 
    More formally, the property hybrid PQ/T should provide is:
 
@@ -246,7 +249,7 @@ Table of Contents
    particular, even if ML-KEM is completely broken, the system retains
    the security level of ECDHE.
 
-2.3.2.2.  Standalone PQ
+5.2.2.  Standalone PQ
 
    On the other hand, the formal property standalone PQ provides is:
 
@@ -254,7 +257,7 @@ Table of Contents
 
    If ML-KEM is broken, the whole system is broken.
 
-2.3.2.3.  Comparison
+5.2.3.  Comparison
 
    Leak out the ECDHE key from hybrid PQ/T and you get a standalone ML-
    KEM.  Clearly, hybrid is in general more secure, unless ECDHE is
@@ -263,7 +266,7 @@ Table of Contents
    implementation bug in the ECDHE part which is triggered only in
    composition.
 
-3.  Security Considerations
+6.  Security Considerations
 
    The whole document is about improving security considerations.
 
@@ -274,13 +277,13 @@ Table of Contents
    Formal methods should be used as complementary and not as subtitute
    of other analysis methods.
 
-4.  IANA Considerations
+7.  IANA Considerations
 
    This document has no IANA actions.
 
-5.  References
+8.  References
 
-5.1.  Normative References
+8.1.  Normative References
 
    [I-D.ietf-tls-mlkem]
               Connolly, D., "ML-KEM Post-Quantum Key Agreement for TLS
@@ -314,7 +317,7 @@ Table of Contents
    [TLS-FATT] IETF TLS WG, "TLS FATT Process", June 2025,
               <https://github.com/tlswg/tls-fatt>.
 
-5.2.  Informative References
+8.2.  Informative References
 
    [I-D.usama-tls-fatt-extension]
               Sardar, M. U., "Extensions to TLS FATT Process", Work in
@@ -334,7 +337,7 @@ History
    *  On popular demand, moved from [I-D.usama-tls-fatt-extension] to an
       independent I-D
 
-   *  Major change: added Section 2.1
+   *  Major change: added Section 3
 
    *  Some minor clarifications
 
