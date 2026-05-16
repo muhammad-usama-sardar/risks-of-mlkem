@@ -37,6 +37,29 @@ normative:
 
 informative:
   I-D.usama-tls-fatt-extension:
+  ID-Crisis:
+    title: "Identity Crisis in Confidential Computing: Formal Analysis of Attested TLS"
+    date: November 2025,
+    target: https://www.researchgate.net/publication/398839141_Identity_Crisis_in_Confidential_Computing_Formal_Analysis_of_Attested_TLS
+    author:
+      - ins: M. U. Sardar
+      - ins: M. Moustafa
+      - ins: T. Aura
+  ID-Crisis-Repo:
+     title: "Identity Crisis in Confidential Computing: Formal Analysis of Attested TLS Protocols"
+     date: 2025,
+     target: https://github.com/CCC-Attestation/formal-spec-id-crisis
+     author:
+      - ins: Muhammad Usama Sardar
+  reftls: DOI.10.1109/SP.2017.26
+  reftls-Repo:
+     title: "Verified Models and Reference Implementations for the TLS 1.3 Standard Candidate"
+     date: 2026,
+     target: https://github.com/Inria-Prosecco/reftls
+     author:
+      - ins: K. Bhargavan
+      - ins: B. Blanchet
+      - ins: N. Kobeissi
 
 ...
 
@@ -75,7 +98,7 @@ The draft aims to formally study the security of standalone ML-KEM in TLS 1.3 {{
 
 While ML-KEM {{I-D.ietf-tls-mlkem}} looks like just a "trivial" addition, it makes changes as deep as the key schedule of TLS. It essentially replaces the *key exchange* by *key encapsulation*. While the former is symmetric, the latter is asymmetric.
 This symmetry is in terms of exchange of roles, and that the order does not matter.
-The proof in ProVerif, therefore, utilizes this symmetry for the commutativity of the components g<sup>x</sup> and g<sup>y</sup>, where g<sup>x</sup> and g<sup>y</sup> represent the public keys of the endpoints.
+The proof in ProVerif, therefore, utilizes this symmetry for the commutativity of the key shares g<sup>x</sup> and g<sup>y</sup>, where g<sup>x</sup> and g<sup>y</sup> represent the public key shares of the endpoints.
 In ProVerif syntax:
 (see details [here](https://github.com/CCC-Attestation/formal-spec-id-crisis/blob/6c3d17a428198aa058f805d16fe6baef7894028f/TLS-a/fix/tls-lib-simple.pvl#L38-L41))
 
@@ -86,14 +109,37 @@ equation forall x:bitstring, y:bitstring;
 	 dh_ideal(dh_ideal(G,y),x).
 ~~~
 
-Key encapsulation does not enjoy this commutativity property, or even an analogous symmetry argument. There is essentially only one endpoint (say client) which generates the key pair `(dk,ek)` where `dk` represents the secret decapsulation key and `ek` represents the public encapsulation key.
-As opposed to both endpoints sending their public keys g<sup>x</sup> and g<sup>y</sup> in the key exchange, only one of the endpoints (client in above example) sends the public encapsulation key and peer sends a ciphertext. This asymmetry breaks the existing proofs of TLS 1.3 in ProVerif and requires a new proof.
+Key encapsulation does not enjoy this commutativity property, or even an analogous symmetry argument. There is essentially only one endpoint (say client) which generates the key pair `(dk,ek)` where `dk` represents the *secret decapsulation key* and `ek` represents the *public encapsulation key*.
+As opposed to both endpoints sending their public key shares g<sup>x</sup> and g<sup>y</sup> in the key exchange, only one of the endpoints (client in above example) sends the public encapsulation key and peer sends a ciphertext. This asymmetry breaks the existing proofs of TLS 1.3 in ProVerif and requires a new proof.
+
+# Justification based on FATT Process
+{: #sec-just-process }
+
+Our request for FATT review is fully in conformance with the current {{TLS-FATT}} process, which explicitly states:
+
+~~~
+For example a proposal that modifies the TLS key schedule or the
+authentication process or any other part of the cryptographic
+protocol that has been formally modeled and analyzed in the past
+would likely result in asking the FATT, whereas a change such
+as modifying the SSLKEYLOG format would not.
+~~~
+
+As presented in {{sec-proof-break}}, we attest that {{I-D.ietf-tls-mlkem}} modifies the:
+
+* TLS key schedule
+* cryptographic protocol such that commutativity property is no longer valid.
+
+This breaks the following proofs:
+
+* Bhargavan et al.'s model of draft 20 of TLS 1.3: {{reftls}} and {{reftls-Repo}}
+* Our previous work extending the model of Bhargavan et al. to the current state of {{I-D.ietf-tls-rfc8446bis}}: {{ID-Crisis}} and {{ID-Crisis-Repo}}
 
 # Current Status and Next Steps
 
 {{I-D.ietf-tls-mlkem}} had an opposition of several (ca. 25 in our understanding) WG participants -- even more than the supporters (ca. 21 in our understanding) -- in the last WGLC. We see 2 possible options:
 
-* Continue tabletop discussions on subjective calculation of risks, costs, tradeoffs, etc., and keep burning WG energy.
+* Continue tabletop discussions on subjective estimation of risks, costs, tradeoffs, etc., and keep burning WG energy.
 * Do some technical analysis using formal methods (symbolic and computational) to get a confirmation on the security of ML-KEM in the context of TLS and offer a statement for security considerations, and move on to more critical works like hybrid authentication.
 
 We believe the former cannot resolve the dispute. We believe the latter *may* help.
@@ -201,3 +247,7 @@ The research work is funded by German Research Foundation ("Deutsche Forschungsg
 * On popular demand, moved from {{I-D.usama-tls-fatt-extension}} to an independent I-D
 * Major change: added {{sec-proof-break}}
 * Some minor clarifications
+
+-01
+
+* Added justification based on FATT process: {{sec-just-process}}
