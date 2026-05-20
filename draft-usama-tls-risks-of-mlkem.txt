@@ -4,8 +4,8 @@
 
 Transport Layer Security                                    M. U. Sardar
 Internet-Draft                                       TU Dresden, Germany
-Intended status: Informational                               16 May 2026
-Expires: 17 November 2026
+Intended status: Informational                               20 May 2026
+Expires: 21 November 2026
 
 
                  Risks of Standalone ML-KEM in TLS 1.3
@@ -53,7 +53,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 17 November 2026.
+   This Internet-Draft will expire on 21 November 2026.
 
 Copyright Notice
 
@@ -133,9 +133,12 @@ Table of Contents
    The proof in ProVerif, therefore, utilizes this symmetry for the
    commutativity of the key shares g^x and g^y, where g^x and g^y
    represent the public key shares of the endpoints.  In ProVerif
-   syntax: (see details here (https://github.com/CCC-Attestation/formal-
-   spec-id-crisis/blob/6c3d17a428198aa058f805d16fe6baef7894028f/TLS-
-   a/fix/tls-lib-simple.pvl#L38-L41))
+   syntax: (see original source here (https://github.com/Inria-
+   Prosecco/reftls/blob/634f7da5940f8d1f09cfcd56280b4ef3b533df6b/pv/tls-
+   lib-draft20.pvl#L45-L48) and re-used here (https://github.com/CCC-
+   Attestation/formal-spec-id-
+   crisis/blob/6c3d17a428198aa058f805d16fe6baef7894028f/TLS-a/fix/tls-
+   lib-simple.pvl#L38-L41))
 
    fun dh_ideal(element,bitstring):element.
    equation forall x:bitstring, y:bitstring;
@@ -250,7 +253,7 @@ Table of Contents
       lake/2XGOI9OCwylJUfSCasvvwM2FXmw/)).
 
    *  _Computational_ analysis (cf. SoK
-      (https://eprint.iacr.org/2019/1393.pdf))-- using tools such as
+      (https://eprint.iacr.org/2019/1393.pdf)) -- using tools such as
       CryptoVerif -- seems like a reasonable approach to ensure security
       of ML-KEM in TLS, such as binding.
 
