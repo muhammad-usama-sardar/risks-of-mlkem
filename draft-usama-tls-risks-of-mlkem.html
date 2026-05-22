@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta content="Common,Latin" name="scripts">
 <meta content="initial-scale=1.0" name="viewport">
-<title>Risks of Standalone ML-KEM in TLS 1.3</title>
+<title>Potential Risks of Standalone ML-KEM in TLS 1.3</title>
 <meta content="Muhammad Usama Sardar" name="author">
 <meta content="
        We attest that standalone ML-KEM in TLS 1.3 breaks the existing formal proofs of TLS in state-of-the-art symbolic security analysis tool, ProVerif.
@@ -1045,12 +1045,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <table class="ears">
 <thead><tr>
 <td class="left">Internet-Draft</td>
-<td class="center">Risks of Standalone ML-KEM in TLS 1.3</td>
+<td class="center">Potential Risks of Standalone ML-KEM in </td>
 <td class="right">May 2026</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Sardar</td>
-<td class="center">Expires 21 November 2026</td>
+<td class="center">Expires 23 November 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1063,12 +1063,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-usama-tls-risks-of-mlkem-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-05-20" class="published">20 May 2026</time>
+<time datetime="2026-05-22" class="published">22 May 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Informational</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-11-21">21 November 2026</time></dd>
+<dd class="expires"><time datetime="2026-11-23">23 November 2026</time></dd>
 <dt class="label-authors">Author:</dt>
 <dd class="authors">
 <div class="author">
@@ -1078,7 +1078,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </dd>
 </dl>
 </div>
-<h1 id="title">Risks of Standalone ML-KEM in TLS 1.3</h1>
+<h1 id="title">Potential Risks of Standalone ML-KEM in TLS 1.3</h1>
 <section id="section-abstract">
       <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
 <p id="section-abstract-1">We attest that standalone ML-KEM in TLS 1.3 breaks the existing formal proofs of TLS in state-of-the-art symbolic security analysis tool, ProVerif.
@@ -1120,7 +1120,7 @@ We, therefore, kindly ask the chairs to initiate the FATT review of standalone M
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 21 November 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 23 November 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1154,11 +1154,16 @@ We, therefore, kindly ask the chairs to initiate the FATT review of standalone M
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.1">
                 <p id="section-toc.1-1.1.2.1.1" class="keepWithNext"><a href="#section-1.1" class="auto internal xref">1.1</a>.  <a href="#name-motivation" class="internal xref">Motivation</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.1.2.1">
+                    <p id="section-toc.1-1.1.2.1.2.1.1" class="keepWithNext"><a href="#section-1.1.1" class="auto internal xref">1.1.1</a>.  <a href="#name-cost" class="internal xref">"Cost"</a></p>
+</li>
+                </ul>
 </li>
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2">
-            <p id="section-toc.1-1.2.1" class="keepWithNext"><a href="#section-2" class="auto internal xref">2</a>.  <a href="#name-conventions-and-definitions" class="internal xref">Conventions and Definitions</a></p>
+            <p id="section-toc.1-1.2.1"><a href="#section-2" class="auto internal xref">2</a>.  <a href="#name-conventions-and-definitions" class="internal xref">Conventions and Definitions</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3">
             <p id="section-toc.1-1.3.1"><a href="#section-3" class="auto internal xref">3</a>.  <a href="#name-where-proverif-proofs-break" class="internal xref">Where ProVerif Proofs Break</a></p>
@@ -1167,60 +1172,52 @@ We, therefore, kindly ask the chairs to initiate the FATT review of standalone M
             <p id="section-toc.1-1.4.1"><a href="#section-4" class="auto internal xref">4</a>.  <a href="#name-justification-based-on-fatt" class="internal xref">Justification based on FATT Process</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5">
-            <p id="section-toc.1-1.5.1"><a href="#section-5" class="auto internal xref">5</a>.  <a href="#name-current-status-and-next-ste" class="internal xref">Current Status and Next Steps</a></p>
+            <p id="section-toc.1-1.5.1"><a href="#section-5" class="auto internal xref">5</a>.  <a href="#name-ml-kem-fatt-review" class="internal xref">ML-KEM: FATT Review</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.1">
-                <p id="section-toc.1-1.5.2.1.1"><a href="#section-5.1" class="auto internal xref">5.1</a>.  <a href="#name-cost" class="internal xref">"Cost"</a></p>
+                <p id="section-toc.1-1.5.2.1.1"><a href="#section-5.1" class="auto internal xref">5.1</a>.  <a href="#name-expected-learning" class="internal xref">Expected Learning</a></p>
 </li>
-            </ul>
-</li>
-          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6">
-            <p id="section-toc.1-1.6.1"><a href="#section-6" class="auto internal xref">6</a>.  <a href="#name-ml-kem-fatt-review" class="internal xref">ML-KEM: FATT Review</a></p>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.2">
+                <p id="section-toc.1-1.5.2.2.1"><a href="#section-5.2" class="auto internal xref">5.2</a>.  <a href="#name-formal-analysis-work-in-pro" class="internal xref">Formal Analysis (Work-in-progress)</a></p>
 <ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.1">
-                <p id="section-toc.1-1.6.2.1.1"><a href="#section-6.1" class="auto internal xref">6.1</a>.  <a href="#name-expected-learning" class="internal xref">Expected Learning</a></p>
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.2.2.1">
+                    <p id="section-toc.1-1.5.2.2.2.1.1"><a href="#section-5.2.1" class="auto internal xref">5.2.1</a>.  <a href="#name-hybrid-pq-t" class="internal xref">Hybrid PQ/T</a></p>
 </li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.2">
-                <p id="section-toc.1-1.6.2.2.1"><a href="#section-6.2" class="auto internal xref">6.2</a>.  <a href="#name-formal-analysis-work-in-pro" class="internal xref">Formal Analysis (Work-in-progress)</a></p>
-<ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.2.2.1">
-                    <p id="section-toc.1-1.6.2.2.2.1.1"><a href="#section-6.2.1" class="auto internal xref">6.2.1</a>.  <a href="#name-hybrid-pq-t" class="internal xref">Hybrid PQ/T</a></p>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.2.2.2">
+                    <p id="section-toc.1-1.5.2.2.2.2.1"><a href="#section-5.2.2" class="auto internal xref">5.2.2</a>.  <a href="#name-standalone-pq" class="internal xref">Standalone PQ</a></p>
 </li>
-                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.2.2.2">
-                    <p id="section-toc.1-1.6.2.2.2.2.1"><a href="#section-6.2.2" class="auto internal xref">6.2.2</a>.  <a href="#name-standalone-pq" class="internal xref">Standalone PQ</a></p>
-</li>
-                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.2.2.3">
-                    <p id="section-toc.1-1.6.2.2.2.3.1"><a href="#section-6.2.3" class="auto internal xref">6.2.3</a>.  <a href="#name-comparison" class="internal xref">Comparison</a></p>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.2.2.3">
+                    <p id="section-toc.1-1.5.2.2.2.3.1"><a href="#section-5.2.3" class="auto internal xref">5.2.3</a>.  <a href="#name-comparison" class="internal xref">Comparison</a></p>
 </li>
                 </ul>
 </li>
             </ul>
 </li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6">
+            <p id="section-toc.1-1.6.1"><a href="#section-6" class="auto internal xref">6</a>.  <a href="#name-security-considerations" class="internal xref">Security Considerations</a></p>
+</li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7">
-            <p id="section-toc.1-1.7.1"><a href="#section-7" class="auto internal xref">7</a>.  <a href="#name-security-considerations" class="internal xref">Security Considerations</a></p>
+            <p id="section-toc.1-1.7.1"><a href="#section-7" class="auto internal xref">7</a>.  <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8">
-            <p id="section-toc.1-1.8.1"><a href="#section-8" class="auto internal xref">8</a>.  <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
-</li>
-          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9">
-            <p id="section-toc.1-1.9.1"><a href="#section-9" class="auto internal xref">9</a>.  <a href="#name-references" class="internal xref">References</a></p>
+            <p id="section-toc.1-1.8.1"><a href="#section-8" class="auto internal xref">8</a>.  <a href="#name-references" class="internal xref">References</a></p>
 <ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.1">
-                <p id="section-toc.1-1.9.2.1.1"><a href="#section-9.1" class="auto internal xref">9.1</a>.  <a href="#name-normative-references" class="internal xref">Normative References</a></p>
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.1">
+                <p id="section-toc.1-1.8.2.1.1"><a href="#section-8.1" class="auto internal xref">8.1</a>.  <a href="#name-normative-references" class="internal xref">Normative References</a></p>
 </li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.2">
-                <p id="section-toc.1-1.9.2.2.1"><a href="#section-9.2" class="auto internal xref">9.2</a>.  <a href="#name-informative-references" class="internal xref">Informative References</a></p>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.2">
+                <p id="section-toc.1-1.8.2.2.1"><a href="#section-8.2" class="auto internal xref">8.2</a>.  <a href="#name-informative-references" class="internal xref">Informative References</a></p>
 </li>
             </ul>
 </li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9">
+            <p id="section-toc.1-1.9.1"><a href="#appendix-A" class="auto internal xref"></a><a href="#name-acknowledgments" class="internal xref">Acknowledgments</a></p>
+</li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10">
-            <p id="section-toc.1-1.10.1"><a href="#appendix-A" class="auto internal xref"></a><a href="#name-acknowledgments" class="internal xref">Acknowledgments</a></p>
+            <p id="section-toc.1-1.10.1"><a href="#appendix-B" class="auto internal xref"></a><a href="#name-history" class="internal xref">History</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11">
-            <p id="section-toc.1-1.11.1"><a href="#appendix-B" class="auto internal xref"></a><a href="#name-history" class="internal xref">History</a></p>
-</li>
-          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12">
-            <p id="section-toc.1-1.12.1"><a href="#appendix-C" class="auto internal xref"></a><a href="#name-authors-address" class="internal xref">Author's Address</a></p>
+            <p id="section-toc.1-1.11.1"><a href="#appendix-C" class="auto internal xref"></a><a href="#name-authors-address" class="internal xref">Author's Address</a></p>
 </li>
         </ul>
 </nav>
@@ -1233,14 +1230,47 @@ We, therefore, kindly ask the chairs to initiate the FATT review of standalone M
       </h2>
 <p id="section-1-1">Readers are assumed to be familiar with <span>[<a href="#NistFips203" class="cite xref">NistFips203</a>]</span>, <span>[<a href="#I-D.ietf-tls-rfc8446bis" class="cite xref">I-D.ietf-tls-rfc8446bis</a>]</span>, and <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span>.<a href="#section-1-1" class="pilcrow">¶</a></p>
 <p id="section-1-2">We assert that the security considerations of <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span> are insufficient.
-We believe that symbolic and computational analysis of ML-KEM in the context of TLS is helpful here.
+We believe that <em>symbolic</em> and <em>computational</em> analysis (to be interpreted as in <a href="https://eprint.iacr.org/2019/1393.pdf">SoK</a>) of ML-KEM in the context of TLS is helpful here.
 We request that if the author has done any formal analysis, it would be very helpful to present the current state of formal analysis in the next meeting for discussion.<a href="#section-1-2" class="pilcrow">¶</a></p>
 <div id="motivation">
 <section id="section-1.1">
         <h3 id="name-motivation">
 <a href="#section-1.1" class="section-number selfRef">1.1. </a><a href="#name-motivation" class="section-name selfRef">Motivation</a>
         </h3>
-<p id="section-1.1-1">The draft aims to formally study the security of standalone ML-KEM in TLS 1.3 <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span>.<a href="#section-1.1-1" class="pilcrow">¶</a></p>
+<p id="section-1.1-1">The draft aims to formally study the security of standalone ML-KEM in TLS 1.3 <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span>.
+This is because of the following reasons.<a href="#section-1.1-1" class="pilcrow">¶</a></p>
+<p id="section-1.1-2">In the last WGLC, <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span> had an opposition of several (ca. 25 in our understanding) WG participants -- even more than the supporters (ca. 21 in our understanding). We see 2 possible options:<a href="#section-1.1-2" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-1.1-3.1">
+            <p id="section-1.1-3.1.1">Continue tabletop discussions on <strong>subjective</strong> estimation of risks, costs, tradeoffs, etc., and keep burning WG energy.<a href="#section-1.1-3.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-1.1-3.2">
+            <p id="section-1.1-3.2.1">Do some technical analysis using (<em>symbolic</em> and <em>computational</em>) formal methods to get a confirmation on the security of ML-KEM in the context of TLS and offer a statement for security considerations.<a href="#section-1.1-3.2.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-1.1-4">We believe the former cannot resolve the dispute. We believe the latter <strong>may</strong> help.<a href="#section-1.1-4" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-1.1-5">
+<pre>
+We believe the security considerations of {{I-D.ietf-tls-mlkem}} are
+insufficient. We also believe FATT review could have significantly
+improved it, including but not limited to the preference of hybrids,
+and potential issues regarding KEM binding in TLS.
+We have provided significant feedback during the two WGLCs. However,
+almost none of that is actually reflected in the updated editor's
+version.
+</pre><a href="#section-1.1-5" class="pilcrow">¶</a>
+</div>
+<div id="cost">
+<section id="section-1.1.1">
+          <h4 id="name-cost">
+<a href="#section-1.1.1" class="section-number selfRef">1.1.1. </a><a href="#name-cost" class="section-name selfRef">"Cost"</a>
+          </h4>
+<p id="section-1.1.1-1">"Cost" has been presented on the list as the motivation for ML-KEM but no reference has yet been presented.
+We believe costs will depend on several factors -- including but not limited to implementation details and deployment scenario -- and it is quite subjective.<a href="#section-1.1.1-1" class="pilcrow">¶</a></p>
+<p id="section-1.1.1-2">There seems to be a need for a thorough study to understand the "cost."
+We invite the WG participants to perform this analysis and share the results with the WG.<a href="#section-1.1.1-2" class="pilcrow">¶</a></p>
+</section>
+</div>
 </section>
 </div>
 </section>
@@ -1313,136 +1343,125 @@ as modifying the SSLKEYLOG format would not.
 <p id="section-4-5">This breaks the following proofs:<a href="#section-4-5" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-4-6.1">
-          <p id="section-4-6.1.1">Bhargavan et al.'s model of draft 20 of TLS 1.3: <span>[<a href="#reftls" class="cite xref">reftls</a>]</span> and <span>[<a href="#reftls-Repo" class="cite xref">reftls-Repo</a>]</span><a href="#section-4-6.1.1" class="pilcrow">¶</a></p>
+          <p id="section-4-6.1.1">Bhargavan et al.'s model of draft 20 of TLS 1.3: <span>[<a href="#reftls" class="cite xref">reftls</a>]</span> and <span>[<a href="#reftls-Repo" class="cite xref">reftls-Repo</a>]</span> and all 5 <em>public</em> forks:<a href="#section-4-6.1.1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4-6.1.2.1">
+              <p id="section-4-6.1.2.1.1"><a href="https://github.com/arthuraa/reftls/blob/d6bc5dd8eb4373683cb1ce64845691954d0d7601/pv/tls-lib-draft20.pvl#L44-L47">arthuraa/reftls</a><a href="#section-4-6.1.2.1.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-4-6.1.2.2">
+              <p id="section-4-6.1.2.2.1"><a href="https://github.com/blipp/reftls/blob/5bc66d14d4accbff6edb0ae7a263df5ea880857d/pv/tls-lib-draft20.pvl#L44-L47">blipp/reftls</a><a href="#section-4-6.1.2.2.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-4-6.1.2.3">
+              <p id="section-4-6.1.2.3.1"><a href="https://github.com/chris-wood/reftls/blob/d6bc5dd8eb4373683cb1ce64845691954d0d7601/pv/tls-lib-draft20.pvl#L44-L47">chris-wood/reftls</a><a href="#section-4-6.1.2.3.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-4-6.1.2.4">
+              <p id="section-4-6.1.2.4.1"><a href="https://github.com/ekr/reftls/blob/5bc66d14d4accbff6edb0ae7a263df5ea880857d/pv/tls-lib-draft20.pvl#L44-L47">ekr/reftls</a><a href="#section-4-6.1.2.4.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-4-6.1.2.5">
+              <p id="section-4-6.1.2.5.1"><a href="https://github.com/jhoyla/reftls/blob/d6bc5dd8eb4373683cb1ce64845691954d0d7601/pv/tls-lib-draft20.pvl#L44-L47">jhoyla/reftls</a><a href="#section-4-6.1.2.5.1" class="pilcrow">¶</a></p>
+</li>
+          </ul>
 </li>
         <li class="normal" id="section-4-6.2">
-          <p id="section-4-6.2.1">Our previous work extending the model of Bhargavan et al. to the current state of <span>[<a href="#I-D.ietf-tls-rfc8446bis" class="cite xref">I-D.ietf-tls-rfc8446bis</a>]</span>: <span>[<a href="#ID-Crisis" class="cite xref">ID-Crisis</a>]</span> and <span>[<a href="#ID-Crisis-Repo" class="cite xref">ID-Crisis-Repo</a>]</span><a href="#section-4-6.2.1" class="pilcrow">¶</a></p>
-</li>
-      </ul>
-</section>
-</div>
-<div id="current-status-and-next-steps">
-<section id="section-5">
-      <h2 id="name-current-status-and-next-ste">
-<a href="#section-5" class="section-number selfRef">5. </a><a href="#name-current-status-and-next-ste" class="section-name selfRef">Current Status and Next Steps</a>
-      </h2>
-<p id="section-5-1"><span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span> had an opposition of several (ca. 25 in our understanding) WG participants -- even more than the supporters (ca. 21 in our understanding) -- in the last WGLC. We see 2 possible options:<a href="#section-5-1" class="pilcrow">¶</a></p>
+          <p id="section-4-6.2.1">Our previous work extending the model of Bhargavan et al. to the current state of <span>[<a href="#I-D.ietf-tls-rfc8446bis" class="cite xref">I-D.ietf-tls-rfc8446bis</a>]</span> and integrating remote attestation: <span>[<a href="#ID-Crisis" class="cite xref">ID-Crisis</a>]</span> and <span>[<a href="#ID-Crisis-Repo" class="cite xref">ID-Crisis-Repo</a>]</span> and all 3 public forks:<a href="#section-4-6.2.1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-5-2.1">
-          <p id="section-5-2.1.1">Continue tabletop discussions on subjective estimation of risks, costs, tradeoffs, etc., and keep burning WG energy.<a href="#section-5-2.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-4-6.2.2.1">
+              <p id="section-4-6.2.2.1.1"><a href="https://github.com/jupenur/formal-spec-id-crisis/blob/de2bdec9967bf535f648f0cc8e8d2d90a49104a4/TLS-a/fix/tls-lib-simple.pvl#L38-L41">jupenur/formal-spec-id-crisis</a><a href="#section-4-6.2.2.1.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="section-5-2.2">
-          <p id="section-5-2.2.1">Do some technical analysis using formal methods (symbolic and computational) to get a confirmation on the security of ML-KEM in the context of TLS and offer a statement for security considerations, and move on to more critical works like hybrid authentication.<a href="#section-5-2.2.1" class="pilcrow">¶</a></p>
+            <li class="normal" id="section-4-6.2.2.2">
+              <p id="section-4-6.2.2.2.1"><a href="https://github.com/nathanaelritz/formal-spec-id-crisis/blob/a028cec823b7d9bf13dd5a1dd71ab14c75b1a83d/TLS-a/fix/tls-lib-simple.pvl#L38-L41">nathanaelritz/formal-spec-id-crisis</a><a href="#section-4-6.2.2.2.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-4-6.2.2.3">
+              <p id="section-4-6.2.2.3.1"><a href="https://github.com/telephonicrobotics/formal-id-crisis-spec/blob/c1953127ce004e51b888250591ec9971ad50e98c/TLS-a/fix/tls-lib-simple.pvl#L38-L41">telephonicrobotics/formal-id-crisis-spec</a><a href="#section-4-6.2.2.3.1" class="pilcrow">¶</a></p>
+</li>
+          </ul>
 </li>
       </ul>
-<p id="section-5-3">We believe the former cannot resolve the dispute. We believe the latter <em>may</em> help.<a href="#section-5-3" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-5-4">
-<pre>
-We believe the security considerations of {{I-D.ietf-tls-mlkem}} are
-insufficient. We also believe FATT review could have significantly
-improved it, including but not limited to the preference of hybrids,
-and potential issues regarding KEM binding in TLS.
-We have provided significant feedback during the two WGLCs. However,
-almost none of that is actually reflected in the updated editor's
-version.
-</pre><a href="#section-5-4" class="pilcrow">¶</a>
-</div>
-<div id="cost">
-<section id="section-5.1">
-        <h3 id="name-cost">
-<a href="#section-5.1" class="section-number selfRef">5.1. </a><a href="#name-cost" class="section-name selfRef">"Cost"</a>
-        </h3>
-<p id="section-5.1-1">"Cost" has been presented on the list as the motivation for ML-KEM but no reference has yet been presented.
-We believe costs will depend on several factors -- including but not limited to implementation details and deployment scenario -- and it is quite subjective.<a href="#section-5.1-1" class="pilcrow">¶</a></p>
-<p id="section-5.1-2">There seems to be a need for a thorough study to understand the "cost."
-We invite the WG participants to perform this analysis and share the results with the WG.<a href="#section-5.1-2" class="pilcrow">¶</a></p>
-</section>
-</div>
 </section>
 </div>
 <div id="sec-sol-ml-kem">
-<section id="section-6">
+<section id="section-5">
       <h2 id="name-ml-kem-fatt-review">
-<a href="#section-6" class="section-number selfRef">6. </a><a href="#name-ml-kem-fatt-review" class="section-name selfRef">ML-KEM: FATT Review</a>
+<a href="#section-5" class="section-number selfRef">5. </a><a href="#name-ml-kem-fatt-review" class="section-name selfRef">ML-KEM: FATT Review</a>
       </h2>
-<p id="section-6-1">We have formally requested the chairs to initiate the FATT process for <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span>.
-See <a href="https://mailarchive.ietf.org/arch/msg/tls/rClgrWm2hnhESXHx56U8InbwQQs/">this</a> and <a href="https://mailarchive.ietf.org/arch/msg/tls/7lj6fYAweMBwNMxFerNl7xhY0pk/">this</a>.<a href="#section-6-1" class="pilcrow">¶</a></p>
+<p id="section-5-1">We have formally requested the chairs to initiate the FATT process for <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span>.
+See <a href="https://mailarchive.ietf.org/arch/msg/tls/rClgrWm2hnhESXHx56U8InbwQQs/">this</a> and <a href="https://mailarchive.ietf.org/arch/msg/tls/7lj6fYAweMBwNMxFerNl7xhY0pk/">this</a>.<a href="#section-5-1" class="pilcrow">¶</a></p>
 <div id="expected-learning">
-<section id="section-6.1">
+<section id="section-5.1">
         <h3 id="name-expected-learning">
-<a href="#section-6.1" class="section-number selfRef">6.1. </a><a href="#name-expected-learning" class="section-name selfRef">Expected Learning</a>
+<a href="#section-5.1" class="section-number selfRef">5.1. </a><a href="#name-expected-learning" class="section-name selfRef">Expected Learning</a>
         </h3>
-<p id="section-6.1-1">We believe formal methods can provide additional value for security considerations of this draft in order to maintain the high cryptographic assurance of TLS.
+<p id="section-5.1-1">We believe formal methods can provide additional value for security considerations of this draft in order to maintain the high cryptographic assurance of TLS.
 Since we have no guarantee on whether ECDHE will break before ML-KEM, it seems appropriate to do thorough cryptographic analysis.
 We believe the Harvest Now, Decrypt Later (HNDL) attack applies equally well to standalone ML-KEM.
-Adversary can record all traffic and decrypt it when ML-KEM is broken (or probably it is already broken; who knows?)<a href="#section-6.1-1" class="pilcrow">¶</a></p>
+Adversary can record all traffic and decrypt it when ML-KEM is broken (or probably it is already broken; who knows?)<a href="#section-5.1-1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-6.1-2.1">
-            <p id="section-6.1-2.1.1">As an example, it can help justify design choices, such as the preference for hybrids.
+<li class="normal" id="section-5.1-2.1">
+            <p id="section-5.1-2.1.1">As an example, it can help justify design choices, such as the preference for hybrids.
 It can help identify ways in which ML-KEM can break.
-It can also help identify all the assumptions under which the properties hold.<a href="#section-6.1-2.1.1" class="pilcrow">¶</a></p>
+It can also help identify all the assumptions under which the properties hold.<a href="#section-5.1-2.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-6.1-2.2">
-            <p id="section-6.1-2.2.1">As a relevant data point in the context of standardization, LAKE WG has done formal analysis for EDHOC-PSK with KEM (<a href="https://mailarchive.ietf.org/arch/msg/lake/2XGOI9OCwylJUfSCasvvwM2FXmw/">ref</a>).<a href="#section-6.1-2.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-5.1-2.2">
+            <p id="section-5.1-2.2.1">As a relevant data point in the context of standardization, LAKE WG has done formal analysis for EDHOC-PSK with KEM (<a href="https://mailarchive.ietf.org/arch/msg/lake/2XGOI9OCwylJUfSCasvvwM2FXmw/">ref</a>).<a href="#section-5.1-2.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-6.1-2.3">
-            <p id="section-6.1-2.3.1"><em>Computational</em> analysis (cf. <a href="https://eprint.iacr.org/2019/1393.pdf">SoK</a>) -- using tools such as CryptoVerif -- seems like a reasonable approach to ensure security of ML-KEM in TLS, such as binding.<a href="#section-6.1-2.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-5.1-2.3">
+            <p id="section-5.1-2.3.1"><em>Computational</em> analysis (cf. <a href="https://eprint.iacr.org/2019/1393.pdf">SoK</a>) -- using tools such as CryptoVerif -- seems like a reasonable approach to ensure security of ML-KEM in TLS, such as binding.<a href="#section-5.1-2.3.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="formal-analysis-work-in-progress">
-<section id="section-6.2">
+<section id="section-5.2">
         <h3 id="name-formal-analysis-work-in-pro">
-<a href="#section-6.2" class="section-number selfRef">6.2. </a><a href="#name-formal-analysis-work-in-pro" class="section-name selfRef">Formal Analysis (Work-in-progress)</a>
+<a href="#section-5.2" class="section-number selfRef">5.2. </a><a href="#name-formal-analysis-work-in-pro" class="section-name selfRef">Formal Analysis (Work-in-progress)</a>
         </h3>
-<p id="section-6.2-1">We have presented observation from our ongoing symbolic security analysis (cf. limitations in <a href="#sec-sec-cons" class="auto internal xref">Section 7</a>) using ProVerif on the mailing list.<a href="#section-6.2-1" class="pilcrow">¶</a></p>
-<p id="section-6.2-2">We argue that in general:<a href="#section-6.2-2" class="pilcrow">¶</a></p>
-<ol start="1" type="1" class="normal type-1" id="section-6.2-3">
-<li id="section-6.2-3.1">
-            <p id="section-6.2-3.1.1">Migration from ECDHE to hybrid is security improvement.<a href="#section-6.2-3.1.1" class="pilcrow">¶</a></p>
+<p id="section-5.2-1">We have presented observation from our ongoing symbolic security analysis (cf. limitations in <a href="#sec-sec-cons" class="auto internal xref">Section 6</a>) using ProVerif on the mailing list.<a href="#section-5.2-1" class="pilcrow">¶</a></p>
+<p id="section-5.2-2">We argue that in general:<a href="#section-5.2-2" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-5.2-3">
+<li id="section-5.2-3.1">
+            <p id="section-5.2-3.1.1">Migration from ECDHE to hybrid is security improvement.<a href="#section-5.2-3.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li id="section-6.2-3.2">
-            <p id="section-6.2-3.2.1">Migration from hybrid to standalone ML-KEM is security regression.<a href="#section-6.2-3.2.1" class="pilcrow">¶</a></p>
+          <li id="section-5.2-3.2">
+            <p id="section-5.2-3.2.1">Migration from hybrid to standalone ML-KEM is security regression.<a href="#section-5.2-3.2.1" class="pilcrow">¶</a></p>
 </li>
         </ol>
 <div id="hybrid-pqt">
-<section id="section-6.2.1">
+<section id="section-5.2.1">
           <h4 id="name-hybrid-pq-t">
-<a href="#section-6.2.1" class="section-number selfRef">6.2.1. </a><a href="#name-hybrid-pq-t" class="section-name selfRef">Hybrid PQ/T</a>
+<a href="#section-5.2.1" class="section-number selfRef">5.2.1. </a><a href="#name-hybrid-pq-t" class="section-name selfRef">Hybrid PQ/T</a>
           </h4>
-<p id="section-6.2.1-1">More formally, the property hybrid PQ/T should provide is:<a href="#section-6.2.1-1" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-6.2.1-2">
+<p id="section-5.2.1-1">More formally, the property hybrid PQ/T should provide is:<a href="#section-5.2.1-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5.2.1-2">
 <pre>
 Hybrid PQ/T is secure unless both ECDHE and ML-KEM are broken.
-</pre><a href="#section-6.2.1-2" class="pilcrow">¶</a>
+</pre><a href="#section-5.2.1-2" class="pilcrow">¶</a>
 </div>
-<p id="section-6.2.1-3">Hybrid preserves ECDHE, and adds ML-KEM as an additional factor.
+<p id="section-5.2.1-3">Hybrid preserves ECDHE, and adds ML-KEM as an additional factor.
 So as long as one of them is not broken, the system is secure.
-In particular, even if ML-KEM is completely broken, the system retains the security level of ECDHE.<a href="#section-6.2.1-3" class="pilcrow">¶</a></p>
+In particular, even if ML-KEM is completely broken, the system retains the security level of ECDHE.<a href="#section-5.2.1-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="standalone-pq">
-<section id="section-6.2.2">
+<section id="section-5.2.2">
           <h4 id="name-standalone-pq">
-<a href="#section-6.2.2" class="section-number selfRef">6.2.2. </a><a href="#name-standalone-pq" class="section-name selfRef">Standalone PQ</a>
+<a href="#section-5.2.2" class="section-number selfRef">5.2.2. </a><a href="#name-standalone-pq" class="section-name selfRef">Standalone PQ</a>
           </h4>
-<p id="section-6.2.2-1">On the other hand, the formal property standalone PQ provides is:<a href="#section-6.2.2-1" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-6.2.2-2">
+<p id="section-5.2.2-1">On the other hand, the formal property standalone PQ provides is:<a href="#section-5.2.2-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5.2.2-2">
 <pre>
 Standalone PQ is secure unless ML-KEM is broken.
-</pre><a href="#section-6.2.2-2" class="pilcrow">¶</a>
+</pre><a href="#section-5.2.2-2" class="pilcrow">¶</a>
 </div>
-<p id="section-6.2.2-3">If ML-KEM is broken, the whole system is broken.<a href="#section-6.2.2-3" class="pilcrow">¶</a></p>
+<p id="section-5.2.2-3">If ML-KEM is broken, the whole system is broken.<a href="#section-5.2.2-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="comparison">
-<section id="section-6.2.3">
+<section id="section-5.2.3">
           <h4 id="name-comparison">
-<a href="#section-6.2.3" class="section-number selfRef">6.2.3. </a><a href="#name-comparison" class="section-name selfRef">Comparison</a>
+<a href="#section-5.2.3" class="section-number selfRef">5.2.3. </a><a href="#name-comparison" class="section-name selfRef">Comparison</a>
           </h4>
-<p id="section-6.2.3-1">Leak out the ECDHE key from hybrid PQ/T and you get a standalone ML-KEM.
-Clearly, hybrid is in general more secure, unless ECDHE is fully broken, in which case it still falls equivalent to standalone ML-KEM, or in the hypothetical scenario that there is an implementation bug in the ECDHE part which is triggered only in composition.<a href="#section-6.2.3-1" class="pilcrow">¶</a></p>
+<p id="section-5.2.3-1">Leak out the ECDHE key from hybrid PQ/T and you get a standalone ML-KEM.
+Clearly, hybrid is in general more secure, unless ECDHE is fully broken, in which case it still falls equivalent to standalone ML-KEM, or in the hypothetical scenario that there is an implementation bug in the ECDHE part which is triggered only in composition.<a href="#section-5.2.3-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1450,33 +1469,33 @@ Clearly, hybrid is in general more secure, unless ECDHE is fully broken, in whic
 </section>
 </div>
 <div id="sec-sec-cons">
-<section id="section-7">
+<section id="section-6">
       <h2 id="name-security-considerations">
-<a href="#section-7" class="section-number selfRef">7. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
+<a href="#section-6" class="section-number selfRef">6. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
       </h2>
-<p id="section-7-1">The whole document is about improving security considerations.<a href="#section-7-1" class="pilcrow">¶</a></p>
-<p id="section-7-2">Like all security proofs, formal analysis is only as strong as its assumptions and model.
+<p id="section-6-1">The whole document is about improving security considerations.<a href="#section-6-1" class="pilcrow">¶</a></p>
+<p id="section-6-2">Like all security proofs, formal analysis is only as strong as its assumptions and model.
 The scope is typically limited, and the model does not necessarily capture real-world deployment complexity, implementation details, operational constraints, or misuse scenarios.
-Formal methods should be used as complementary and not as subtitute of other analysis methods.<a href="#section-7-2" class="pilcrow">¶</a></p>
+Formal methods should be used as complementary and not as subtitute of other analysis methods.<a href="#section-6-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="iana-considerations">
-<section id="section-8">
+<section id="section-7">
       <h2 id="name-iana-considerations">
-<a href="#section-8" class="section-number selfRef">8. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
+<a href="#section-7" class="section-number selfRef">7. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
       </h2>
-<p id="section-8-1">This document has no IANA actions.<a href="#section-8-1" class="pilcrow">¶</a></p>
+<p id="section-7-1">This document has no IANA actions.<a href="#section-7-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sec-combined-references">
-<section id="section-9">
+<section id="section-8">
       <h2 id="name-references">
-<a href="#section-9" class="section-number selfRef">9. </a><a href="#name-references" class="section-name selfRef">References</a>
+<a href="#section-8" class="section-number selfRef">8. </a><a href="#name-references" class="section-name selfRef">References</a>
       </h2>
 <div id="sec-normative-references">
-<section id="section-9.1">
+<section id="section-8.1">
         <h3 id="name-normative-references">
-<a href="#section-9.1" class="section-number selfRef">9.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
+<a href="#section-8.1" class="section-number selfRef">8.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
         </h3>
 <dl class="references">
 <dt id="I-D.ietf-tls-mlkem">[I-D.ietf-tls-mlkem]</dt>
@@ -1507,9 +1526,9 @@ Formal methods should be used as complementary and not as subtitute of other ana
 </section>
 </div>
 <div id="sec-informative-references">
-<section id="section-9.2">
+<section id="section-8.2">
         <h3 id="name-informative-references">
-<a href="#section-9.2" class="section-number selfRef">9.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
+<a href="#section-8.2" class="section-number selfRef">8.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
         </h3>
 <dl class="references">
 <dt id="I-D.usama-tls-fatt-extension">[I-D.usama-tls-fatt-extension]</dt>
@@ -1566,6 +1585,9 @@ Formal methods should be used as complementary and not as subtitute of other ana
 <ul class="normal">
 <li class="normal" id="appendix-B-4.1">
           <p id="appendix-B-4.1.1">Added justification based on FATT process: <a href="#sec-just-process" class="auto internal xref">Section 4</a><a href="#appendix-B-4.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-B-4.2">
+          <p id="appendix-B-4.2.1">Moved to motivation<a href="#appendix-B-4.2.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 </section>

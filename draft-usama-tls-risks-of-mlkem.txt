@@ -4,11 +4,11 @@
 
 Transport Layer Security                                    M. U. Sardar
 Internet-Draft                                       TU Dresden, Germany
-Intended status: Informational                               20 May 2026
-Expires: 21 November 2026
+Intended status: Informational                               22 May 2026
+Expires: 23 November 2026
 
 
-                 Risks of Standalone ML-KEM in TLS 1.3
+            Potential Risks of Standalone ML-KEM in TLS 1.3
                  draft-usama-tls-risks-of-mlkem-latest
 
 Abstract
@@ -53,7 +53,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 21 November 2026.
+   This Internet-Draft will expire on 23 November 2026.
 
 Copyright Notice
 
@@ -73,22 +73,21 @@ Table of Contents
 
    1.  Introduction
      1.1.  Motivation
+       1.1.1.  "Cost"
    2.  Conventions and Definitions
    3.  Where ProVerif Proofs Break
    4.  Justification based on FATT Process
-   5.  Current Status and Next Steps
-     5.1.  "Cost"
-   6.  ML-KEM: FATT Review
-     6.1.  Expected Learning
-     6.2.  Formal Analysis (Work-in-progress)
-       6.2.1.  Hybrid PQ/T
-       6.2.2.  Standalone PQ
-       6.2.3.  Comparison
-   7.  Security Considerations
-   8.  IANA Considerations
-   9.  References
-     9.1.  Normative References
-     9.2.  Informative References
+   5.  ML-KEM: FATT Review
+     5.1.  Expected Learning
+     5.2.  Formal Analysis (Work-in-progress)
+       5.2.1.  Hybrid PQ/T
+       5.2.2.  Standalone PQ
+       5.2.3.  Comparison
+   6.  Security Considerations
+   7.  IANA Considerations
+   8.  References
+     8.1.  Normative References
+     8.2.  Informative References
    Acknowledgments
    History
    Author's Address
@@ -99,16 +98,53 @@ Table of Contents
    [I-D.ietf-tls-rfc8446bis], and [I-D.ietf-tls-mlkem].
 
    We assert that the security considerations of [I-D.ietf-tls-mlkem]
-   are insufficient.  We believe that symbolic and computational
-   analysis of ML-KEM in the context of TLS is helpful here.  We request
-   that if the author has done any formal analysis, it would be very
-   helpful to present the current state of formal analysis in the next
-   meeting for discussion.
+   are insufficient.  We believe that _symbolic_ and _computational_
+   analysis (to be interpreted as in SoK
+   (https://eprint.iacr.org/2019/1393.pdf)) of ML-KEM in the context of
+   TLS is helpful here.  We request that if the author has done any
+   formal analysis, it would be very helpful to present the current
+   state of formal analysis in the next meeting for discussion.
 
 1.1.  Motivation
 
    The draft aims to formally study the security of standalone ML-KEM in
-   TLS 1.3 [I-D.ietf-tls-mlkem].
+   TLS 1.3 [I-D.ietf-tls-mlkem].  This is because of the following
+   reasons.
+
+   In the last WGLC, [I-D.ietf-tls-mlkem] had an opposition of several
+   (ca. 25 in our understanding) WG participants -- even more than the
+   supporters (ca. 21 in our understanding).  We see 2 possible options:
+
+   *  Continue tabletop discussions on *subjective* estimation of risks,
+      costs, tradeoffs, etc., and keep burning WG energy.
+
+   *  Do some technical analysis using (_symbolic_ and _computational_)
+      formal methods to get a confirmation on the security of ML-KEM in
+      the context of TLS and offer a statement for security
+      considerations.
+
+   We believe the former cannot resolve the dispute.  We believe the
+   latter *may* help.
+
+   We believe the security considerations of {{I-D.ietf-tls-mlkem}} are
+   insufficient. We also believe FATT review could have significantly
+   improved it, including but not limited to the preference of hybrids,
+   and potential issues regarding KEM binding in TLS.
+   We have provided significant feedback during the two WGLCs. However,
+   almost none of that is actually reflected in the updated editor's
+   version.
+
+1.1.1.  "Cost"
+
+   "Cost" has been presented on the list as the motivation for ML-KEM
+   but no reference has yet been presented.  We believe costs will
+   depend on several factors -- including but not limited to
+   implementation details and deployment scenario -- and it is quite
+   subjective.
+
+   There seems to be a need for a thorough study to understand the
+   "cost."  We invite the WG participants to perform this analysis and
+   share the results with the WG.
 
 2.  Conventions and Definitions
 
@@ -177,52 +213,49 @@ Table of Contents
    This breaks the following proofs:
 
    *  Bhargavan et al.'s model of draft 20 of TLS 1.3: [reftls] and
-      [reftls-Repo]
+      [reftls-Repo] and all 5 _public_ forks:
+
+      -  arthuraa/reftls (https://github.com/arthuraa/reftls/blob/
+         d6bc5dd8eb4373683cb1ce64845691954d0d7601/pv/tls-lib-
+         draft20.pvl#L44-L47)
+
+      -  blipp/reftls (https://github.com/blipp/reftls/
+         blob/5bc66d14d4accbff6edb0ae7a263df5ea880857d/pv/tls-lib-
+         draft20.pvl#L44-L47)
+
+      -  chris-wood/reftls (https://github.com/chris-
+         wood/reftls/blob/d6bc5dd8eb4373683cb1ce64845691954d0d7601/pv/
+         tls-lib-draft20.pvl#L44-L47)
+
+      -  ekr/reftls (https://github.com/ekr/reftls/
+         blob/5bc66d14d4accbff6edb0ae7a263df5ea880857d/pv/tls-lib-
+         draft20.pvl#L44-L47)
+
+      -  jhoyla/reftls (https://github.com/jhoyla/reftls/blob/
+         d6bc5dd8eb4373683cb1ce64845691954d0d7601/pv/tls-lib-
+         draft20.pvl#L44-L47)
 
    *  Our previous work extending the model of Bhargavan et al. to the
-      current state of [I-D.ietf-tls-rfc8446bis]: [ID-Crisis] and
-      [ID-Crisis-Repo]
+      current state of [I-D.ietf-tls-rfc8446bis] and integrating remote
+      attestation: [ID-Crisis] and [ID-Crisis-Repo] and all 3 public
+      forks:
 
-5.  Current Status and Next Steps
+      -  jupenur/formal-spec-id-crisis (https://github.com/jupenur/
+         formal-spec-id-
+         crisis/blob/de2bdec9967bf535f648f0cc8e8d2d90a49104a4/TLS-a/fix/
+         tls-lib-simple.pvl#L38-L41)
 
-   [I-D.ietf-tls-mlkem] had an opposition of several (ca. 25 in our
-   understanding) WG participants -- even more than the supporters (ca.
-   21 in our understanding) -- in the last WGLC.  We see 2 possible
-   options:
+      -  nathanaelritz/formal-spec-id-crisis
+         (https://github.com/nathanaelritz/formal-spec-id-
+         crisis/blob/a028cec823b7d9bf13dd5a1dd71ab14c75b1a83d/TLS-a/fix/
+         tls-lib-simple.pvl#L38-L41)
 
-   *  Continue tabletop discussions on subjective estimation of risks,
-      costs, tradeoffs, etc., and keep burning WG energy.
+      -  telephonicrobotics/formal-id-crisis-spec
+         (https://github.com/telephonicrobotics/formal-id-crisis-
+         spec/blob/c1953127ce004e51b888250591ec9971ad50e98c/TLS-a/fix/
+         tls-lib-simple.pvl#L38-L41)
 
-   *  Do some technical analysis using formal methods (symbolic and
-      computational) to get a confirmation on the security of ML-KEM in
-      the context of TLS and offer a statement for security
-      considerations, and move on to more critical works like hybrid
-      authentication.
-
-   We believe the former cannot resolve the dispute.  We believe the
-   latter _may_ help.
-
-   We believe the security considerations of {{I-D.ietf-tls-mlkem}} are
-   insufficient. We also believe FATT review could have significantly
-   improved it, including but not limited to the preference of hybrids,
-   and potential issues regarding KEM binding in TLS.
-   We have provided significant feedback during the two WGLCs. However,
-   almost none of that is actually reflected in the updated editor's
-   version.
-
-5.1.  "Cost"
-
-   "Cost" has been presented on the list as the motivation for ML-KEM
-   but no reference has yet been presented.  We believe costs will
-   depend on several factors -- including but not limited to
-   implementation details and deployment scenario -- and it is quite
-   subjective.
-
-   There seems to be a need for a thorough study to understand the
-   "cost."  We invite the WG participants to perform this analysis and
-   share the results with the WG.
-
-6.  ML-KEM: FATT Review
+5.  ML-KEM: FATT Review
 
    We have formally requested the chairs to initiate the FATT process
    for [I-D.ietf-tls-mlkem].  See this
@@ -231,7 +264,7 @@ Table of Contents
    (https://mailarchive.ietf.org/arch/msg/
    tls/7lj6fYAweMBwNMxFerNl7xhY0pk/).
 
-6.1.  Expected Learning
+5.1.  Expected Learning
 
    We believe formal methods can provide additional value for security
    considerations of this draft in order to maintain the high
@@ -257,10 +290,10 @@ Table of Contents
       CryptoVerif -- seems like a reasonable approach to ensure security
       of ML-KEM in TLS, such as binding.
 
-6.2.  Formal Analysis (Work-in-progress)
+5.2.  Formal Analysis (Work-in-progress)
 
    We have presented observation from our ongoing symbolic security
-   analysis (cf. limitations in Section 7) using ProVerif on the mailing
+   analysis (cf. limitations in Section 6) using ProVerif on the mailing
    list.
 
    We argue that in general:
@@ -270,7 +303,7 @@ Table of Contents
    2.  Migration from hybrid to standalone ML-KEM is security
        regression.
 
-6.2.1.  Hybrid PQ/T
+5.2.1.  Hybrid PQ/T
 
    More formally, the property hybrid PQ/T should provide is:
 
@@ -281,7 +314,7 @@ Table of Contents
    particular, even if ML-KEM is completely broken, the system retains
    the security level of ECDHE.
 
-6.2.2.  Standalone PQ
+5.2.2.  Standalone PQ
 
    On the other hand, the formal property standalone PQ provides is:
 
@@ -289,7 +322,7 @@ Table of Contents
 
    If ML-KEM is broken, the whole system is broken.
 
-6.2.3.  Comparison
+5.2.3.  Comparison
 
    Leak out the ECDHE key from hybrid PQ/T and you get a standalone ML-
    KEM.  Clearly, hybrid is in general more secure, unless ECDHE is
@@ -298,7 +331,7 @@ Table of Contents
    implementation bug in the ECDHE part which is triggered only in
    composition.
 
-7.  Security Considerations
+6.  Security Considerations
 
    The whole document is about improving security considerations.
 
@@ -309,13 +342,13 @@ Table of Contents
    Formal methods should be used as complementary and not as subtitute
    of other analysis methods.
 
-8.  IANA Considerations
+7.  IANA Considerations
 
    This document has no IANA actions.
 
-9.  References
+8.  References
 
-9.1.  Normative References
+8.1.  Normative References
 
    [I-D.ietf-tls-mlkem]
               Connolly, D., "ML-KEM Post-Quantum Key Agreement for TLS
@@ -349,7 +382,7 @@ Table of Contents
    [TLS-FATT] IETF TLS WG, "TLS FATT Process", June 2025,
               <https://github.com/tlswg/tls-fatt>.
 
-9.2.  Informative References
+8.2.  Informative References
 
    [I-D.usama-tls-fatt-extension]
               Sardar, M. U., "Extensions to TLS FATT Process", Work in
@@ -400,6 +433,8 @@ History
    -01
 
    *  Added justification based on FATT process: Section 4
+
+   *  Moved to motivation
 
 Author's Address
 
