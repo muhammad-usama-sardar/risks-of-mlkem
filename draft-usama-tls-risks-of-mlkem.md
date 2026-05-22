@@ -1,5 +1,5 @@
 ---
-title: "Risks of Standalone ML-KEM in TLS 1.3"
+title: "Potential Risks of Standalone ML-KEM in TLS 1.3"
 category: info
 
 docname: draft-usama-tls-risks-of-mlkem-latest
@@ -77,13 +77,39 @@ We, therefore, kindly ask the chairs to initiate the FATT review of standalone M
 Readers are assumed to be familiar with {{NistFips203}}, {{I-D.ietf-tls-rfc8446bis}}, and {{I-D.ietf-tls-mlkem}}.
 
 We assert that the security considerations of {{I-D.ietf-tls-mlkem}} are insufficient.
-We believe that symbolic and computational analysis of ML-KEM in the context of TLS is helpful here.
+We believe that *symbolic* and *computational* analysis (to be interpreted as in [SoK](https://eprint.iacr.org/2019/1393.pdf)) of ML-KEM in the context of TLS is helpful here.
 We request that if the author has done any formal analysis, it would be very helpful to present the current state of formal analysis in the next meeting for discussion.
 
 
 ## Motivation
 
 The draft aims to formally study the security of standalone ML-KEM in TLS 1.3 {{I-D.ietf-tls-mlkem}}.
+This is because of the following reasons.
+
+In the last WGLC, {{I-D.ietf-tls-mlkem}} had an opposition of several (ca. 25 in our understanding) WG participants -- even more than the supporters (ca. 21 in our understanding). We see 2 possible options:
+
+* Continue tabletop discussions on **subjective** estimation of risks, costs, tradeoffs, etc., and keep burning WG energy.
+* Do some technical analysis using (*symbolic* and *computational*) formal methods to get a confirmation on the security of ML-KEM in the context of TLS and offer a statement for security considerations.
+
+We believe the former cannot resolve the dispute. We believe the latter **may** help.
+
+~~~
+We believe the security considerations of {{I-D.ietf-tls-mlkem}} are
+insufficient. We also believe FATT review could have significantly
+improved it, including but not limited to the preference of hybrids,
+and potential issues regarding KEM binding in TLS.
+We have provided significant feedback during the two WGLCs. However,
+almost none of that is actually reflected in the updated editor's
+version.
+~~~
+
+
+### "Cost"
+"Cost" has been presented on the list as the motivation for ML-KEM but no reference has yet been presented.
+We believe costs will depend on several factors -- including but not limited to implementation details and deployment scenario -- and it is quite subjective.
+
+There seems to be a need for a thorough study to understand the "cost."
+We invite the WG participants to perform this analysis and share the results with the WG.
 
 
 # Conventions and Definitions
@@ -132,34 +158,16 @@ As presented in {{sec-proof-break}}, we attest that {{I-D.ietf-tls-mlkem}} modif
 
 This breaks the following proofs:
 
-* Bhargavan et al.'s model of draft 20 of TLS 1.3: {{reftls}} and {{reftls-Repo}}
-* Our previous work extending the model of Bhargavan et al. to the current state of {{I-D.ietf-tls-rfc8446bis}}: {{ID-Crisis}} and {{ID-Crisis-Repo}}
-
-# Current Status and Next Steps
-
-{{I-D.ietf-tls-mlkem}} had an opposition of several (ca. 25 in our understanding) WG participants -- even more than the supporters (ca. 21 in our understanding) -- in the last WGLC. We see 2 possible options:
-
-* Continue tabletop discussions on subjective estimation of risks, costs, tradeoffs, etc., and keep burning WG energy.
-* Do some technical analysis using formal methods (symbolic and computational) to get a confirmation on the security of ML-KEM in the context of TLS and offer a statement for security considerations, and move on to more critical works like hybrid authentication.
-
-We believe the former cannot resolve the dispute. We believe the latter *may* help.
-
-~~~
-We believe the security considerations of {{I-D.ietf-tls-mlkem}} are
-insufficient. We also believe FATT review could have significantly
-improved it, including but not limited to the preference of hybrids,
-and potential issues regarding KEM binding in TLS.
-We have provided significant feedback during the two WGLCs. However,
-almost none of that is actually reflected in the updated editor's
-version.
-~~~
-
-## "Cost"
-"Cost" has been presented on the list as the motivation for ML-KEM but no reference has yet been presented.
-We believe costs will depend on several factors -- including but not limited to implementation details and deployment scenario -- and it is quite subjective.
-
-There seems to be a need for a thorough study to understand the "cost."
-We invite the WG participants to perform this analysis and share the results with the WG.
+* Bhargavan et al.'s model of draft 20 of TLS 1.3: {{reftls}} and {{reftls-Repo}} and all 5 *public* forks:
+  * [arthuraa/reftls](https://github.com/arthuraa/reftls/blob/d6bc5dd8eb4373683cb1ce64845691954d0d7601/pv/tls-lib-draft20.pvl#L44-L47)
+  * [blipp/reftls](https://github.com/blipp/reftls/blob/5bc66d14d4accbff6edb0ae7a263df5ea880857d/pv/tls-lib-draft20.pvl#L44-L47)
+  * [chris-wood/reftls](https://github.com/chris-wood/reftls/blob/d6bc5dd8eb4373683cb1ce64845691954d0d7601/pv/tls-lib-draft20.pvl#L44-L47)
+  * [ekr/reftls](https://github.com/ekr/reftls/blob/5bc66d14d4accbff6edb0ae7a263df5ea880857d/pv/tls-lib-draft20.pvl#L44-L47)
+  * [jhoyla/reftls](https://github.com/jhoyla/reftls/blob/d6bc5dd8eb4373683cb1ce64845691954d0d7601/pv/tls-lib-draft20.pvl#L44-L47)
+* Our previous work extending the model of Bhargavan et al. to the current state of {{I-D.ietf-tls-rfc8446bis}} and integrating remote attestation: {{ID-Crisis}} and {{ID-Crisis-Repo}} and all 3 public forks:
+  * [jupenur/formal-spec-id-crisis](https://github.com/jupenur/formal-spec-id-crisis/blob/de2bdec9967bf535f648f0cc8e8d2d90a49104a4/TLS-a/fix/tls-lib-simple.pvl#L38-L41)
+  * [nathanaelritz/formal-spec-id-crisis](https://github.com/nathanaelritz/formal-spec-id-crisis/blob/a028cec823b7d9bf13dd5a1dd71ab14c75b1a83d/TLS-a/fix/tls-lib-simple.pvl#L38-L41)
+  * [telephonicrobotics/formal-id-crisis-spec](https://github.com/telephonicrobotics/formal-id-crisis-spec/blob/c1953127ce004e51b888250591ec9971ad50e98c/TLS-a/fix/tls-lib-simple.pvl#L38-L41)
 
 # ML-KEM: FATT Review
 {: #sec-sol-ml-kem }
@@ -251,3 +259,4 @@ The research work is funded by German Research Foundation ("Deutsche Forschungsg
 -01
 
 * Added justification based on FATT process: {{sec-just-process}}
+* Moved to motivation
