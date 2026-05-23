@@ -60,15 +60,19 @@ informative:
       - ins: K. Bhargavan
       - ins: B. Blanchet
       - ins: N. Kobeissi
+  I-D.pwouters-crypto-current-practices:
+  I-D.barnes-tls-this-could-have-been-an-email:
+  rfc3552:
 
 ...
 
 --- abstract
 
-We attest that standalone ML-KEM in TLS 1.3 breaks the existing formal proofs of TLS in state-of-the-art symbolic security analysis tool, ProVerif.
+We attest that standalone ML-KEM in TLS 1.3 breaks the existing formal proofs of TLS in state-of-the-art symbolic security analysis tool, ProVerif, and we show **exactly** where the proofs break.
 We also attest that from a formal analysis perspective, this is a much bigger change than RFC8773bis, which indeed went for FATT review (cf. {{TLS-FATT}}).
 We, therefore, kindly ask the chairs to initiate the FATT review of standalone ML-KEM in TLS.
-
+The draft also aims to help the developers and policy makers make informed choices.
+Finally, we aim to reduce the endless repitition of arguments from both sides presented on several lists by documenting these arguments so they can simply be referred to.
 
 --- middle
 
@@ -77,19 +81,20 @@ We, therefore, kindly ask the chairs to initiate the FATT review of standalone M
 Readers are assumed to be familiar with {{NistFips203}}, {{I-D.ietf-tls-rfc8446bis}}, and {{I-D.ietf-tls-mlkem}}.
 
 We assert that the security considerations of {{I-D.ietf-tls-mlkem}} are insufficient.
-We believe that *symbolic* and *computational* analysis (to be interpreted as in [SoK](https://eprint.iacr.org/2019/1393.pdf)) of ML-KEM in the context of TLS is helpful here.
+We believe that *symbolic* and *computational* analysis (to be interpreted as in [SoK](https://eprint.iacr.org/2019/1393.pdf)) of standalone ML-KEM in the context of TLS is helpful here.
 We request that if the author has done any formal analysis, it would be very helpful to present the current state of formal analysis in the next meeting for discussion.
 
 
 ## Motivation
 
+{{rfc3552}} requires to document the risks in the security considerations.
 The draft aims to formally study the security of standalone ML-KEM in TLS 1.3 {{I-D.ietf-tls-mlkem}}.
 This is because of the following reasons.
 
 In the last WGLC, {{I-D.ietf-tls-mlkem}} had an opposition of several (ca. 25 in our understanding) WG participants -- even more than the supporters (ca. 21 in our understanding). We see 2 possible options:
 
-* Continue tabletop discussions on **subjective** estimation of risks, costs, tradeoffs, etc., and keep burning WG energy.
-* Do some technical analysis using (*symbolic* and *computational*) formal methods to get a confirmation on the security of ML-KEM in the context of TLS and offer a statement for security considerations.
+* Continue tabletop discussions on **subjective** estimation of risks, costs, tradeoffs, etc., and keep burning WG energy by endless repitition.
+* Do some technical analysis using (*symbolic* and *computational*) formal methods to get a confirmation on the security of standalone ML-KEM in the context of TLS and offer a statement for security considerations.
 
 We believe the former cannot resolve the dispute. We believe the latter **may** help.
 
@@ -103,14 +108,52 @@ almost none of that is actually reflected in the updated editor's
 version.
 ~~~
 
+### Expected Learning
+We believe formal methods can provide additional value for security considerations of this draft in order to maintain the high cryptographic assurance of TLS.
 
-### "Cost"
-"Cost" has been presented on the list as the motivation for ML-KEM but no reference has yet been presented.
+Since we have no guarantee on whether ECDHE will break before ML-KEM, it seems appropriate to do thorough cryptographic analysis.
+We believe the Harvest Now, Decrypt Later (HNDL) attack applies equally well to standalone ML-KEM.
+Adversary can record all traffic and decrypt it when ML-KEM is broken.
+The opinions here vary from "ML-KEM is probably secure" to "ML-KEM is probably already secrectly broken."
+Formal methods can operate under the assumption that ML-KEM is secure, and focus on the integration of ML-KEM in TLS under this assumption.
+
+* As an example, formal methods can help justify design choices, such as the preference for hybrids.
+It can also help identify all the assumptions under which the properties hold.
+* As a relevant data point in the context of standardization, LAKE WG has done formal analysis for EDHOC-PSK with KEM ([ref](https://mailarchive.ietf.org/arch/msg/lake/2XGOI9OCwylJUfSCasvvwM2FXmw/)).
+* *Computational* analysis (cf. [SoK](https://eprint.iacr.org/2019/1393.pdf)) -- using tools such as CryptoVerif -- seems like a reasonable approach to ensure security of ML-KEM in TLS, such as binding.
+
+### Previous Requests for FATT Review
+{: #sec-sol-ml-kem }
+
+We have formally requested the chairs to initiate the FATT process for {{I-D.ietf-tls-mlkem}}.
+See [this](https://mailarchive.ietf.org/arch/msg/tls/rClgrWm2hnhESXHx56U8InbwQQs/) and [this](https://mailarchive.ietf.org/arch/msg/tls/7lj6fYAweMBwNMxFerNl7xhY0pk/).
+
+
+### Side-issues That Formal Methods Probably Cannot Solve
+
+The answers to the following questions are largely dependent on *whether* and *when* Cryptographically-Relevant Quantum Computer (CRQC) will eventually become practical.
+The opinions vary from never because of complicated physics (see [this](https://eprint.iacr.org/2025/1237)) to as early as 2029 (see [Google 2029](https://blog.google/innovation-and-ai/technology/safety-security/cryptography-migration-timeline/) and [Cloudflare 2029](https://blog.cloudflare.com/post-quantum-roadmap/)).
+Google has not even released the quantum circuit underlying their recent claims -- apparently the reason for this urgency. So the claims are not yet justified. Some believe that we should not create panic based on this.
+
+#### "Cost"
+"Cost" has been presented on the list as the motivation for standalone ML-KEM in TLS but no reference has yet been presented.
 We believe costs will depend on several factors -- including but not limited to implementation details and deployment scenario -- and it is quite subjective.
 
 There seems to be a need for a thorough study to understand the "cost."
 We invite the WG participants to perform this analysis and share the results with the WG.
 
+#### Is Publication Necessary?
+
+Code Points for ML-KEM have already been assigned.
+{{I-D.barnes-tls-this-could-have-been-an-email}} provides detailed rationale as to why publication of such documents may be unnecessary. In our understanding, {{I-D.pwouters-crypto-current-practices}} makes similar arguments.
+
+#### Shiny New Crypto
+
+ML-KEM is quite new in the IETF and even in the IRTF. CFRG is starting some efforts for analysis. Some WG participants have shown concern to avoid premature publication before a detailed analysis has been done by CFRG.
+
+#### FIPS to IETF Formal Mapping
+
+As discussed on the TLS list, we are not aware of any formal mapping of the FIPS recommendations to the IETF BCP14 terminology, such as SHOULD vs. MUST. In general, we believe re-using FIPS recommendations is ambiguous for IETF readers.
 
 # Conventions and Definitions
 
@@ -158,45 +201,29 @@ As presented in {{sec-proof-break}}, we attest that {{I-D.ietf-tls-mlkem}} modif
 
 This breaks the following proofs:
 
-* Bhargavan et al.'s model of draft 20 of TLS 1.3: {{reftls}} and {{reftls-Repo}} and all 5 *public* forks:
+* Bhargavan et al.'s model of draft 20 of TLS 1.3: {{reftls}} and {{reftls-Repo}} and all 5 *public* forks as well as one nested fork:
   * [arthuraa/reftls](https://github.com/arthuraa/reftls/blob/d6bc5dd8eb4373683cb1ce64845691954d0d7601/pv/tls-lib-draft20.pvl#L44-L47)
   * [blipp/reftls](https://github.com/blipp/reftls/blob/5bc66d14d4accbff6edb0ae7a263df5ea880857d/pv/tls-lib-draft20.pvl#L44-L47)
   * [chris-wood/reftls](https://github.com/chris-wood/reftls/blob/d6bc5dd8eb4373683cb1ce64845691954d0d7601/pv/tls-lib-draft20.pvl#L44-L47)
   * [ekr/reftls](https://github.com/ekr/reftls/blob/5bc66d14d4accbff6edb0ae7a263df5ea880857d/pv/tls-lib-draft20.pvl#L44-L47)
+    * [ajayeeralla/reftls](https://github.com/ajayeeralla/reftls/blob/b97196fa0c3885da0fe0f412c9902e85a7f5323a/pv/tls-lib-draft20.pvl#L44-L47)
   * [jhoyla/reftls](https://github.com/jhoyla/reftls/blob/d6bc5dd8eb4373683cb1ce64845691954d0d7601/pv/tls-lib-draft20.pvl#L44-L47)
 * Our previous work extending the model of Bhargavan et al. to the current state of {{I-D.ietf-tls-rfc8446bis}} and integrating remote attestation: {{ID-Crisis}} and {{ID-Crisis-Repo}} and all 3 public forks:
   * [jupenur/formal-spec-id-crisis](https://github.com/jupenur/formal-spec-id-crisis/blob/de2bdec9967bf535f648f0cc8e8d2d90a49104a4/TLS-a/fix/tls-lib-simple.pvl#L38-L41)
   * [nathanaelritz/formal-spec-id-crisis](https://github.com/nathanaelritz/formal-spec-id-crisis/blob/a028cec823b7d9bf13dd5a1dd71ab14c75b1a83d/TLS-a/fix/tls-lib-simple.pvl#L38-L41)
   * [telephonicrobotics/formal-id-crisis-spec](https://github.com/telephonicrobotics/formal-id-crisis-spec/blob/c1953127ce004e51b888250591ec9971ad50e98c/TLS-a/fix/tls-lib-simple.pvl#L38-L41)
 
-# ML-KEM: FATT Review
-{: #sec-sol-ml-kem }
 
-We have formally requested the chairs to initiate the FATT process for {{I-D.ietf-tls-mlkem}}.
-See [this](https://mailarchive.ietf.org/arch/msg/tls/rClgrWm2hnhESXHx56U8InbwQQs/) and [this](https://mailarchive.ietf.org/arch/msg/tls/7lj6fYAweMBwNMxFerNl7xhY0pk/).
-
-## Expected Learning
-We believe formal methods can provide additional value for security considerations of this draft in order to maintain the high cryptographic assurance of TLS.
-Since we have no guarantee on whether ECDHE will break before ML-KEM, it seems appropriate to do thorough cryptographic analysis.
-We believe the Harvest Now, Decrypt Later (HNDL) attack applies equally well to standalone ML-KEM.
-Adversary can record all traffic and decrypt it when ML-KEM is broken (or probably it is already broken; who knows?)
-
-* As an example, it can help justify design choices, such as the preference for hybrids.
-It can help identify ways in which ML-KEM can break.
-It can also help identify all the assumptions under which the properties hold.
-* As a relevant data point in the context of standardization, LAKE WG has done formal analysis for EDHOC-PSK with KEM ([ref](https://mailarchive.ietf.org/arch/msg/lake/2XGOI9OCwylJUfSCasvvwM2FXmw/)).
-* *Computational* analysis (cf. [SoK](https://eprint.iacr.org/2019/1393.pdf)) -- using tools such as CryptoVerif -- seems like a reasonable approach to ensure security of ML-KEM in TLS, such as binding.
-
-## Formal Analysis (Work-in-progress)
+# Formal Analysis (Work-in-progress)
 We have presented observation from our ongoing symbolic security analysis (cf. limitations in {{sec-sec-cons}}) using ProVerif on the mailing list.
 
-We argue that in general:
+We argue that *in general*:
 
 1. Migration from ECDHE to hybrid is security improvement.
 2. Migration from hybrid to standalone ML-KEM is security regression.
 
 
-### Hybrid PQ/T
+## Hybrid PQ/T
 
 More formally, the property hybrid PQ/T should provide is:
 
@@ -208,7 +235,7 @@ Hybrid preserves ECDHE, and adds ML-KEM as an additional factor.
 So as long as one of them is not broken, the system is secure.
 In particular, even if ML-KEM is completely broken, the system retains the security level of ECDHE.
 
-### Standalone PQ
+## Standalone PQ
 
 On the other hand, the formal property standalone PQ provides is:
 
@@ -218,7 +245,7 @@ Standalone PQ is secure unless ML-KEM is broken.
 
 If ML-KEM is broken, the whole system is broken.
 
-### Comparison
+## Comparison
 Leak out the ECDHE key from hybrid PQ/T and you get a standalone ML-KEM.
 Clearly, hybrid is in general more secure, unless ECDHE is fully broken, in which case it still falls equivalent to standalone ML-KEM, or in the hypothetical scenario that there is an implementation bug in the ECDHE part which is triggered only in composition.
 
@@ -259,4 +286,5 @@ The research work is funded by German Research Foundation ("Deutsche Forschungsg
 -01
 
 * Added justification based on FATT process: {{sec-just-process}}
-* Moved to motivation
+* Reorganization, specially in motivation
+* Added some common arguments
