@@ -7,11 +7,11 @@
 <title>Potential Risks of Standalone ML-KEM in TLS 1.3</title>
 <meta content="Muhammad Usama Sardar" name="author">
 <meta content="
-       We attest that standalone ML-KEM in TLS 1.3 breaks the existing formal proofs of TLS in state-of-the-art symbolic security analysis tool, ProVerif, and we show  exactly  where the proofs break.
+       We attest that standalone ML-KEM in TLS 1.3 breaks the existing formal proofs of TLS in state-of-the-art symbolic security analysis tool, ProVerif. In this draft, we show  exactly  where the proofs break.
 We also attest that from a formal analysis perspective, this is a much bigger change than RFC8773bis, which indeed went for FATT review (cf.  ).
 We, therefore, kindly ask the chairs to initiate the FATT review of standalone ML-KEM in TLS. 
-       In the future, the draft will aim to help the developers and policy makers make informed choices.
-Finally, it will also aim to reduce the endless repitition of arguments from both sides presented on several lists by documenting these arguments so they can simply be referred to. 
+       The draft also offers some discussion to help the developers and policy makers make informed choices.
+Finally, the draft also aims to reduce the endless repitition of arguments from both sides presented on several lists by documenting these arguments so they can simply be referred to. 
     " name="description">
 <meta content="xml2rfc 3.33.0" name="generator">
 <meta content="draft-usama-tls-risks-of-mlkem-latest" name="ietf.draft">
@@ -1083,11 +1083,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <h1 id="title">Potential Risks of Standalone ML-KEM in TLS 1.3</h1>
 <section id="section-abstract">
       <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
-<p id="section-abstract-1">We attest that standalone ML-KEM in TLS 1.3 breaks the existing formal proofs of TLS in state-of-the-art symbolic security analysis tool, ProVerif, and we show <strong>exactly</strong> where the proofs break.
+<p id="section-abstract-1">We attest that standalone ML-KEM in TLS 1.3 breaks the existing formal proofs of TLS in state-of-the-art symbolic security analysis tool, ProVerif. In this draft, we show <strong>exactly</strong> where the proofs break.
 We also attest that from a formal analysis perspective, this is a much bigger change than RFC8773bis, which indeed went for FATT review (cf. <span>[<a href="#TLS-FATT" class="cite xref">TLS-FATT</a>]</span>).
 We, therefore, kindly ask the chairs to initiate the FATT review of standalone ML-KEM in TLS.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
-<p id="section-abstract-2">In the future, the draft will aim to help the developers and policy makers make informed choices.
-Finally, it will also aim to reduce the endless repitition of arguments from both sides presented on several lists by documenting these arguments so they can simply be referred to.<a href="#section-abstract-2" class="pilcrow">¶</a></p>
+<p id="section-abstract-2">The draft also offers some discussion to help the developers and policy makers make informed choices.
+Finally, the draft also aims to reduce the endless repitition of arguments from both sides presented on several lists by documenting these arguments so they can simply be referred to.<a href="#section-abstract-2" class="pilcrow">¶</a></p>
 </section>
 <section class="note rfcEditorRemove" id="section-note.1">
       <h2 id="name-about-this-document">
@@ -1232,7 +1232,7 @@ Finally, it will also aim to reduce the endless repitition of arguments from bot
       </h2>
 <p id="section-1-1">Readers are assumed to be familiar with <span>[<a href="#NistFips203" class="cite xref">NistFips203</a>]</span>, <span>[<a href="#I-D.ietf-tls-rfc8446bis" class="cite xref">I-D.ietf-tls-rfc8446bis</a>]</span>, and <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span>.<a href="#section-1-1" class="pilcrow">¶</a></p>
 <p id="section-1-2">We assert that the security considerations of <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span> are insufficient.
-We believe that <em>symbolic</em> and <em>computational</em> analysis (to be interpreted as in <a href="https://eprint.iacr.org/2019/1393.pdf">SoK</a>) of standalone ML-KEM in the context of TLS is helpful here.
+We believe that consistent with <span>[<a href="#TLS-FATT" class="cite xref">TLS-FATT</a>]</span> process, <em>symbolic</em> and <em>computational</em> analysis (to be interpreted as in <a href="https://eprint.iacr.org/2019/1393.pdf">SoK</a>) of standalone ML-KEM in the context of TLS is helpful here.
 We request that if the author has done any formal analysis, it would be very helpful to present the current state of formal analysis in the next meeting for discussion.<a href="#section-1-2" class="pilcrow">¶</a></p>
 <div id="motivation">
 <section id="section-1.1">
@@ -1289,7 +1289,7 @@ It can also help identify all the assumptions under which the properties hold.<a
               <p id="section-1.1.1-4.2.1">As a relevant data point in the context of standardization, LAKE WG has done formal analysis for EDHOC-PSK with KEM (<a href="https://mailarchive.ietf.org/arch/msg/lake/2XGOI9OCwylJUfSCasvvwM2FXmw/">ref</a>).<a href="#section-1.1.1-4.2.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-1.1.1-4.3">
-              <p id="section-1.1.1-4.3.1"><em>Computational</em> analysis (cf. <a href="https://eprint.iacr.org/2019/1393.pdf">SoK</a>) -- using tools such as CryptoVerif -- seems like a reasonable approach to ensure security of ML-KEM in TLS, such as binding.<a href="#section-1.1.1-4.3.1" class="pilcrow">¶</a></p>
+              <p id="section-1.1.1-4.3.1"><em>Computational</em> analysis (cf. <a href="https://eprint.iacr.org/2019/1393.pdf">SoK</a>) -- using tools such as CryptoVerif -- seems like a reasonable approach to ensure security of ML-KEM in TLS, such as binding shared secret to the TLS transcript hash.<a href="#section-1.1.1-4.3.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 </section>
@@ -1303,7 +1303,7 @@ It can also help identify all the assumptions under which the properties hold.<a
 See <a href="https://mailarchive.ietf.org/arch/msg/tls/rClgrWm2hnhESXHx56U8InbwQQs/">this</a> and <a href="https://mailarchive.ietf.org/arch/msg/tls/7lj6fYAweMBwNMxFerNl7xhY0pk/">this</a>.<a href="#section-1.1.2-1" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="issues-that-formal-methods-probably-cannot-solve">
+<div id="sec-gen-issues">
 <section id="section-1.1.3">
           <h4 id="name-issues-that-formal-methods-">
 <a href="#section-1.1.3" class="section-number selfRef">1.1.3. </a><a href="#name-issues-that-formal-methods-" class="section-name selfRef">Issues That Formal Methods Probably Cannot Solve</a>
@@ -1315,8 +1315,9 @@ See <a href="https://mailarchive.ietf.org/arch/msg/tls/rClgrWm2hnhESXHx56U8InbwQ
 <a href="#section-1.1.3.1" class="section-number selfRef">1.1.3.1. </a><a href="#name-urgency" class="section-name selfRef">Urgency</a>
             </h5>
 <p id="section-1.1.3.1-1">It is unclear <em>whether</em> and <em>when</em> Cryptographically-Relevant Quantum Computer (CRQC) will eventually become practical.
-The opinions vary from never because of complicated physics (see <a href="https://eprint.iacr.org/2025/1237">this</a>) to as early as 2029 (see <a href="https://blog.google/innovation-and-ai/technology/safety-security/cryptography-migration-timeline/">Google 2029</a> and <a href="https://blog.cloudflare.com/post-quantum-roadmap/">Cloudflare 2029</a>).
-Regarding the latter, please note that Google has not even released the <strong>quantum circuit</strong> underlying their recent claims -- apparently the reason for this urgency. So the claims are not yet justified. Some believe that we should not create panic based on this because many implementations -- such as OpenSSL -- have already implemented standalone ML-KEM, and it is just a matter of enabling it.<a href="#section-1.1.3.1-1" class="pilcrow">¶</a></p>
+The opinions vary from never because of complicated physics (see <a href="https://eprint.iacr.org/2025/1237">this</a>) to be prepared for it as early as 2029 (see <a href="https://blog.google/innovation-and-ai/technology/safety-security/cryptography-migration-timeline/">Google 2029</a> and <a href="https://blog.cloudflare.com/post-quantum-roadmap/">Cloudflare 2029</a>).
+Regarding the latter, please note that Google has not even released the <strong>quantum circuit</strong> underlying their recent claims -- apparently the reason for this urgency. So the claims are not yet justified. Some believe that we should not create panic based on this because many implementations -- such as OpenSSL -- have already implemented standalone ML-KEM, and it is just a matter of enabling it.
+Moreover, these deadlines are for PQ-based protection in general and are unrelated to standalone ML-KEM in TLS, because hybrid KEMs already exist. In our understanding, these deadlines are mainly for quantum-safe authentication.<a href="#section-1.1.3.1-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="cost">
@@ -1387,14 +1388,13 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
 <a href="#section-3" class="section-number selfRef">3. </a><a href="#name-where-proverif-proofs-break" class="section-name selfRef">Where ProVerif Proofs Break</a>
       </h2>
 <p id="section-3-1">We attest that:<a href="#section-3-1" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-3-2.1">
-          <p id="section-3-2.1.1">existing proofs of TLS in ProVerif are based on commutativity<a href="#section-3-2.1.1" class="pilcrow">¶</a></p>
-</li>
-        <li class="normal" id="section-3-2.2">
-          <p id="section-3-2.2.1">commutativity does not apply to ML-KEM in TLS, and hence a new proof is required.<a href="#section-3-2.2.1" class="pilcrow">¶</a></p>
-</li>
-      </ul>
+<div class="alignLeft art-text artwork" id="section-3-2">
+<pre>
+1. existing proofs of TLS in ProVerif are based on commutativity
+2. commutativity does not apply to ML-KEM in TLS
+Hence, a new proof is required.
+</pre><a href="#section-3-2" class="pilcrow">¶</a>
+</div>
 <p id="section-3-3">While ML-KEM <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span> looks like just a "trivial" addition, it makes changes as deep as the key schedule of TLS. It essentially replaces the <em>key exchange</em> by <em>key encapsulation</em>. While the former is symmetric, the latter is asymmetric.
 This symmetry is in terms of exchange of roles, and that the order does not matter.
 The existing proofs in ProVerif, therefore, utilize this symmetry for the commutativity of the key shares g<sup>x</sup> and g<sup>y</sup>, where g<sup>x</sup> and g<sup>y</sup> represent the public key shares of the endpoints.
@@ -1644,7 +1644,8 @@ Formal methods should be used as complementary and not as subtitute of other ana
       <h2 id="name-acknowledgments">
 <a href="#name-acknowledgments" class="section-name selfRef">Acknowledgments</a>
       </h2>
-<p id="appendix-A-1">The research work is funded by German Research Foundation ("Deutsche Forschungsgemeinschaft.")<a href="#appendix-A-1" class="pilcrow">¶</a></p>
+<p id="appendix-A-1">We would like to thank Ilari Liusvaara and John Preuß Mattsson for their valuable feedback.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
+<p id="appendix-A-2">The research work is funded by German Research Foundation ("Deutsche Forschungsgemeinschaft.")<a href="#appendix-A-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="history">
@@ -1673,7 +1674,7 @@ Formal methods should be used as complementary and not as subtitute of other ana
           <p id="appendix-B-4.2.1">Reorganization, specially in motivation<a href="#appendix-B-4.2.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-B-4.3">
-          <p id="appendix-B-4.3.1">Added some common arguments<a href="#appendix-B-4.3.1" class="pilcrow">¶</a></p>
+          <p id="appendix-B-4.3.1">Added some common arguments: <a href="#sec-gen-issues" class="auto internal xref">Section 1.1.3</a><a href="#appendix-B-4.3.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 </section>
