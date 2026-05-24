@@ -177,9 +177,14 @@ As discussed on the TLS list, we are not aware of any formal mapping of the FIPS
 # Where ProVerif Proofs Break
 {: #sec-proof-break }
 
+We attest that:
+
+* existing proofs of TLS in ProVerif are based on commutativity
+* commutativity does not apply to ML-KEM in TLS, and hence a new proof is required.
+
 While ML-KEM {{I-D.ietf-tls-mlkem}} looks like just a "trivial" addition, it makes changes as deep as the key schedule of TLS. It essentially replaces the *key exchange* by *key encapsulation*. While the former is symmetric, the latter is asymmetric.
 This symmetry is in terms of exchange of roles, and that the order does not matter.
-The proof in ProVerif, therefore, utilizes this symmetry for the commutativity of the key shares g<sup>x</sup> and g<sup>y</sup>, where g<sup>x</sup> and g<sup>y</sup> represent the public key shares of the endpoints.
+The existing proofs in ProVerif, therefore, utilize this symmetry for the commutativity of the key shares g<sup>x</sup> and g<sup>y</sup>, where g<sup>x</sup> and g<sup>y</sup> represent the public key shares of the endpoints.
 In ProVerif syntax:
 (see original source [here](https://github.com/Inria-Prosecco/reftls/blob/634f7da5940f8d1f09cfcd56280b4ef3b533df6b/pv/tls-lib-draft20.pvl#L45-L48) and re-used [here](https://github.com/CCC-Attestation/formal-spec-id-crisis/blob/6c3d17a428198aa058f805d16fe6baef7894028f/TLS-a/fix/tls-lib-simple.pvl#L38-L41))
 
