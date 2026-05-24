@@ -7,7 +7,7 @@
 <title>Potential Risks of Standalone ML-KEM in TLS 1.3</title>
 <meta content="Muhammad Usama Sardar" name="author">
 <meta content="
-       We attest that standalone ML-KEM in TLS 1.3 breaks the existing formal proofs of TLS in state-of-the-art symbolic security analysis tool, ProVerif. In this draft, we show  exactly  where the proofs break.
+       We attest that standalone ML-KEM in TLS 1.3 breaks the existing formal proofs of TLS in state-of-the-art symbolic security analysis tool, ProVerif. In this draft, we show  exactly  where the proofs break, namely transition from symmetric DHKE to asymmetric KEM.
 We also attest that from a formal analysis perspective, this is a much bigger change than RFC8773bis, which indeed went for FATT review (cf.  ).
 We, therefore, kindly ask the chairs to initiate the FATT review of standalone ML-KEM in TLS. 
        The draft also offers some discussion to help the developers and policy makers make informed choices.
@@ -1083,7 +1083,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <h1 id="title">Potential Risks of Standalone ML-KEM in TLS 1.3</h1>
 <section id="section-abstract">
       <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
-<p id="section-abstract-1">We attest that standalone ML-KEM in TLS 1.3 breaks the existing formal proofs of TLS in state-of-the-art symbolic security analysis tool, ProVerif. In this draft, we show <strong>exactly</strong> where the proofs break.
+<p id="section-abstract-1">We attest that standalone ML-KEM in TLS 1.3 breaks the existing formal proofs of TLS in state-of-the-art symbolic security analysis tool, ProVerif. In this draft, we show <strong>exactly</strong> where the proofs break, namely transition from symmetric DHKE to asymmetric KEM.
 We also attest that from a formal analysis perspective, this is a much bigger change than RFC8773bis, which indeed went for FATT review (cf. <span>[<a href="#TLS-FATT" class="cite xref">TLS-FATT</a>]</span>).
 We, therefore, kindly ask the chairs to initiate the FATT review of standalone ML-KEM in TLS.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
 <p id="section-abstract-2">The draft also offers some discussion to help the developers and policy makers make informed choices.
@@ -1163,7 +1163,7 @@ Finally, the draft also aims to reduce the endless repitition of arguments from 
                     <p id="section-toc.1-1.1.2.1.2.1.1" class="keepWithNext"><a href="#section-1.1.1" class="auto internal xref">1.1.1</a>.  <a href="#name-expected-learning" class="internal xref">Expected Learning</a></p>
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.1.2.2">
-                    <p id="section-toc.1-1.1.2.1.2.2.1" class="keepWithNext"><a href="#section-1.1.2" class="auto internal xref">1.1.2</a>.  <a href="#name-previous-requests-for-fatt-" class="internal xref">Previous Requests for FATT Review</a></p>
+                    <p id="section-toc.1-1.1.2.1.2.2.1" class="keepWithNext"><a href="#section-1.1.2" class="auto internal xref">1.1.2</a>.  <a href="#name-previous-formal-requests-fo" class="internal xref">Previous Formal Requests for FATT Review</a></p>
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.1.2.3">
                     <p id="section-toc.1-1.1.2.1.2.3.1" class="keepWithNext"><a href="#section-1.1.3" class="auto internal xref">1.1.3</a>.  <a href="#name-issues-that-formal-methods-" class="internal xref">Issues That Formal Methods Probably Cannot Solve</a></p>
@@ -1233,14 +1233,14 @@ Finally, the draft also aims to reduce the endless repitition of arguments from 
 <p id="section-1-1">Readers are assumed to be familiar with <span>[<a href="#NistFips203" class="cite xref">NistFips203</a>]</span>, <span>[<a href="#I-D.ietf-tls-rfc8446bis" class="cite xref">I-D.ietf-tls-rfc8446bis</a>]</span>, and <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span>.<a href="#section-1-1" class="pilcrow">¶</a></p>
 <p id="section-1-2">We assert that the security considerations of <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span> are insufficient.
 We believe that consistent with <span>[<a href="#TLS-FATT" class="cite xref">TLS-FATT</a>]</span> process, <em>symbolic</em> and <em>computational</em> analysis (to be interpreted as in <a href="https://eprint.iacr.org/2019/1393.pdf">SoK</a>) of standalone ML-KEM in the context of TLS is helpful here.
-We request that if the author has done any formal analysis, it would be very helpful to present the current state of formal analysis in the next meeting for discussion.<a href="#section-1-2" class="pilcrow">¶</a></p>
+We formally request that if the author or any WG participant has done any formal analysis, it would be very helpful to present the current state of formal analysis in the next meeting for discussion.<a href="#section-1-2" class="pilcrow">¶</a></p>
 <div id="motivation">
 <section id="section-1.1">
         <h3 id="name-motivation">
 <a href="#section-1.1" class="section-number selfRef">1.1. </a><a href="#name-motivation" class="section-name selfRef">Motivation</a>
         </h3>
 <p id="section-1.1-1"><span>[<a href="#rfc3552" class="cite xref">rfc3552</a>]</span> requires to document the risks in the security considerations.
-The draft aims to formally study the security of standalone ML-KEM in TLS 1.3 <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span>.
+To support those requirements for <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span>, this draft aims to formally study the security of standalone ML-KEM in TLS 1.3.
 This is because of the following reasons.<a href="#section-1.1-1" class="pilcrow">¶</a></p>
 <p id="section-1.1-2">In the last WGLC, <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span> had an opposition of several (ca. 25 in our understanding) WG participants -- even more than the supporters (ca. 21 in our understanding). We see 2 possible options:<a href="#section-1.1-2" class="pilcrow">¶</a></p>
 <ul class="normal">
@@ -1251,7 +1251,7 @@ This is because of the following reasons.<a href="#section-1.1-1" class="pilcrow
             <p id="section-1.1-3.2.1">Do some technical analysis using (<em>symbolic</em> and <em>computational</em>) formal methods to get a confirmation on the security of standalone ML-KEM in the context of TLS and offer a statement for security considerations.<a href="#section-1.1-3.2.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-1.1-4">We believe the former cannot resolve the dispute. We believe the latter <strong>may</strong> help.<a href="#section-1.1-4" class="pilcrow">¶</a></p>
+<p id="section-1.1-4">We believe the former cannot resolve the dispute. We sincerely <strong>hope</strong> the latter will help.<a href="#section-1.1-4" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-1.1-5">
 <pre>
 We believe the security considerations of {{I-D.ietf-tls-mlkem}} are
@@ -1296,8 +1296,8 @@ It can also help identify all the assumptions under which the properties hold.<a
 </div>
 <div id="sec-sol-ml-kem">
 <section id="section-1.1.2">
-          <h4 id="name-previous-requests-for-fatt-">
-<a href="#section-1.1.2" class="section-number selfRef">1.1.2. </a><a href="#name-previous-requests-for-fatt-" class="section-name selfRef">Previous Requests for FATT Review</a>
+          <h4 id="name-previous-formal-requests-fo">
+<a href="#section-1.1.2" class="section-number selfRef">1.1.2. </a><a href="#name-previous-formal-requests-fo" class="section-name selfRef">Previous Formal Requests for FATT Review</a>
           </h4>
 <p id="section-1.1.2-1">We have formally requested the chairs to initiate the FATT process for <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span>.
 See <a href="https://mailarchive.ietf.org/arch/msg/tls/rClgrWm2hnhESXHx56U8InbwQQs/">this</a> and <a href="https://mailarchive.ietf.org/arch/msg/tls/7lj6fYAweMBwNMxFerNl7xhY0pk/">this</a>.<a href="#section-1.1.2-1" class="pilcrow">¶</a></p>
@@ -1358,6 +1358,22 @@ We invite the WG participants to perform this analysis and share the results wit
 <p id="section-1.1.3.5-1">As discussed on the TLS list, we are not aware of any formal mapping of the FIPS recommendations to the IETF BCP14 terminology, such as <span class="bcp14">SHOULD</span> vs. <span class="bcp14">MUST</span>. In general, we believe re-using FIPS recommendations is ambiguous for IETF readers.<a href="#section-1.1.3.5-1" class="pilcrow">¶</a></p>
 </section>
 </div>
+<div id="outstanding-nist-comments">
+<section id="section-1.1.3.6">
+            <h5 id="name-outstanding-nist-comments">
+<a href="#section-1.1.3.6" class="section-number selfRef">1.1.3.6. </a><a href="#name-outstanding-nist-comments" class="section-name selfRef">Outstanding NIST comments</a>
+            </h5>
+<p id="section-1.1.3.6-1">Some participants believe that NIST has rushed through the process and not addressed all the comments that were submitted during the open review.<a href="#section-1.1.3.6-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="too-early">
+<section id="section-1.1.3.7">
+            <h5 id="name-too-early">
+<a href="#section-1.1.3.7" class="section-number selfRef">1.1.3.7. </a><a href="#name-too-early" class="section-name selfRef">Too Early</a>
+            </h5>
+<p id="section-1.1.3.7-1">Some participants simply believe that publication of <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span> and related discussions are just too early and unnecessary.<a href="#section-1.1.3.7-1" class="pilcrow">¶</a></p>
+</section>
+</div>
 </section>
 </div>
 </section>
@@ -1410,7 +1426,7 @@ equation forall x:bitstring, y:bitstring;
 </pre><a href="#section-3-4" class="pilcrow">¶</a>
 </div>
 <p id="section-3-5">Key encapsulation does not enjoy this commutativity property, or even an analogous symmetry argument. There is essentially only one endpoint (say client) which generates the key pair <code>(dk,ek)</code> where <code>dk</code> represents the <em>secret decapsulation key</em> and <code>ek</code> represents the <em>public encapsulation key</em>.
-As opposed to both endpoints sending their public key shares g<sup>x</sup> and g<sup>y</sup> in the key exchange, only one of the endpoints (client in above example) sends the public encapsulation key and peer sends a ciphertext. This asymmetry breaks the existing proofs of TLS 1.3 in ProVerif and requires a new proof.<a href="#section-3-5" class="pilcrow">¶</a></p>
+As opposed to both endpoints sending their public key shares g<sup>x</sup> and g<sup>y</sup> in a traditional key exchange, a KEM creates a roles-asymmetry where only one of the endpoints (client in above example) sends the public encapsulation key and the peer sends a ciphertext. This asymmetry breaks the existing proofs of TLS 1.3 in ProVerif and requires a new proof.<a href="#section-3-5" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sec-just-process">
@@ -1418,7 +1434,7 @@ As opposed to both endpoints sending their public key shares g<sup>x</sup> and g
       <h2 id="name-justification-based-on-fatt">
 <a href="#section-4" class="section-number selfRef">4. </a><a href="#name-justification-based-on-fatt" class="section-name selfRef">Justification based on FATT Process</a>
       </h2>
-<p id="section-4-1">Our request for FATT review is fully in conformance with the current <span>[<a href="#TLS-FATT" class="cite xref">TLS-FATT</a>]</span> process, which explicitly states:<a href="#section-4-1" class="pilcrow">¶</a></p>
+<p id="section-4-1">Our formal request for FATT review is fully in conformance with the current <span>[<a href="#TLS-FATT" class="cite xref">TLS-FATT</a>]</span> process, which explicitly states:<a href="#section-4-1" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-4-2">
 <pre>
 For example a proposal that modifies the TLS key schedule or the
