@@ -256,13 +256,20 @@ Table of Contents
 
 3.  Where ProVerif Proofs Break
 
+   We attest that:
+
+   *  existing proofs of TLS in ProVerif are based on commutativity
+
+   *  commutativity does not apply to ML-KEM in TLS, and hence a new
+      proof is required.
+
    While ML-KEM [I-D.ietf-tls-mlkem] looks like just a "trivial"
    addition, it makes changes as deep as the key schedule of TLS.  It
    essentially replaces the _key exchange_ by _key encapsulation_. While
    the former is symmetric, the latter is asymmetric.  This symmetry is
    in terms of exchange of roles, and that the order does not matter.
-   The proof in ProVerif, therefore, utilizes this symmetry for the
-   commutativity of the key shares g^x and g^y, where g^x and g^y
+   The existing proofs in ProVerif, therefore, utilize this symmetry for
+   the commutativity of the key shares g^x and g^y, where g^x and g^y
    represent the public key shares of the endpoints.  In ProVerif
    syntax: (see original source here (https://github.com/Inria-
    Prosecco/reftls/blob/634f7da5940f8d1f09cfcd56280b4ef3b533df6b/pv/tls-
