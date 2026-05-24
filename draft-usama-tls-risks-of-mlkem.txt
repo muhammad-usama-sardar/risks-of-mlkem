@@ -194,20 +194,25 @@ Table of Contents
    It is unclear _whether_ and _when_ Cryptographically-Relevant Quantum
    Computer (CRQC) will eventually become practical.  The opinions vary
    from never because of complicated physics (see this
-   (https://eprint.iacr.org/2025/1237)) to be prepared for it as early
+   (https://eprint.iacr.org/2025/1237)) to be _prepared_ for it as early
    as 2029 (see Google 2029 (https://blog.google/innovation-and-
    ai/technology/safety-security/cryptography-migration-timeline/) and
    Cloudflare 2029 (https://blog.cloudflare.com/post-quantum-roadmap/)).
    Regarding the latter, please note that Google has not even released
    the *quantum circuit* underlying their recent claims -- apparently
-   the reason for this urgency.  So the claims are not yet justified.
-   Some believe that we should not create panic based on this because
-   many implementations -- such as OpenSSL -- have already implemented
-   standalone ML-KEM, and it is just a matter of enabling it.  Moreover,
-   these deadlines are for PQ-based protection in general and are
-   unrelated to standalone ML-KEM in TLS, because hybrid KEMs already
-   exist.  In our understanding, these deadlines are mainly for quantum-
-   safe authentication.
+   the reason for this urgency.  So Google's claims are not yet
+   justified.
+
+   Moreover, in our understanding, these deadlines are for PQ-based
+   protection in general regardless of hybrid KEMs or standalone KEMs in
+   TLS.  Since hybrid KEMs already exist, these deadlines are mainly for
+   quantum-safe authentication.
+
+   In any case, some participants believe that we should not create
+   panic for publication based on this because many implementations --
+   such as OpenSSL -- have already implemented standalone ML-KEM, and it
+   is just a matter of enabling it.  And frankly, nobody needs
+   permission from the IETF to enable it.
 
 1.1.3.2.  "Cost"
 
