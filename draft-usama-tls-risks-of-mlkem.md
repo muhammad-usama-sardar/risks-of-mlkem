@@ -68,12 +68,12 @@ informative:
 
 --- abstract
 
-We attest that standalone ML-KEM in TLS 1.3 breaks the existing formal proofs of TLS in state-of-the-art symbolic security analysis tool, ProVerif, and we show **exactly** where the proofs break.
+We attest that standalone ML-KEM in TLS 1.3 breaks the existing formal proofs of TLS in state-of-the-art symbolic security analysis tool, ProVerif. In this draft, we show **exactly** where the proofs break.
 We also attest that from a formal analysis perspective, this is a much bigger change than RFC8773bis, which indeed went for FATT review (cf. {{TLS-FATT}}).
 We, therefore, kindly ask the chairs to initiate the FATT review of standalone ML-KEM in TLS.
 
-In the future, the draft will aim to help the developers and policy makers make informed choices.
-Finally, it will also aim to reduce the endless repitition of arguments from both sides presented on several lists by documenting these arguments so they can simply be referred to.
+The draft also offers some discussion to help the developers and policy makers make informed choices.
+Finally, the draft also aims to reduce the endless repitition of arguments from both sides presented on several lists by documenting these arguments so they can simply be referred to.
 
 --- middle
 
@@ -82,7 +82,7 @@ Finally, it will also aim to reduce the endless repitition of arguments from bot
 Readers are assumed to be familiar with {{NistFips203}}, {{I-D.ietf-tls-rfc8446bis}}, and {{I-D.ietf-tls-mlkem}}.
 
 We assert that the security considerations of {{I-D.ietf-tls-mlkem}} are insufficient.
-We believe that *symbolic* and *computational* analysis (to be interpreted as in [SoK](https://eprint.iacr.org/2019/1393.pdf)) of standalone ML-KEM in the context of TLS is helpful here.
+We believe that consistent with {{TLS-FATT}} process, *symbolic* and *computational* analysis (to be interpreted as in [SoK](https://eprint.iacr.org/2019/1393.pdf)) of standalone ML-KEM in the context of TLS is helpful here.
 We request that if the author has done any formal analysis, it would be very helpful to present the current state of formal analysis in the next meeting for discussion.
 
 
@@ -126,7 +126,7 @@ Formal methods can operate under the assumption that ML-KEM is secure, and focus
 * As an example, formal methods can help justify design choices, such as the preference for hybrids.
 It can also help identify all the assumptions under which the properties hold.
 * As a relevant data point in the context of standardization, LAKE WG has done formal analysis for EDHOC-PSK with KEM ([ref](https://mailarchive.ietf.org/arch/msg/lake/2XGOI9OCwylJUfSCasvvwM2FXmw/)).
-* *Computational* analysis (cf. [SoK](https://eprint.iacr.org/2019/1393.pdf)) -- using tools such as CryptoVerif -- seems like a reasonable approach to ensure security of ML-KEM in TLS, such as binding.
+* *Computational* analysis (cf. [SoK](https://eprint.iacr.org/2019/1393.pdf)) -- using tools such as CryptoVerif -- seems like a reasonable approach to ensure security of ML-KEM in TLS, such as binding shared secret to the TLS transcript hash.
 
 ### Previous Requests for FATT Review
 {: #sec-sol-ml-kem }
@@ -136,14 +136,16 @@ See [this](https://mailarchive.ietf.org/arch/msg/tls/rClgrWm2hnhESXHx56U8InbwQQs
 
 
 ### Issues That Formal Methods Probably Cannot Solve
+{: #sec-gen-issues }
 
 The answers to the following questions are largely dependent on several factors, and the opinions vary largely.
 
 #### Urgency
 
 It is unclear *whether* and *when* Cryptographically-Relevant Quantum Computer (CRQC) will eventually become practical.
-The opinions vary from never because of complicated physics (see [this](https://eprint.iacr.org/2025/1237)) to as early as 2029 (see [Google 2029](https://blog.google/innovation-and-ai/technology/safety-security/cryptography-migration-timeline/) and [Cloudflare 2029](https://blog.cloudflare.com/post-quantum-roadmap/)).
+The opinions vary from never because of complicated physics (see [this](https://eprint.iacr.org/2025/1237)) to be prepared for it as early as 2029 (see [Google 2029](https://blog.google/innovation-and-ai/technology/safety-security/cryptography-migration-timeline/) and [Cloudflare 2029](https://blog.cloudflare.com/post-quantum-roadmap/)).
 Regarding the latter, please note that Google has not even released the **quantum circuit** underlying their recent claims -- apparently the reason for this urgency. So the claims are not yet justified. Some believe that we should not create panic based on this because many implementations -- such as OpenSSL -- have already implemented standalone ML-KEM, and it is just a matter of enabling it.
+Moreover, these deadlines are for PQ-based protection in general and are unrelated to standalone ML-KEM in TLS, because hybrid KEMs already exist. In our understanding, these deadlines are mainly for quantum-safe authentication.
 
 #### "Cost"
 "Cost" has been presented on the list as the motivation for standalone ML-KEM in TLS but no reference has yet been presented.
@@ -179,8 +181,11 @@ As discussed on the TLS list, we are not aware of any formal mapping of the FIPS
 
 We attest that:
 
-* existing proofs of TLS in ProVerif are based on commutativity
-* commutativity does not apply to ML-KEM in TLS, and hence a new proof is required.
+~~~
+1. existing proofs of TLS in ProVerif are based on commutativity
+2. commutativity does not apply to ML-KEM in TLS
+Hence, a new proof is required.
+~~~
 
 While ML-KEM {{I-D.ietf-tls-mlkem}} looks like just a "trivial" addition, it makes changes as deep as the key schedule of TLS. It essentially replaces the *key exchange* by *key encapsulation*. While the former is symmetric, the latter is asymmetric.
 This symmetry is in terms of exchange of roles, and that the order does not matter.
@@ -289,6 +294,8 @@ This document has no IANA actions.
 # Acknowledgments
 {:numbered="false"}
 
+We would like to thank Ilari Liusvaara and John Preuß Mattsson for their valuable feedback.
+
 The research work is funded by German Research Foundation ("Deutsche Forschungsgemeinschaft.")
 
 # History
@@ -304,4 +311,4 @@ The research work is funded by German Research Foundation ("Deutsche Forschungsg
 
 * Added justification based on FATT process: {{sec-just-process}}
 * Reorganization, specially in motivation
-* Added some common arguments
+* Added some common arguments: {{sec-gen-issues}}
