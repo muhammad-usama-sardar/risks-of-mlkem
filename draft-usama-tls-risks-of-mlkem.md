@@ -68,7 +68,7 @@ informative:
 
 --- abstract
 
-We attest that standalone ML-KEM in TLS 1.3 breaks the existing formal proofs of TLS in state-of-the-art symbolic security analysis tool, ProVerif. In this draft, we show **exactly** where the proofs break.
+We attest that standalone ML-KEM in TLS 1.3 breaks the existing formal proofs of TLS in state-of-the-art symbolic security analysis tool, ProVerif. In this draft, we show **exactly** where the proofs break, namely transition from symmetric DHKE to asymmetric KEM.
 We also attest that from a formal analysis perspective, this is a much bigger change than RFC8773bis, which indeed went for FATT review (cf. {{TLS-FATT}}).
 We, therefore, kindly ask the chairs to initiate the FATT review of standalone ML-KEM in TLS.
 
@@ -83,13 +83,13 @@ Readers are assumed to be familiar with {{NistFips203}}, {{I-D.ietf-tls-rfc8446b
 
 We assert that the security considerations of {{I-D.ietf-tls-mlkem}} are insufficient.
 We believe that consistent with {{TLS-FATT}} process, *symbolic* and *computational* analysis (to be interpreted as in [SoK](https://eprint.iacr.org/2019/1393.pdf)) of standalone ML-KEM in the context of TLS is helpful here.
-We request that if the author has done any formal analysis, it would be very helpful to present the current state of formal analysis in the next meeting for discussion.
+We formally request that if the author or any WG participant has done any formal analysis, it would be very helpful to present the current state of formal analysis in the next meeting for discussion.
 
 
 ## Motivation
 
 {{rfc3552}} requires to document the risks in the security considerations.
-The draft aims to formally study the security of standalone ML-KEM in TLS 1.3 {{I-D.ietf-tls-mlkem}}.
+To support those requirements for {{I-D.ietf-tls-mlkem}}, this draft aims to formally study the security of standalone ML-KEM in TLS 1.3.
 This is because of the following reasons.
 
 In the last WGLC, {{I-D.ietf-tls-mlkem}} had an opposition of several (ca. 25 in our understanding) WG participants -- even more than the supporters (ca. 21 in our understanding). We see 2 possible options:
@@ -97,7 +97,7 @@ In the last WGLC, {{I-D.ietf-tls-mlkem}} had an opposition of several (ca. 25 in
 * Continue tabletop discussions on **subjective** estimation of risks, costs, tradeoffs, etc., and keep burning WG energy by endless repitition.
 * Do some technical analysis using (*symbolic* and *computational*) formal methods to get a confirmation on the security of standalone ML-KEM in the context of TLS and offer a statement for security considerations.
 
-We believe the former cannot resolve the dispute. We believe the latter **may** help.
+We believe the former cannot resolve the dispute. We sincerely **hope** the latter will help.
 
 ~~~
 We believe the security considerations of {{I-D.ietf-tls-mlkem}} are
@@ -128,7 +128,7 @@ It can also help identify all the assumptions under which the properties hold.
 * As a relevant data point in the context of standardization, LAKE WG has done formal analysis for EDHOC-PSK with KEM ([ref](https://mailarchive.ietf.org/arch/msg/lake/2XGOI9OCwylJUfSCasvvwM2FXmw/)).
 * *Computational* analysis (cf. [SoK](https://eprint.iacr.org/2019/1393.pdf)) -- using tools such as CryptoVerif -- seems like a reasonable approach to ensure security of ML-KEM in TLS, such as binding shared secret to the TLS transcript hash.
 
-### Previous Requests for FATT Review
+### Previous Formal Requests for FATT Review
 {: #sec-sol-ml-kem }
 
 We have formally requested the chairs to initiate the FATT process for {{I-D.ietf-tls-mlkem}}.
@@ -172,6 +172,12 @@ CFRG is starting some efforts for analysis. The extended deadline for submission
 
 As discussed on the TLS list, we are not aware of any formal mapping of the FIPS recommendations to the IETF BCP14 terminology, such as SHOULD vs. MUST. In general, we believe re-using FIPS recommendations is ambiguous for IETF readers.
 
+#### Outstanding NIST comments
+Some participants believe that NIST has rushed through the process and not addressed all the comments that were submitted during the open review.
+
+#### Too Early
+Some participants simply believe that publication of {{I-D.ietf-tls-mlkem}} and related discussions are just too early and unnecessary.
+
 # Conventions and Definitions
 
 {::boilerplate bcp14-tagged}
@@ -204,12 +210,12 @@ equation forall x:bitstring, y:bitstring;
 ~~~
 
 Key encapsulation does not enjoy this commutativity property, or even an analogous symmetry argument. There is essentially only one endpoint (say client) which generates the key pair `(dk,ek)` where `dk` represents the *secret decapsulation key* and `ek` represents the *public encapsulation key*.
-As opposed to both endpoints sending their public key shares g<sup>x</sup> and g<sup>y</sup> in the key exchange, only one of the endpoints (client in above example) sends the public encapsulation key and peer sends a ciphertext. This asymmetry breaks the existing proofs of TLS 1.3 in ProVerif and requires a new proof.
+As opposed to both endpoints sending their public key shares g<sup>x</sup> and g<sup>y</sup> in a traditional key exchange, a KEM creates a roles-asymmetry where only one of the endpoints (client in above example) sends the public encapsulation key and the peer sends a ciphertext. This asymmetry breaks the existing proofs of TLS 1.3 in ProVerif and requires a new proof.
 
 # Justification based on FATT Process
 {: #sec-just-process }
 
-Our request for FATT review is fully in conformance with the current {{TLS-FATT}} process, which explicitly states:
+Our formal request for FATT review is fully in conformance with the current {{TLS-FATT}} process, which explicitly states:
 
 ~~~
 For example a proposal that modifies the TLS key schedule or the
