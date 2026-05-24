@@ -9,9 +9,9 @@
 <meta content="
        We attest that standalone ML-KEM in TLS 1.3 breaks the existing formal proofs of TLS in state-of-the-art symbolic security analysis tool, ProVerif, and we show  exactly  where the proofs break.
 We also attest that from a formal analysis perspective, this is a much bigger change than RFC8773bis, which indeed went for FATT review (cf.  ).
-We, therefore, kindly ask the chairs to initiate the FATT review of standalone ML-KEM in TLS.
-The draft also aims to help the developers and policy makers make informed choices.
-Finally, we aim to reduce the endless repitition of arguments from both sides presented on several lists by documenting these arguments so they can simply be referred to. 
+We, therefore, kindly ask the chairs to initiate the FATT review of standalone ML-KEM in TLS. 
+       In the future, the draft will aim to help the developers and policy makers make informed choices.
+Finally, it will also aim to reduce the endless repitition of arguments from both sides presented on several lists by documenting these arguments so they can simply be referred to. 
     " name="description">
 <meta content="xml2rfc 3.33.0" name="generator">
 <meta content="draft-usama-tls-risks-of-mlkem-latest" name="ietf.draft">
@@ -1052,7 +1052,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Sardar</td>
-<td class="center">Expires 24 November 2026</td>
+<td class="center">Expires 25 November 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1065,12 +1065,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-usama-tls-risks-of-mlkem-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-05-23" class="published">23 May 2026</time>
+<time datetime="2026-05-24" class="published">24 May 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Informational</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-11-24">24 November 2026</time></dd>
+<dd class="expires"><time datetime="2026-11-25">25 November 2026</time></dd>
 <dt class="label-authors">Author:</dt>
 <dd class="authors">
 <div class="author">
@@ -1085,9 +1085,9 @@ svg :is([fill="white"], [fill^="#fff"]) {
       <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
 <p id="section-abstract-1">We attest that standalone ML-KEM in TLS 1.3 breaks the existing formal proofs of TLS in state-of-the-art symbolic security analysis tool, ProVerif, and we show <strong>exactly</strong> where the proofs break.
 We also attest that from a formal analysis perspective, this is a much bigger change than RFC8773bis, which indeed went for FATT review (cf. <span>[<a href="#TLS-FATT" class="cite xref">TLS-FATT</a>]</span>).
-We, therefore, kindly ask the chairs to initiate the FATT review of standalone ML-KEM in TLS.
-The draft also aims to help the developers and policy makers make informed choices.
-Finally, we aim to reduce the endless repitition of arguments from both sides presented on several lists by documenting these arguments so they can simply be referred to.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+We, therefore, kindly ask the chairs to initiate the FATT review of standalone ML-KEM in TLS.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+<p id="section-abstract-2">In the future, the draft will aim to help the developers and policy makers make informed choices.
+Finally, it will also aim to reduce the endless repitition of arguments from both sides presented on several lists by documenting these arguments so they can simply be referred to.<a href="#section-abstract-2" class="pilcrow">¶</a></p>
 </section>
 <section class="note rfcEditorRemove" id="section-note.1">
       <h2 id="name-about-this-document">
@@ -1124,7 +1124,7 @@ Finally, we aim to reduce the endless repitition of arguments from both sides pr
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 24 November 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 25 November 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1166,7 +1166,7 @@ Finally, we aim to reduce the endless repitition of arguments from both sides pr
                     <p id="section-toc.1-1.1.2.1.2.2.1" class="keepWithNext"><a href="#section-1.1.2" class="auto internal xref">1.1.2</a>.  <a href="#name-previous-requests-for-fatt-" class="internal xref">Previous Requests for FATT Review</a></p>
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.1.2.3">
-                    <p id="section-toc.1-1.1.2.1.2.3.1" class="keepWithNext"><a href="#section-1.1.3" class="auto internal xref">1.1.3</a>.  <a href="#name-side-issues-that-formal-met" class="internal xref">Side-issues That Formal Methods Probably Cannot Solve</a></p>
+                    <p id="section-toc.1-1.1.2.1.2.3.1" class="keepWithNext"><a href="#section-1.1.3" class="auto internal xref">1.1.3</a>.  <a href="#name-issues-that-formal-methods-" class="internal xref">Issues That Formal Methods Probably Cannot Solve</a></p>
 </li>
                 </ul>
 </li>
@@ -1269,21 +1269,27 @@ version.
 <a href="#section-1.1.1" class="section-number selfRef">1.1.1. </a><a href="#name-expected-learning" class="section-name selfRef">Expected Learning</a>
           </h4>
 <p id="section-1.1.1-1">We believe formal methods can provide additional value for security considerations of this draft in order to maintain the high cryptographic assurance of TLS.<a href="#section-1.1.1-1" class="pilcrow">¶</a></p>
-<p id="section-1.1.1-2">Since we have no guarantee on whether ECDHE will break before ML-KEM, it seems appropriate to do thorough cryptographic analysis.
-We believe the Harvest Now, Decrypt Later (HNDL) attack applies equally well to standalone ML-KEM.
-Adversary can record all traffic and decrypt it when ML-KEM is broken.
+<div class="alignLeft art-text artwork" id="section-1.1.1-2">
+<pre>
+Since we have no guarantee on whether ECDHE will break before ML-KEM,
+it seems appropriate to do thorough cryptographic analysis.
+We believe the Harvest Now, Decrypt Later (HNDL) attack applies
+equally well to standalone ML-KEM.
+</pre><a href="#section-1.1.1-2" class="pilcrow">¶</a>
+</div>
+<p id="section-1.1.1-3">Adversary can record all traffic and decrypt it when ML-KEM is broken.
 The opinions here vary from "ML-KEM is probably secure" to "ML-KEM is probably already secrectly broken."
-Formal methods can operate under the assumption that ML-KEM is secure, and focus on the integration of ML-KEM in TLS under this assumption.<a href="#section-1.1.1-2" class="pilcrow">¶</a></p>
+Formal methods can operate under the assumption that ML-KEM is secure, and focus on the integration of ML-KEM in TLS under this assumption.<a href="#section-1.1.1-3" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-1.1.1-3.1">
-              <p id="section-1.1.1-3.1.1">As an example, formal methods can help justify design choices, such as the preference for hybrids.
-It can also help identify all the assumptions under which the properties hold.<a href="#section-1.1.1-3.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-1.1.1-4.1">
+              <p id="section-1.1.1-4.1.1">As an example, formal methods can help justify design choices, such as the preference for hybrids.
+It can also help identify all the assumptions under which the properties hold.<a href="#section-1.1.1-4.1.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-1.1.1-3.2">
-              <p id="section-1.1.1-3.2.1">As a relevant data point in the context of standardization, LAKE WG has done formal analysis for EDHOC-PSK with KEM (<a href="https://mailarchive.ietf.org/arch/msg/lake/2XGOI9OCwylJUfSCasvvwM2FXmw/">ref</a>).<a href="#section-1.1.1-3.2.1" class="pilcrow">¶</a></p>
+            <li class="normal" id="section-1.1.1-4.2">
+              <p id="section-1.1.1-4.2.1">As a relevant data point in the context of standardization, LAKE WG has done formal analysis for EDHOC-PSK with KEM (<a href="https://mailarchive.ietf.org/arch/msg/lake/2XGOI9OCwylJUfSCasvvwM2FXmw/">ref</a>).<a href="#section-1.1.1-4.2.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-1.1.1-3.3">
-              <p id="section-1.1.1-3.3.1"><em>Computational</em> analysis (cf. <a href="https://eprint.iacr.org/2019/1393.pdf">SoK</a>) -- using tools such as CryptoVerif -- seems like a reasonable approach to ensure security of ML-KEM in TLS, such as binding.<a href="#section-1.1.1-3.3.1" class="pilcrow">¶</a></p>
+            <li class="normal" id="section-1.1.1-4.3">
+              <p id="section-1.1.1-4.3.1"><em>Computational</em> analysis (cf. <a href="https://eprint.iacr.org/2019/1393.pdf">SoK</a>) -- using tools such as CryptoVerif -- seems like a reasonable approach to ensure security of ML-KEM in TLS, such as binding.<a href="#section-1.1.1-4.3.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 </section>
@@ -1297,48 +1303,57 @@ It can also help identify all the assumptions under which the properties hold.<a
 See <a href="https://mailarchive.ietf.org/arch/msg/tls/rClgrWm2hnhESXHx56U8InbwQQs/">this</a> and <a href="https://mailarchive.ietf.org/arch/msg/tls/7lj6fYAweMBwNMxFerNl7xhY0pk/">this</a>.<a href="#section-1.1.2-1" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="side-issues-that-formal-methods-probably-cannot-solve">
+<div id="issues-that-formal-methods-probably-cannot-solve">
 <section id="section-1.1.3">
-          <h4 id="name-side-issues-that-formal-met">
-<a href="#section-1.1.3" class="section-number selfRef">1.1.3. </a><a href="#name-side-issues-that-formal-met" class="section-name selfRef">Side-issues That Formal Methods Probably Cannot Solve</a>
+          <h4 id="name-issues-that-formal-methods-">
+<a href="#section-1.1.3" class="section-number selfRef">1.1.3. </a><a href="#name-issues-that-formal-methods-" class="section-name selfRef">Issues That Formal Methods Probably Cannot Solve</a>
           </h4>
-<p id="section-1.1.3-1">The answers to the following questions are largely dependent on <em>whether</em> and <em>when</em> Cryptographically-Relevant Quantum Computer (CRQC) will eventually become practical.
-The opinions vary from never because of complicated physics (see <a href="https://eprint.iacr.org/2025/1237">this</a>) to as early as 2029 (see <a href="https://blog.google/innovation-and-ai/technology/safety-security/cryptography-migration-timeline/">Google 2029</a> and <a href="https://blog.cloudflare.com/post-quantum-roadmap/">Cloudflare 2029</a>).
-Google has not even released the quantum circuit underlying their recent claims -- apparently the reason for this urgency. So the claims are not yet justified. Some believe that we should not create panic based on this.<a href="#section-1.1.3-1" class="pilcrow">¶</a></p>
-<div id="cost">
+<p id="section-1.1.3-1">The answers to the following questions are largely dependent on several factors, and the opinions vary largely.<a href="#section-1.1.3-1" class="pilcrow">¶</a></p>
+<div id="urgency">
 <section id="section-1.1.3.1">
-            <h5 id="name-cost">
-<a href="#section-1.1.3.1" class="section-number selfRef">1.1.3.1. </a><a href="#name-cost" class="section-name selfRef">"Cost"</a>
+            <h5 id="name-urgency">
+<a href="#section-1.1.3.1" class="section-number selfRef">1.1.3.1. </a><a href="#name-urgency" class="section-name selfRef">Urgency</a>
             </h5>
-<p id="section-1.1.3.1-1">"Cost" has been presented on the list as the motivation for standalone ML-KEM in TLS but no reference has yet been presented.
-We believe costs will depend on several factors -- including but not limited to implementation details and deployment scenario -- and it is quite subjective.<a href="#section-1.1.3.1-1" class="pilcrow">¶</a></p>
-<p id="section-1.1.3.1-2">There seems to be a need for a thorough study to understand the "cost."
-We invite the WG participants to perform this analysis and share the results with the WG.<a href="#section-1.1.3.1-2" class="pilcrow">¶</a></p>
+<p id="section-1.1.3.1-1">It is unclear <em>whether</em> and <em>when</em> Cryptographically-Relevant Quantum Computer (CRQC) will eventually become practical.
+The opinions vary from never because of complicated physics (see <a href="https://eprint.iacr.org/2025/1237">this</a>) to as early as 2029 (see <a href="https://blog.google/innovation-and-ai/technology/safety-security/cryptography-migration-timeline/">Google 2029</a> and <a href="https://blog.cloudflare.com/post-quantum-roadmap/">Cloudflare 2029</a>).
+Regarding the latter, please note that Google has not even released the <strong>quantum circuit</strong> underlying their recent claims -- apparently the reason for this urgency. So the claims are not yet justified. Some believe that we should not create panic based on this because many implementations -- such as OpenSSL -- have already implemented standalone ML-KEM, and it is just a matter of enabling it.<a href="#section-1.1.3.1-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="cost">
+<section id="section-1.1.3.2">
+            <h5 id="name-cost">
+<a href="#section-1.1.3.2" class="section-number selfRef">1.1.3.2. </a><a href="#name-cost" class="section-name selfRef">"Cost"</a>
+            </h5>
+<p id="section-1.1.3.2-1">"Cost" has been presented on the list as the motivation for standalone ML-KEM in TLS but no reference has yet been presented.
+We believe costs will depend on several factors -- including but not limited to implementation details and deployment scenario -- and it is quite <strong>subjective</strong>.<a href="#section-1.1.3.2-1" class="pilcrow">¶</a></p>
+<p id="section-1.1.3.2-2">There seems to be a need for a thorough study to understand the "cost."
+We invite the WG participants to perform this analysis and share the results with the WG.<a href="#section-1.1.3.2-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="is-publication-necessary">
-<section id="section-1.1.3.2">
+<section id="section-1.1.3.3">
             <h5 id="name-is-publication-necessary">
-<a href="#section-1.1.3.2" class="section-number selfRef">1.1.3.2. </a><a href="#name-is-publication-necessary" class="section-name selfRef">Is Publication Necessary?</a>
+<a href="#section-1.1.3.3" class="section-number selfRef">1.1.3.3. </a><a href="#name-is-publication-necessary" class="section-name selfRef">Is Publication Necessary?</a>
             </h5>
-<p id="section-1.1.3.2-1">Code Points for ML-KEM have already been assigned.
-<span>[<a href="#I-D.barnes-tls-this-could-have-been-an-email" class="cite xref">I-D.barnes-tls-this-could-have-been-an-email</a>]</span> provides detailed rationale as to why publication of such documents may be unnecessary. In our understanding, <span>[<a href="#I-D.pwouters-crypto-current-practices" class="cite xref">I-D.pwouters-crypto-current-practices</a>]</span> makes similar arguments.<a href="#section-1.1.3.2-1" class="pilcrow">¶</a></p>
+<p id="section-1.1.3.3-1">Code Points for ML-KEM have already been assigned.
+<span>[<a href="#I-D.barnes-tls-this-could-have-been-an-email" class="cite xref">I-D.barnes-tls-this-could-have-been-an-email</a>]</span> provides detailed rationale as to why publication of such documents and the debates around that may be unnecessary. In our understanding, <span>[<a href="#I-D.pwouters-crypto-current-practices" class="cite xref">I-D.pwouters-crypto-current-practices</a>]</span> makes similar arguments.<a href="#section-1.1.3.3-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="shiny-new-crypto">
-<section id="section-1.1.3.3">
+<section id="section-1.1.3.4">
             <h5 id="name-shiny-new-crypto">
-<a href="#section-1.1.3.3" class="section-number selfRef">1.1.3.3. </a><a href="#name-shiny-new-crypto" class="section-name selfRef">Shiny New Crypto</a>
+<a href="#section-1.1.3.4" class="section-number selfRef">1.1.3.4. </a><a href="#name-shiny-new-crypto" class="section-name selfRef">Shiny New Crypto</a>
             </h5>
-<p id="section-1.1.3.3-1">ML-KEM is quite new in the IETF and even in the IRTF. CFRG is starting some efforts for analysis. Some WG participants have shown concern to avoid premature publication before a detailed analysis has been done by CFRG.<a href="#section-1.1.3.3-1" class="pilcrow">¶</a></p>
+<p id="section-1.1.3.4-1">ML-KEM is quite new in the IETF and even in the IRTF. Some WG participants have shown concern over premature publication of <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span> until a detailed analysis has been done by CFRG.<a href="#section-1.1.3.4-1" class="pilcrow">¶</a></p>
+<p id="section-1.1.3.4-2">CFRG is starting some efforts for analysis. The extended deadline for submission is 22.06. Please see the latest <a href="https://mailarchive.ietf.org/arch/msg/cfrg/6K43Ycr062Ym1G0q4WHxZQ2HW8M/">CFRG chairs email</a> for further details.<a href="#section-1.1.3.4-2" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="fips-to-ietf-formal-mapping">
-<section id="section-1.1.3.4">
-            <h5 id="name-fips-to-ietf-formal-mapping">
-<a href="#section-1.1.3.4" class="section-number selfRef">1.1.3.4. </a><a href="#name-fips-to-ietf-formal-mapping" class="section-name selfRef">FIPS to IETF Formal Mapping</a>
+<div id="formal-mapping-of-fips-to-ietf-bcp14">
+<section id="section-1.1.3.5">
+            <h5 id="name-formal-mapping-of-fips-to-i">
+<a href="#section-1.1.3.5" class="section-number selfRef">1.1.3.5. </a><a href="#name-formal-mapping-of-fips-to-i" class="section-name selfRef">Formal Mapping of FIPS to IETF BCP14</a>
             </h5>
-<p id="section-1.1.3.4-1">As discussed on the TLS list, we are not aware of any formal mapping of the FIPS recommendations to the IETF BCP14 terminology, such as <span class="bcp14">SHOULD</span> vs. <span class="bcp14">MUST</span>. In general, we believe re-using FIPS recommendations is ambiguous for IETF readers.<a href="#section-1.1.3.4-1" class="pilcrow">¶</a></p>
+<p id="section-1.1.3.5-1">As discussed on the TLS list, we are not aware of any formal mapping of the FIPS recommendations to the IETF BCP14 terminology, such as <span class="bcp14">SHOULD</span> vs. <span class="bcp14">MUST</span>. In general, we believe re-using FIPS recommendations is ambiguous for IETF readers.<a href="#section-1.1.3.5-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1412,7 +1427,7 @@ as modifying the SSLKEYLOG format would not.
           <p id="section-4-4.2.1">cryptographic protocol such that commutativity property is no longer valid.<a href="#section-4-4.2.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
-<p id="section-4-5">This breaks the following proofs:<a href="#section-4-5" class="pilcrow">¶</a></p>
+<p id="section-4-5">This breaks the following proofs in ProVerif:<a href="#section-4-5" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-4-6.1">
           <p id="section-4-6.1.1">Bhargavan et al.'s model of draft 20 of TLS 1.3: <span>[<a href="#reftls" class="cite xref">reftls</a>]</span> and <span>[<a href="#reftls-Repo" class="cite xref">reftls-Repo</a>]</span> and all 5 <em>public</em> forks as well as one nested fork:<a href="#section-4-6.1.1" class="pilcrow">¶</a></p>
@@ -1452,6 +1467,9 @@ as modifying the SSLKEYLOG format would not.
               <p id="section-4-6.2.2.3.1"><a href="https://github.com/telephonicrobotics/formal-id-crisis-spec/blob/c1953127ce004e51b888250591ec9971ad50e98c/TLS-a/fix/tls-lib-simple.pvl#L38-L41">telephonicrobotics/formal-id-crisis-spec</a><a href="#section-4-6.2.2.3.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
+</li>
+        <li class="normal" id="section-4-6.3">
+          <p id="section-4-6.3.1">A couple of our ongoing works which are not yet public<a href="#section-4-6.3.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 </section>
