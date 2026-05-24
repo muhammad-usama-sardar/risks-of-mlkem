@@ -71,8 +71,9 @@ informative:
 We attest that standalone ML-KEM in TLS 1.3 breaks the existing formal proofs of TLS in state-of-the-art symbolic security analysis tool, ProVerif, and we show **exactly** where the proofs break.
 We also attest that from a formal analysis perspective, this is a much bigger change than RFC8773bis, which indeed went for FATT review (cf. {{TLS-FATT}}).
 We, therefore, kindly ask the chairs to initiate the FATT review of standalone ML-KEM in TLS.
-The draft also aims to help the developers and policy makers make informed choices.
-Finally, we aim to reduce the endless repitition of arguments from both sides presented on several lists by documenting these arguments so they can simply be referred to.
+
+In the future, the draft will aim to help the developers and policy makers make informed choices.
+Finally, it will also aim to reduce the endless repitition of arguments from both sides presented on several lists by documenting these arguments so they can simply be referred to.
 
 --- middle
 
@@ -111,8 +112,13 @@ version.
 ### Expected Learning
 We believe formal methods can provide additional value for security considerations of this draft in order to maintain the high cryptographic assurance of TLS.
 
-Since we have no guarantee on whether ECDHE will break before ML-KEM, it seems appropriate to do thorough cryptographic analysis.
-We believe the Harvest Now, Decrypt Later (HNDL) attack applies equally well to standalone ML-KEM.
+~~~
+Since we have no guarantee on whether ECDHE will break before ML-KEM,
+it seems appropriate to do thorough cryptographic analysis.
+We believe the Harvest Now, Decrypt Later (HNDL) attack applies
+equally well to standalone ML-KEM.
+~~~
+
 Adversary can record all traffic and decrypt it when ML-KEM is broken.
 The opinions here vary from "ML-KEM is probably secure" to "ML-KEM is probably already secrectly broken."
 Formal methods can operate under the assumption that ML-KEM is secure, and focus on the integration of ML-KEM in TLS under this assumption.
@@ -129,15 +135,19 @@ We have formally requested the chairs to initiate the FATT process for {{I-D.iet
 See [this](https://mailarchive.ietf.org/arch/msg/tls/rClgrWm2hnhESXHx56U8InbwQQs/) and [this](https://mailarchive.ietf.org/arch/msg/tls/7lj6fYAweMBwNMxFerNl7xhY0pk/).
 
 
-### Side-issues That Formal Methods Probably Cannot Solve
+### Issues That Formal Methods Probably Cannot Solve
 
-The answers to the following questions are largely dependent on *whether* and *when* Cryptographically-Relevant Quantum Computer (CRQC) will eventually become practical.
+The answers to the following questions are largely dependent on several factors, and the opinions vary largely.
+
+#### Urgency
+
+It is unclear *whether* and *when* Cryptographically-Relevant Quantum Computer (CRQC) will eventually become practical.
 The opinions vary from never because of complicated physics (see [this](https://eprint.iacr.org/2025/1237)) to as early as 2029 (see [Google 2029](https://blog.google/innovation-and-ai/technology/safety-security/cryptography-migration-timeline/) and [Cloudflare 2029](https://blog.cloudflare.com/post-quantum-roadmap/)).
-Google has not even released the quantum circuit underlying their recent claims -- apparently the reason for this urgency. So the claims are not yet justified. Some believe that we should not create panic based on this.
+Regarding the latter, please note that Google has not even released the **quantum circuit** underlying their recent claims -- apparently the reason for this urgency. So the claims are not yet justified. Some believe that we should not create panic based on this because many implementations -- such as OpenSSL -- have already implemented standalone ML-KEM, and it is just a matter of enabling it.
 
 #### "Cost"
 "Cost" has been presented on the list as the motivation for standalone ML-KEM in TLS but no reference has yet been presented.
-We believe costs will depend on several factors -- including but not limited to implementation details and deployment scenario -- and it is quite subjective.
+We believe costs will depend on several factors -- including but not limited to implementation details and deployment scenario -- and it is quite **subjective**.
 
 There seems to be a need for a thorough study to understand the "cost."
 We invite the WG participants to perform this analysis and share the results with the WG.
@@ -145,13 +155,15 @@ We invite the WG participants to perform this analysis and share the results wit
 #### Is Publication Necessary?
 
 Code Points for ML-KEM have already been assigned.
-{{I-D.barnes-tls-this-could-have-been-an-email}} provides detailed rationale as to why publication of such documents may be unnecessary. In our understanding, {{I-D.pwouters-crypto-current-practices}} makes similar arguments.
+{{I-D.barnes-tls-this-could-have-been-an-email}} provides detailed rationale as to why publication of such documents and the debates around that may be unnecessary. In our understanding, {{I-D.pwouters-crypto-current-practices}} makes similar arguments.
 
 #### Shiny New Crypto
 
-ML-KEM is quite new in the IETF and even in the IRTF. CFRG is starting some efforts for analysis. Some WG participants have shown concern to avoid premature publication before a detailed analysis has been done by CFRG.
+ML-KEM is quite new in the IETF and even in the IRTF. Some WG participants have shown concern over premature publication of {{I-D.ietf-tls-mlkem}} until a detailed analysis has been done by CFRG.
 
-#### FIPS to IETF Formal Mapping
+CFRG is starting some efforts for analysis. The extended deadline for submission is 22.06. Please see the latest [CFRG chairs email](https://mailarchive.ietf.org/arch/msg/cfrg/6K43Ycr062Ym1G0q4WHxZQ2HW8M/) for further details.
+
+#### Formal Mapping of FIPS to IETF BCP14
 
 As discussed on the TLS list, we are not aware of any formal mapping of the FIPS recommendations to the IETF BCP14 terminology, such as SHOULD vs. MUST. In general, we believe re-using FIPS recommendations is ambiguous for IETF readers.
 
@@ -199,7 +211,7 @@ As presented in {{sec-proof-break}}, we attest that {{I-D.ietf-tls-mlkem}} modif
 * TLS key schedule
 * cryptographic protocol such that commutativity property is no longer valid.
 
-This breaks the following proofs:
+This breaks the following proofs in ProVerif:
 
 * Bhargavan et al.'s model of draft 20 of TLS 1.3: {{reftls}} and {{reftls-Repo}} and all 5 *public* forks as well as one nested fork:
   * [arthuraa/reftls](https://github.com/arthuraa/reftls/blob/d6bc5dd8eb4373683cb1ce64845691954d0d7601/pv/tls-lib-draft20.pvl#L44-L47)
@@ -212,7 +224,7 @@ This breaks the following proofs:
   * [jupenur/formal-spec-id-crisis](https://github.com/jupenur/formal-spec-id-crisis/blob/de2bdec9967bf535f648f0cc8e8d2d90a49104a4/TLS-a/fix/tls-lib-simple.pvl#L38-L41)
   * [nathanaelritz/formal-spec-id-crisis](https://github.com/nathanaelritz/formal-spec-id-crisis/blob/a028cec823b7d9bf13dd5a1dd71ab14c75b1a83d/TLS-a/fix/tls-lib-simple.pvl#L38-L41)
   * [telephonicrobotics/formal-id-crisis-spec](https://github.com/telephonicrobotics/formal-id-crisis-spec/blob/c1953127ce004e51b888250591ec9971ad50e98c/TLS-a/fix/tls-lib-simple.pvl#L38-L41)
-
+* A couple of our ongoing works which are not yet public
 
 # Formal Analysis (Work-in-progress)
 We have presented observation from our ongoing symbolic security analysis (cf. limitations in {{sec-sec-cons}}) using ProVerif on the mailing list.
