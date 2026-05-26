@@ -4,8 +4,8 @@
 
 Transport Layer Security                                    M. U. Sardar
 Internet-Draft                                       TU Dresden, Germany
-Intended status: Informational                               24 May 2026
-Expires: 25 November 2026
+Intended status: Informational                               26 May 2026
+Expires: 27 November 2026
 
 
             Potential Risks of Standalone ML-KEM in TLS 1.3
@@ -15,18 +15,22 @@ Abstract
 
    We attest that standalone ML-KEM in TLS 1.3 breaks the existing
    formal proofs of TLS in state-of-the-art symbolic security analysis
-   tool, ProVerif.  In this draft, we show *exactly* where the proofs
-   break, namely transition from symmetric DHKE to asymmetric KEM.  We
-   also attest that from a formal analysis perspective, this is a much
-   bigger change than RFC8773bis, which indeed went for FATT review (cf.
-   [TLS-FATT]).  We, therefore, kindly ask the chairs to initiate the
-   FATT review of standalone ML-KEM in TLS.
+   tool, ProVerif.  In this draft, we show *exactly* where the ProVerif
+   proofs break, namely transition from symmetric DHKE to asymmetric
+   KEM.  More specifically, the existing proofs of TLS in ProVerif are
+   based on commutativity property, whereas commutativity does not apply
+   to standalone ML-KEM in TLS.
 
-   The draft also offers some discussion to help the developers and
-   policy makers make informed choices.  Finally, the draft also aims to
-   reduce the endless repitition of arguments from both sides presented
-   on several lists by documenting these arguments so they can simply be
-   referred to.
+   We also attest that from a formal analysis perspective, this is a
+   much bigger change than RFC8773bis, which indeed went for FATT review
+   (cf. [TLS-FATT]).  We, therefore, formally request the chairs to
+   initiate the FATT review of standalone ML-KEM in TLS.
+
+   This draft also offers some preliminary discussion to help the
+   developers and policy makers make informed choices.  Finally, the
+   draft also aims to reduce the endless repitition of arguments from
+   both sides presented on several lists by documenting these arguments
+   so they can simply be referred to.
 
 About This Document
 
@@ -60,7 +64,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 25 November 2026.
+   This Internet-Draft will expire on 27 November 2026.
 
 Copyright Notice
 
@@ -82,7 +86,6 @@ Table of Contents
      1.1.  Motivation
        1.1.1.  Expected Learning
        1.1.2.  Previous Formal Requests for FATT Review
-       1.1.3.  Issues That Formal Methods Probably Cannot Solve
    2.  Conventions and Definitions
    3.  Where ProVerif Proofs Break
    4.  Justification based on FATT Process
@@ -90,11 +93,20 @@ Table of Contents
      5.1.  Hybrid PQ/T
      5.2.  Standalone PQ
      5.3.  Comparison
-   6.  Security Considerations
-   7.  IANA Considerations
-   8.  References
-     8.1.  Normative References
-     8.2.  Informative References
+     5.4.  Hybrid ML-KEM?
+   6.  Issues That Formal Methods Probably Cannot Solve
+     6.1.  Urgency
+     6.2.  "Cost"
+     6.3.  Is Publication Necessary?
+     6.4.  Shiny New Crypto
+     6.5.  Formal Mapping of FIPS to IETF BCP14
+     6.6.  Outstanding NIST comments
+     6.7.  Too Early
+   7.  Security Considerations
+   8.  IANA Considerations
+   9.  References
+     9.1.  Normative References
+     9.2.  Informative References
    Acknowledgments
    History
    Author's Address
@@ -186,86 +198,6 @@ Table of Contents
    (https://mailarchive.ietf.org/arch/msg/
    tls/7lj6fYAweMBwNMxFerNl7xhY0pk/).
 
-1.1.3.  Issues That Formal Methods Probably Cannot Solve
-
-   The answers to the following questions are largely dependent on
-   several factors, and the opinions vary largely.
-
-1.1.3.1.  Urgency
-
-   It is unclear _whether_ and _when_ Cryptographically-Relevant Quantum
-   Computer (CRQC) will eventually become practical.  The opinions vary
-   from never because of complicated physics (see this
-   (https://eprint.iacr.org/2025/1237)) to be _prepared_ for it as early
-   as 2029 (see Google 2029 (https://blog.google/innovation-and-
-   ai/technology/safety-security/cryptography-migration-timeline/) and
-   Cloudflare 2029 (https://blog.cloudflare.com/post-quantum-roadmap/)).
-   Regarding the latter, please note that Google has not even released
-   the *quantum circuit* underlying their recent claims -- apparently
-   the reason for this urgency.  So Google's claims are not yet
-   justified.
-
-   Moreover, in our understanding, these deadlines are for PQ-based
-   protection in general regardless of hybrid KEMs or standalone KEMs in
-   TLS.  Since hybrid KEMs already exist, these deadlines are mainly for
-   quantum-safe authentication.
-
-   In any case, some participants believe that we should not create
-   panic for publication based on this because many implementations --
-   such as OpenSSL -- have already implemented standalone ML-KEM, and it
-   is just a matter of enabling it.  And frankly, nobody needs
-   permission from the IETF to enable it.
-
-1.1.3.2.  "Cost"
-
-   "Cost" has been presented on the list as the motivation for
-   standalone ML-KEM in TLS but no reference has yet been presented.  We
-   believe costs will depend on several factors -- including but not
-   limited to implementation details and deployment scenario -- and it
-   is quite *subjective*.
-
-   There seems to be a need for a thorough study to understand the
-   "cost."  We invite the WG participants to perform this analysis and
-   share the results with the WG.
-
-1.1.3.3.  Is Publication Necessary?
-
-   Code Points for ML-KEM have already been assigned.
-   [I-D.barnes-tls-this-could-have-been-an-email] provides detailed
-   rationale as to why publication of such documents and the debates
-   around that may be unnecessary.  In our understanding,
-   [I-D.pwouters-crypto-current-practices] makes similar arguments.
-
-1.1.3.4.  Shiny New Crypto
-
-   ML-KEM is quite new in the IETF and even in the IRTF.  Some WG
-   participants have shown concern over premature publication of
-   [I-D.ietf-tls-mlkem] until a detailed analysis has been done by CFRG.
-
-   CFRG is starting some efforts for analysis.  The extended deadline
-   for submission is 22.06.  Please see the latest CFRG chairs email
-   (https://mailarchive.ietf.org/arch/msg/
-   cfrg/6K43Ycr062Ym1G0q4WHxZQ2HW8M/) for further details.
-
-1.1.3.5.  Formal Mapping of FIPS to IETF BCP14
-
-   As discussed on the TLS list, we are not aware of any formal mapping
-   of the FIPS recommendations to the IETF BCP14 terminology, such as
-   SHOULD vs. MUST.  In general, we believe re-using FIPS
-   recommendations is ambiguous for IETF readers.
-
-1.1.3.6.  Outstanding NIST comments
-
-   Some participants believe that NIST has rushed through the process
-   and not addressed all the comments that were submitted during the
-   open review.
-
-1.1.3.7.  Too Early
-
-   Some participants simply believe that publication of
-   [I-D.ietf-tls-mlkem] and related discussions are just too early and
-   unnecessary.
-
 2.  Conventions and Definitions
 
    The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
@@ -284,8 +216,9 @@ Table of Contents
    We attest that:
 
    1. existing proofs of TLS in ProVerif are based on commutativity
-   2. commutativity does not apply to ML-KEM in TLS
+   2. commutativity does not apply to standalone ML-KEM in TLS
    Hence, a new proof is required.
+   This entails updating models, e.g., modeling KEMs.
 
    While ML-KEM [I-D.ietf-tls-mlkem] looks like just a "trivial"
    addition, it makes changes as deep as the key schedule of TLS.  It
@@ -317,6 +250,9 @@ Table of Contents
    in above example) sends the public encapsulation key and the peer
    sends a ciphertext.  This asymmetry breaks the existing proofs of TLS
    1.3 in ProVerif and requires a new proof.
+
+   We welcome feedback from the community on how to fix the ProVerif
+   proofs preserving the cryptographic soundness.
 
 4.  Justification based on FATT Process
 
@@ -392,15 +328,13 @@ Table of Contents
 5.  Formal Analysis (Work-in-progress)
 
    We have presented observation from our ongoing symbolic security
-   analysis (cf. limitations in Section 6) using ProVerif on the mailing
+   analysis (cf. limitations in Section 7) using ProVerif on the mailing
    list.
 
    We argue that _in general_:
 
-   1.  Migration from ECDHE to hybrid is security improvement.
-
-   2.  Migration from hybrid to standalone ML-KEM is security
-       regression.
+   1. Migration from ECDHE to hybrid is security improvement.
+   2. Migration from hybrid to standalone ML-KEM is security regression.
 
 5.1.  Hybrid PQ/T
 
@@ -430,7 +364,114 @@ Table of Contents
    implementation bug in the ECDHE part which is triggered only in
    composition.
 
-6.  Security Considerations
+5.4.  Hybrid ML-KEM?
+
+   Some participants have raised concern that the same issue may apply
+   to hybrid ML-KEM as well and to block that draft.  We strongly oppose
+   this because that draft has IETF consensus and is in publication
+   queue.  Given the consensus, we see absolutely no reason to block
+   that.  FATT process was specifically designed to _resolve_ concerns
+   rather than _gatekeeping_.
+
+   In contrast, as mentioned above, standalone MLKEM has a very
+   different profile with ca. 25 oppositions.  FWIW, this is exactly
+   what makes formal analysis necessary to resolve the issue and build
+   high confidence.
+
+6.  Issues That Formal Methods Probably Cannot Solve
+
+   The answers to the following issues are largely dependent on several
+   factors, and the opinions vary largely.
+
+   Disclaimer: This is not meant to be an exhaustive list.
+   This is also not meant to pritoritize any concerns over others.
+   This is a sincere attempt to slowly capture the opinions
+   to avoid endless repititions from both sides.
+   Many substantive concerns are missing.
+   If your concern is missing, please submit a PR.
+
+   In particular, we acknowledge a very thorough review here
+   (https://mailarchive.ietf.org/arch/msg/tls/jlsYHENwqMv-
+   4XPRvunqKsAL36k/), which is not yet included here.
+
+6.1.  Urgency
+
+   It is unclear _whether_ and if applicable _when_ Cryptographically-
+   Relevant Quantum Computer (CRQC) will eventually become practical.
+   The opinions vary from never because of complicated physics (see this
+   (https://eprint.iacr.org/2025/1237)) to be _prepared_ for it as early
+   as 2029 (see Google 2029 (https://blog.google/innovation-and-
+   ai/technology/safety-security/cryptography-migration-timeline/) and
+   Cloudflare 2029 (https://blog.cloudflare.com/post-quantum-roadmap/)).
+   Regarding the latter, please note that Google has not even released
+   the *quantum circuit* underlying their recent claims -- apparently
+   the reason for this urgency.  So Google's claims are not yet
+   justified.
+
+   Moreover, in our understanding, these deadlines are for PQ-based
+   protection in general regardless of hybrid KEMs or standalone KEMs in
+   TLS.  Since hybrid KEMs already exist, these deadlines are mainly for
+   quantum-safe authentication.
+
+   In any case, some participants believe that we should not create
+   panic for publication based on this because many implementations --
+   such as OpenSSL -- have already implemented standalone ML-KEM, and it
+   is just a matter of enabling it.  And frankly, nobody needs
+   permission from the IETF to enable it.
+
+6.2.  "Cost"
+
+   "Cost" has been presented on the list as the motivation for
+   standalone ML-KEM in TLS but no reference has yet been presented.  We
+   believe costs will depend on several factors -- including but not
+   limited to implementation details and deployment scenario -- and it
+   is quite *subjective*.
+
+   There seems to be a need for a thorough study to understand the
+   "cost."  We invite the WG participants to perform this analysis and
+   share the results with the WG.
+
+6.3.  Is Publication Necessary?
+
+   Code Points for ML-KEM have already been assigned.
+   [I-D.barnes-tls-this-could-have-been-an-email] provides detailed
+   rationale as to why publication of such documents and the debates
+   around that may be unnecessary.  In our understanding,
+   [I-D.pwouters-crypto-current-practices] makes similar arguments.
+
+6.4.  Shiny New Crypto
+
+   ML-KEM is quite new in the IETF and even in the IRTF.  Some WG
+   participants have shown concern over premature publication of
+   [I-D.ietf-tls-mlkem] until a detailed analysis has been done by CFRG.
+
+   CFRG is starting some efforts for analysis.  The extended deadline
+   for submission is 22.06.  Please see the latest CFRG chairs email
+   (https://mailarchive.ietf.org/arch/msg/
+   cfrg/6K43Ycr062Ym1G0q4WHxZQ2HW8M/) for further details.
+
+6.5.  Formal Mapping of FIPS to IETF BCP14
+
+   As discussed on the TLS list, we are not aware of any formal mapping
+   of the FIPS recommendations to the IETF BCP14 terminology, such as
+   SHOULD vs. MUST.  In general, we believe re-using FIPS
+   recommendations is ambiguous for IETF readers.
+
+6.6.  Outstanding NIST comments
+
+   Some participants believe that NIST has rushed through the process
+   and not addressed all the comments that were submitted during the
+   open review.  Please see comments here
+   (https://csrc.nist.gov/files/pubs/fips/203/ipd/docs/fips-203-initial-
+   public-comments-2023.pdf).
+
+6.7.  Too Early
+
+   Some participants simply believe that publication of
+   [I-D.ietf-tls-mlkem] and related discussions are just too early and
+   unnecessary.
+
+7.  Security Considerations
 
    The whole document is about improving security considerations.
 
@@ -441,13 +482,13 @@ Table of Contents
    Formal methods should be used as complementary and not as subtitute
    of other analysis methods.
 
-7.  IANA Considerations
+8.  IANA Considerations
 
    This document has no IANA actions.
 
-8.  References
+9.  References
 
-8.1.  Normative References
+9.1.  Normative References
 
    [I-D.ietf-tls-mlkem]
               Connolly, D., "ML-KEM Post-Quantum Key Agreement for TLS
@@ -481,7 +522,7 @@ Table of Contents
    [TLS-FATT] IETF TLS WG, "TLS FATT Process", June 2025,
               <https://github.com/tlswg/tls-fatt>.
 
-8.2.  Informative References
+9.2.  Informative References
 
    [I-D.barnes-tls-this-could-have-been-an-email]
               Barnes, R., "Stop Doing Cryptographic Algorithm Drafts
@@ -558,7 +599,7 @@ History
 
    *  Reorganization, specially in motivation
 
-   *  Added some common arguments: Section 1.1.3
+   *  Added some common arguments: Section 6
 
 Author's Address
 
