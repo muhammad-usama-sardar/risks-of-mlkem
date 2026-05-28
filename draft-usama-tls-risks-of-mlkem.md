@@ -64,7 +64,7 @@ informative:
   I-D.barnes-tls-this-could-have-been-an-email:
   rfc3552:
   I-D.ietf-tls-ecdhe-mlkem: hybrid
-
+  I-D.ietf-tls-hybrid-design:
 ...
 
 --- abstract
@@ -88,6 +88,8 @@ We assert that the security considerations of {{I-D.ietf-tls-mlkem}} are insuffi
 We believe that consistent with {{TLS-FATT}} process, *symbolic* and *computational* analysis (to be interpreted as in [SoK](https://eprint.iacr.org/2019/1393.pdf)) of standalone ML-KEM in the context of TLS is helpful here.
 We formally request that if the author or any WG participant has done any formal analysis, it would be very helpful to present the current state of formal analysis in the next meeting for discussion.
 
+Some existing computational analysis for standalone ML-KEM include [this](https://eprint.iacr.org/2021/844) and [this](https://eprint.iacr.org/2024/1360). 
+Both are based on pen-and-paper proofs.
 
 ## Motivation
 {: #sec-mot }
@@ -246,11 +248,10 @@ Clearly, hybrid is in general more secure, unless ECDHE is fully broken, in whic
 
 ## Hybrid ML-KEM?
 
-Some participants have raised concern that the same issue *may* apply to hybrid ML-KEM as well and seem to suggest to block that draft. We strongly oppose this because that draft has IETF consensus and is in the publication queue. Given the consensus, we see absolutely no reason to block that. FATT process was specifically designed to *resolve* concerns rather than *gatekeeping*.
+Some participants have raised concern that the same issue *may* apply to hybrid ML-KEM as well.
+Technically, a proof of -09 of {{I-D.ietf-tls-hybrid-design}} is done in the computational model using CryptoVerif (cf. [ref](https://bblanche.gitlabpages.inria.fr/publications/BlanchetJacommeCSF24.pdf)).
 
-In contrast, as mentioned in {{sec-mot}}, standalone MLKEM has a very different profile with ca. 25 oppositions. FWIW, this is exactly what makes formal analysis potentially helpful to resolve the issue and build high confidence.
-
-Technically, we believe that the two drafts are incomparable on this specific point as hybrid ML-KEM {{-hybrid}} still has some level of symmetry. From formal analysis perspective, g<sup>x</sup> and  g<sup>y</sup> are still sent in hybrid ML-KEM,  g<sup>xy</sup> is still computed and we believe the commutativity property is applicable for that part as-is. From formal analysis perspective, ML-KEM is complementary to that.
+Moreover, we believe that the two drafts are incomparable on this specific point as hybrid ML-KEM {{I-D.ietf-tls-hybrid-design}} still has some level of symmetry. From formal (symbolic) analysis perspective, g<sup>x</sup> and  g<sup>y</sup> are still sent in hybrid ML-KEM,  g<sup>xy</sup> is still computed and we believe the commutativity property is applicable for that part as-is. From formal (symbolic) analysis perspective, ML-KEM is complementary to that.
 
 Specifically, from {{Section 4 of -hybrid}}, for the symbolic analysis, X25519MLKEM768 may be viewed as:
 
@@ -368,7 +369,7 @@ This document has no IANA actions.
 # Acknowledgments
 {:numbered="false"}
 
-We would like to thank Ilari Liusvaara and John Preuß Mattsson for their valuable feedback.
+We would like to thank Ilari Liusvaara, John Preuß Mattsson, Eric Rescorla, and Nadim Kobeissi for their valuable feedback.
 
 The research work is funded by German Research Foundation ("Deutsche Forschungsgemeinschaft.")
 
