@@ -88,7 +88,7 @@ We assert that the security considerations of {{I-D.ietf-tls-mlkem}} are insuffi
 We believe that consistent with {{TLS-FATT}} process, *symbolic* and *computational* analysis (to be interpreted as in [SoK](https://eprint.iacr.org/2019/1393.pdf)) of standalone ML-KEM in the context of TLS is helpful here.
 We formally request that if the author or any WG participant has done any formal analysis, it would be very helpful to present the current state of formal analysis in the next meeting for discussion.
 
-Some existing computational analysis for standalone ML-KEM include [this](https://eprint.iacr.org/2021/844) and [this](https://eprint.iacr.org/2024/1360). 
+Some existing computational analysis for standalone ML-KEM include [this](https://eprint.iacr.org/2021/844) and [this](https://eprint.iacr.org/2024/1360).
 Both are based on pen-and-paper proofs.
 
 ## Motivation
