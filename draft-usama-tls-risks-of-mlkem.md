@@ -64,6 +64,7 @@ informative:
   I-D.barnes-tls-this-could-have-been-an-email:
   rfc3552:
   I-D.ietf-tls-ecdhe-mlkem: hybrid
+  I-D.ietf-tls-hybrid-design-09:
   I-D.ietf-tls-hybrid-design:
 ...
 
@@ -74,7 +75,7 @@ More specifically, the existing proofs of TLS in ProVerif are based on commutati
 
 We also attest that from a formal analysis perspective, this is a much bigger change than RFC8773bis, which indeed went for FATT review (cf. {{TLS-FATT}}).
 We, therefore, formally request the chairs to initiate the FATT review of standalone ML-KEM in TLS.
-Multiple WG participants have shown interest in doing formal analysis in ProVerif.
+A few WG participants have already volunteered to do formal analysis in ProVerif.
 
 This draft also offers some preliminary discussion to help the developers and policy makers make informed choices.
 Finally, the draft also aims to reduce the endless repitition of arguments from both sides presented on several lists by documenting these arguments so they can simply be referred to.
@@ -87,9 +88,9 @@ Readers are assumed to be familiar with {{NistFips203}}, {{I-D.ietf-tls-rfc8446b
 
 We assert that the security considerations of {{I-D.ietf-tls-mlkem}} are insufficient.
 We believe that consistent with {{TLS-FATT}} process, *symbolic* and *computational* analysis (to be interpreted as in [SoK](https://eprint.iacr.org/2019/1393.pdf)) of standalone ML-KEM in the context of TLS is helpful here.
-We formally request that if the author or any WG participant has done any formal analysis, it would be very helpful to present the current state of formal analysis in the next meeting for discussion.
+We believe that if the author or any WG participant has done any formal analysis, it would be very helpful to present the current state of formal analysis in the next meeting for discussion.
 
-Some existing computational analysis for standalone ML-KEM include [this](https://eprint.iacr.org/2021/844) and [this](https://eprint.iacr.org/2024/1360).
+Some existing computational analysis for standalone ML-KEM in TLS include [this](https://eprint.iacr.org/2021/844) and [this](https://eprint.iacr.org/2024/1360).
 Both are based on pen-and-paper proofs.
 
 ## Motivation
@@ -157,7 +158,7 @@ We attest that:
 1. existing proofs of TLS in ProVerif are based on commutativity
 2. commutativity does not apply to standalone ML-KEM in TLS
 Hence, a new proof is required.
-This entails updating models, e.g., modeling KEMs.
+This entails updating ProVerif models, e.g., modeling KEMs.
 ~~~
 
 While ML-KEM {{I-D.ietf-tls-mlkem}} looks like just a "trivial" addition, it makes changes as deep as the key schedule of TLS. It essentially replaces the *key exchange* by *key encapsulation*. While the former is symmetric, the latter is asymmetric.
@@ -176,7 +177,9 @@ equation forall x:bitstring, y:bitstring;
 Key encapsulation does not enjoy this commutativity property, or even an analogous symmetry argument. There is essentially only one endpoint (say client) which generates the key pair `(dk,ek)` where `dk` represents the *secret decapsulation key* and `ek` represents the *public encapsulation key*.
 As opposed to both endpoints sending their public key shares g<sup>x</sup> and g<sup>y</sup> in a traditional key exchange, a KEM creates a roles-asymmetry where only one of the endpoints (client in above example) sends the public encapsulation key `ek` and the peer (server) sends a ciphertext `ct`. This asymmetry breaks the existing proofs of TLS 1.3 in ProVerif and requires a new proof.
 
-We welcome feedback from the community on how to fix the ProVerif proofs preserving the cryptographic soundness.
+Please note that breaking the existing ProVerif proof does not necessarily mean that the ML-KEM proposal in TLS is insecure.
+It just means that a new proof is required.
+We welcome feedback from the community on how to fix the ProVerif proofs while preserving the cryptographic soundness.
 
 # Justification based on FATT Process
 {: #sec-just-process }
@@ -205,11 +208,27 @@ This breaks the following proofs in ProVerif:
   * [ekr/reftls](https://github.com/ekr/reftls/blob/5bc66d14d4accbff6edb0ae7a263df5ea880857d/pv/tls-lib-draft20.pvl#L44-L47)
     * [ajayeeralla/reftls](https://github.com/ajayeeralla/reftls/blob/b97196fa0c3885da0fe0f412c9902e85a7f5323a/pv/tls-lib-draft20.pvl#L44-L47)
   * [jhoyla/reftls](https://github.com/jhoyla/reftls/blob/d6bc5dd8eb4373683cb1ce64845691954d0d7601/pv/tls-lib-draft20.pvl#L44-L47)
-* Our previous work extending the model of Bhargavan et al. to the current state of {{I-D.ietf-tls-rfc8446bis}} and integrating remote attestation: {{ID-Crisis}} and {{ID-Crisis-Repo}} and all 3 public forks:
+* Our previous work extending the model of Bhargavan et al. to the current state of {{I-D.ietf-tls-rfc8446bis}} and integrating remote attestation: {{ID-Crisis}} and {{ID-Crisis-Repo}} (under Apache-2.0 License) and all 3 public forks:
   * [jupenur/formal-spec-id-crisis](https://github.com/jupenur/formal-spec-id-crisis/blob/de2bdec9967bf535f648f0cc8e8d2d90a49104a4/TLS-a/fix/tls-lib-simple.pvl#L38-L41)
   * [nathanaelritz/formal-spec-id-crisis](https://github.com/nathanaelritz/formal-spec-id-crisis/blob/a028cec823b7d9bf13dd5a1dd71ab14c75b1a83d/TLS-a/fix/tls-lib-simple.pvl#L38-L41)
   * [telephonicrobotics/formal-id-crisis-spec](https://github.com/telephonicrobotics/formal-id-crisis-spec/blob/c1953127ce004e51b888250591ec9971ad50e98c/TLS-a/fix/tls-lib-simple.pvl#L38-L41)
 * A couple of our ongoing works which are not yet public
+
+## Hybrid ML-KEM?
+{: #sec-hybrid-ml-kem }
+
+Some participants have raised concern that the same issue *may* apply to hybrid ML-KEM as well.
+Technically, a proof of {{I-D.ietf-tls-hybrid-design-09}} is done in the computational model using CryptoVerif (cf. [ref](https://bblanche.gitlabpages.inria.fr/publications/BlanchetJacommeCSF24.pdf)). As per list discussion, it appears that the proof applies to the latest version of the spec {{I-D.ietf-tls-hybrid-design}}, as there are no substantive changes from the perspective of formal proof.
+
+Moreover, we believe that the two drafts are incomparable on this specific point as hybrid ML-KEM {{I-D.ietf-tls-hybrid-design-09}} still has some level of symmetry. From formal (symbolic) analysis perspective, g<sup>x</sup> and  g<sup>y</sup> are still sent in hybrid ML-KEM,  g<sup>xy</sup> is still computed and we believe the commutativity property is applicable for that part as-is. From formal (symbolic) analysis perspective, ML-KEM is complementary to that.
+
+Specifically, from {{Section 4 of -hybrid}}, for the symbolic analysis, X25519MLKEM768 may be viewed as:
+
+~~~
+client's key_exchange value = ek || gx
+server's key_exchange value = ct || gy
+shared secret = ss || gxy
+~~~
 
 # Formal Analysis (Work-in-progress)
 We have presented observation from our ongoing symbolic security analysis (cf. limitations in {{sec-sec-cons}}) using ProVerif on the mailing list.
@@ -246,21 +265,6 @@ If ML-KEM is broken, the whole system is broken.
 ## Comparison
 Leak out the ECDHE key from hybrid PQ/T and you get a standalone ML-KEM.
 Clearly, hybrid is in general more secure, unless ECDHE is fully broken, in which case it still falls equivalent to standalone ML-KEM, or in the hypothetical scenario that there is an implementation bug in the ECDHE part which is triggered only in composition.
-
-## Hybrid ML-KEM?
-
-Some participants have raised concern that the same issue *may* apply to hybrid ML-KEM as well.
-Technically, a proof of -09 of {{I-D.ietf-tls-hybrid-design}} is done in the computational model using CryptoVerif (cf. [ref](https://bblanche.gitlabpages.inria.fr/publications/BlanchetJacommeCSF24.pdf)).
-
-Moreover, we believe that the two drafts are incomparable on this specific point as hybrid ML-KEM {{I-D.ietf-tls-hybrid-design}} still has some level of symmetry. From formal (symbolic) analysis perspective, g<sup>x</sup> and  g<sup>y</sup> are still sent in hybrid ML-KEM,  g<sup>xy</sup> is still computed and we believe the commutativity property is applicable for that part as-is. From formal (symbolic) analysis perspective, ML-KEM is complementary to that.
-
-Specifically, from {{Section 4 of -hybrid}}, for the symbolic analysis, X25519MLKEM768 may be viewed as:
-
-~~~
-client's key_exchange value = ek || gx
-server's key_exchange value = ct || gy
-shared secret = ss || gxy
-~~~
 
 
 # Issues That Formal Methods Probably Cannot Solve
@@ -299,7 +303,7 @@ Given the very different type of cryptographic constructions involved, we believ
 
 Please see [this](https://github.com/FiloSottile/ecc-vs-lattices-long-bet#2a-what-counts-as-a-break) for what "broken" may mean here modulo some [exclusions](https://github.com/FiloSottile/ecc-vs-lattices-long-bet#5-exclusions). Some participants disagree with 'significantly harder' argument, but in our understanding, the counter-arguments seem to break the exclusions.
 
-Please note that this argument is based on the security of primitives, rather than the composition of primitives in protocols. Hence, formal methods probably have nothing to help here.
+Please note that this argument is based on the security of *primitives*, rather than the *composition* of primitives in protocols. Hence, formal methods probably have nothing to help here.
 
 ## Urgency
 
@@ -392,3 +396,4 @@ The research work is funded by German Research Foundation ("Deutsche Forschungsg
 * Added justification based on FATT process: {{sec-just-process}}
 * Reorganization, specially in motivation
 * Added some common arguments: {{sec-gen-issues}}
+* Comparison with hybrid ML-KEM {{sec-hybrid-ml-kem}}
