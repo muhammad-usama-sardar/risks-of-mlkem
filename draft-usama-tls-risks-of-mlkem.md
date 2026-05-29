@@ -74,6 +74,7 @@ More specifically, the existing proofs of TLS in ProVerif are based on commutati
 
 We also attest that from a formal analysis perspective, this is a much bigger change than RFC8773bis, which indeed went for FATT review (cf. {{TLS-FATT}}).
 We, therefore, formally request the chairs to initiate the FATT review of standalone ML-KEM in TLS.
+Multiple WG participants have shown interest in doing formal analysis in ProVerif.
 
 This draft also offers some preliminary discussion to help the developers and policy makers make informed choices.
 Finally, the draft also aims to reduce the endless repitition of arguments from both sides presented on several lists by documenting these arguments so they can simply be referred to.
@@ -225,11 +226,11 @@ We argue that *in general*:
 More formally, the property hybrid PQ/T should provide is:
 
 ~~~
-Hybrid PQ/T is secure unless both ECDHE and ML-KEM are broken.
+Hybrid PQ/T is secure unless *both* ECDHE and ML-KEM are broken.
 ~~~
 
 Hybrid preserves ECDHE, and adds ML-KEM as an additional factor.
-So as long as one of them is not broken, the system is secure.
+So as long as *at least* one of them is not broken, the system is secure.
 In particular, even if ML-KEM is completely broken, the system retains the security level of ECDHE.
 
 ## Standalone PQ
@@ -267,7 +268,7 @@ shared secret = ss || gxy
 
 The answers to the following issues are largely dependent on several factors, and the opinions vary largely.
 
-It is necessary to mention that even several respectable cryptographers in the community are not aligned on the issue -- for example see the [bet](https://github.com/FiloSottile/ecc-vs-lattices-long-bet). Hence, our personal opinion is probably not that important. Probably the best we can do is to capture *our* understanding of the views of WG participants.
+It is necessary to mention that even several respectable cryptographers in the community are not aligned on the issue -- for example see the [long bet](https://github.com/FiloSottile/ecc-vs-lattices-long-bet). Hence, our personal opinion is probably not that important. Probably the best we can do is to capture *our* understanding of the views of WG participants.
 
 ~~~
 Disclaimer: This is not meant to be an exhaustive list.
@@ -277,7 +278,7 @@ to avoid endless repititions from both sides.
 Many substantive concerns are missing.
 We are slowly collecting the concerns, as time allows.
 If your substantive concern is missing, it is unintentional.
-Please simply submit a precise and concise PR.
+Please simply submit a *precise* and *concise* PR.
 ~~~
 
 ## Thorough Review
@@ -369,7 +370,11 @@ This document has no IANA actions.
 # Acknowledgments
 {:numbered="false"}
 
-We would like to thank Ilari Liusvaara, John Preuß Mattsson, Eric Rescorla, and Nadim Kobeissi for their valuable feedback.
+We would like to thank Yaakov Stein, Ilari Liusvaara, John Preuß Mattsson, Eric Rescorla, Brian E Carpenter, and Nadim Kobeissi for their valuable feedback and contributions.
+
+{{sec-gen-issues}} is largely based on the opinions of many IETF participants.
+
+Text in {{sec-sec-cons}} is based on the proposal by John Preuß Mattsson.
 
 The research work is funded by German Research Foundation ("Deutsche Forschungsgemeinschaft.")
 
