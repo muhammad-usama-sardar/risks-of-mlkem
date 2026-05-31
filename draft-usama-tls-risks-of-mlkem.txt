@@ -87,7 +87,7 @@ Table of Contents
    1.  Introduction
      1.1.  Motivation
        1.1.1.  Expected Learning
-       1.1.2.  What to model and analyze?
+       1.1.2.  What to Model and Analyze?
        1.1.3.  Previous Formal Requests for FATT Review
    2.  Conventions and Definitions
    3.  Where ProVerif Proofs Break
@@ -215,7 +215,7 @@ Table of Contents
       of ML-KEM in TLS, such as binding shared secret to the TLS
       transcript hash.
 
-1.1.2.  What to model and analyze?
+1.1.2.  What to Model and Analyze?
 
    Simply replacing ideal DHKE by ideal ML-KEM in the formal model is
    not very useful.  We instead need to focus on the more security-
@@ -326,7 +326,8 @@ Table of Contents
    necessarily mean that the ML-KEM proposal in TLS is insecure.  It
    just means that a new proof is required.  We welcome feedback and
    collaborations from the community on doing a thorough analysis in
-   ProVerif while preserving the cryptographic soundness.
+   ProVerif -- such as in Section 1.1.2 -- while preserving the
+   cryptographic soundness.
 
 4.  Justification based on FATT Process
 
@@ -395,9 +396,25 @@ Table of Contents
       -  telephonicrobotics/formal-id-crisis-spec
          (https://github.com/telephonicrobotics/formal-id-crisis-
          spec/blob/c1953127ce004e51b888250591ec9971ad50e98c/TLS-a/fix/
-         tls-lib-simple.pvl#L38-L41)
+         tls-lib-simple.pvl#L38-L41) (owner of this repo is the same as
+         the one before this and has indicated that there was no active
+         private development in this repo)
 
    *  A couple of our ongoing works which are not yet public
+
+   *Note*: Forks may or may not have substantive changes.  It is hard
+   for us to know and judge how much research and development effort
+   someone did privately and did not make public and hence, we do not
+   want to add our subjective measurement of whether someone has
+   substantially worked after forking.  Readers are welcome to make
+   their own opinions by exploring the repos or contact the respective
+   repo owners for further details.  The hyperlinks provide one instance
+   of usage of equation in the main branch based on what is publicly
+   available.
+
+   In our understanding, a couple of WG participants are already working
+   on formal analysis of [I-D.ietf-tls-mlkem] analyzing the items
+   mentioned in Section 1.1.2.
 
 4.1.  Comparison with 8773bis
 
