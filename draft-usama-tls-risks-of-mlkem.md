@@ -142,7 +142,7 @@ It can also help identify all the assumptions under which the properties hold.
 * As a relevant data point in the context of standardization, LAKE WG has done formal analysis for EDHOC-PSK with KEM ([ref](https://mailarchive.ietf.org/arch/msg/lake/2XGOI9OCwylJUfSCasvvwM2FXmw/)).
 * *Computational* analysis (cf. [SoK](https://eprint.iacr.org/2019/1393.pdf)) -- using tools such as CryptoVerif -- seems like a reasonable approach to ensure security of ML-KEM in TLS, such as binding shared secret to the TLS transcript hash.
 
-### What to model and analyze?
+### What to Model and Analyze?
 {: #sec-model-analyze }
 
 Simply replacing ideal DHKE by ideal ML-KEM in the formal model is not very useful. We instead need to focus on the more security-critical questions about integration of ML-KEM in TLS. A few high-level observations to consider for security considerations of {{I-D.ietf-tls-mlkem}}:
@@ -202,7 +202,7 @@ As opposed to both endpoints sending their public key shares g<sup>x</sup> and g
 
 Please note that breaking the existing ProVerif proof does not necessarily mean that the ML-KEM proposal in TLS is insecure.
 It just means that a new proof is required.
-We welcome feedback and collaborations from the community on doing a thorough analysis in ProVerif while preserving the cryptographic soundness.
+We welcome feedback and collaborations from the community on doing a thorough analysis in ProVerif -- such as in {{sec-model-analyze}} --  while preserving the cryptographic soundness.
 
 # Justification based on FATT Process
 {: #sec-just-process }
@@ -234,8 +234,15 @@ This breaks the following proofs in ProVerif:
 * Our previous work extending the model of Bhargavan et al. to the current state of {{I-D.ietf-tls-rfc8446bis}} and integrating remote attestation: {{ID-Crisis}} and {{ID-Crisis-Repo}} (under Apache-2.0 License) and all 3 public forks:
   * [jupenur/formal-spec-id-crisis](https://github.com/jupenur/formal-spec-id-crisis/blob/de2bdec9967bf535f648f0cc8e8d2d90a49104a4/TLS-a/fix/tls-lib-simple.pvl#L38-L41)
   * [nathanaelritz/formal-spec-id-crisis](https://github.com/nathanaelritz/formal-spec-id-crisis/blob/a028cec823b7d9bf13dd5a1dd71ab14c75b1a83d/TLS-a/fix/tls-lib-simple.pvl#L38-L41)
-  * [telephonicrobotics/formal-id-crisis-spec](https://github.com/telephonicrobotics/formal-id-crisis-spec/blob/c1953127ce004e51b888250591ec9971ad50e98c/TLS-a/fix/tls-lib-simple.pvl#L38-L41)
+  * [telephonicrobotics/formal-id-crisis-spec](https://github.com/telephonicrobotics/formal-id-crisis-spec/blob/c1953127ce004e51b888250591ec9971ad50e98c/TLS-a/fix/tls-lib-simple.pvl#L38-L41) (owner of this repo is the same as the one before this and has indicated that there was no active private development in this repo)
 * A couple of our ongoing works which are not yet public
+
+**Note**: Forks may or may not have substantive changes.
+It is hard for us to know and judge how much research and development effort someone did privately and did not make public and hence, we do not want to add our subjective measurement of whether someone has substantially worked after forking.
+Readers are welcome to make their own opinions by exploring the repos or contact the respective repo owners for further details.
+The hyperlinks provide one instance of usage of `equation` in the main branch based on what is publicly available.
+
+In our understanding, a couple of WG participants are already working on formal analysis of {{I-D.ietf-tls-mlkem}} analyzing the items mentioned in {{sec-model-analyze}}.
 
 ## Comparison with 8773bis
 Please note that 8773bis is a much smaller change: it's pretty much standard TLS and still went for FATT review.
