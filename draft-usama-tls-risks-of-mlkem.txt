@@ -4,8 +4,8 @@
 
 Transport Layer Security                                    M. U. Sardar
 Internet-Draft                                       TU Dresden, Germany
-Intended status: Informational                               31 May 2026
-Expires: 2 December 2026
+Intended status: Informational                               1 June 2026
+Expires: 3 December 2026
 
 
             Potential Risks of Standalone ML-KEM in TLS 1.3
@@ -33,6 +33,11 @@ Abstract
    draft also aims to reduce the endless repitition of arguments from
    both sides presented on several lists by documenting these arguments
    so they can simply be referred to.
+
+   We see no reason to believe that hybrids are not _at least_ as strong
+   as the stronger of the two.  We thus believe that standalone ML-KEM
+   in TLS is a security regression compared to hybrid key exchange in
+   TLS.
 
 About This Document
 
@@ -66,7 +71,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 2 December 2026.
+   This Internet-Draft will expire on 3 December 2026.
 
 Copyright Notice
 
@@ -87,7 +92,7 @@ Table of Contents
    1.  Introduction
      1.1.  Motivation
        1.1.1.  Expected Learning
-       1.1.2.  What to Model and Analyze?
+       1.1.2.  Minimum Viable Modeling
        1.1.3.  Previous Formal Requests for FATT Review
    2.  Conventions and Definitions
    3.  Where ProVerif Proofs Break
@@ -215,7 +220,7 @@ Table of Contents
       of ML-KEM in TLS, such as binding shared secret to the TLS
       transcript hash.
 
-1.1.2.  What to Model and Analyze?
+1.1.2.  Minimum Viable Modeling
 
    Simply replacing ideal DHKE by ideal ML-KEM in the formal model is
    not very useful.  We instead need to focus on the more security-
@@ -249,17 +254,19 @@ Table of Contents
       hold, does standalone ML-KEM make side-channel leakage easier?
       This might be a valuable consideration for the implementers.
 
-   We invite collaborations to extend the ProVerif models to perform
-   this analysis.
+   We invite collaborations or independent analysis to extend the
+   ProVerif models to perform this analysis.
 
 1.1.3.  Previous Formal Requests for FATT Review
 
    We have formally requested the chairs to initiate the FATT process
    for [I-D.ietf-tls-mlkem].  See this
    (https://mailarchive.ietf.org/arch/msg/tls/
-   rClgrWm2hnhESXHx56U8InbwQQs/) and this
+   rClgrWm2hnhESXHx56U8InbwQQs/), this
    (https://mailarchive.ietf.org/arch/msg/
-   tls/7lj6fYAweMBwNMxFerNl7xhY0pk/).
+   tls/7lj6fYAweMBwNMxFerNl7xhY0pk/), and this
+   (https://mailarchive.ietf.org/arch/msg/
+   tls/2LukH1riSE5PQPpMVlVGygp4lpg/).
 
 2.  Conventions and Definitions
 
@@ -435,10 +442,10 @@ Table of Contents
 
    In contrast, as mentioned in Section 1.1, standalone MLKEM has a very
    different consensus profile with ca. 25 oppositions in our
-   understanding.  FWIW, this is exactly what makes formal analysis
-   potentially helpful to resolve the issue, build high confidence and
-   offer a statement for security considerations after a careful formal
-   analysis.
+   understanding in the last WGLC.  FWIW, this is exactly what makes
+   formal analysis potentially helpful to resolve the issue, build high
+   confidence and offer a statement for security considerations after a
+   careful formal analysis.
 
 4.2.1.  Technical Rationale
 
@@ -452,11 +459,12 @@ Table of Contents
 
    Moreover, we believe that the two drafts [I-D.ietf-tls-hybrid-design]
    and [I-D.ietf-tls-mlkem] are incomparable on this specific point as
-   hybrid key exchange still has some level of symmetry.  From formal
-   (symbolic) analysis perspective, g^x and g^y are still sent in hybrid
-   key exchange, g^xy is still computed and we believe the commutativity
-   property is applicable for that part as-is.  From formal (symbolic)
-   analysis perspective, ML-KEM is complementary to that.
+   hybrid key exchange still maintains the symmetry in the DHKE part.
+   From formal (symbolic) analysis perspective, g^x and g^y are still
+   sent in hybrid key exchange, g^xy is still computed and we believe
+   the commutativity property is applicable for that part as-is.  From
+   formal (symbolic) analysis perspective, ML-KEM is complementary to
+   that.
 
    Specifically, from Section 4 of [I-D.ietf-tls-ecdhe-mlkem], for the
    symbolic analysis, X25519MLKEM768 in TLS may be viewed as:
@@ -472,7 +480,8 @@ Table of Contents
    list.
 
    For brevity, we omit other assumptions in the properties below and
-   focus on the difference.
+   focus on the difference.  This assumes hybrid constructor to be
+   secure.
 
    We argue that _in general_:
 
@@ -503,9 +512,10 @@ Table of Contents
    Leak out the ECDHE key from hybrid key exchange and you get a
    standalone ML-KEM.  Clearly, hybrid is _in general_ more secure,
    unless ECDHE is fully broken, in which case it still falls equivalent
-   to standalone ML-KEM, or in the hypothetical scenario that there is
+   to standalone ML-KEM, or in the _hypothetical_ scenario that there is
    an implementation bug in the ECDHE part which is triggered only in
-   composition.
+   composition.  No concrete evidence of such a hypothetical scenario
+   has been presented.
 
 6.  Issues That Formal Methods Probably Cannot Solve
 
@@ -522,7 +532,7 @@ Table of Contents
    Disclaimer: This is not meant to be an exhaustive list.
    This is also not meant to pritoritize any concerns over others.
    This is a sincere attempt to slowly capture the opinions
-   to avoid endless repititions from both sides.
+   to avoid endless repetitions from both sides.
    Many substantive concerns are missing.
    We are slowly collecting the concerns, as time allows.
    If your substantive concern is missing, it is unintentional.

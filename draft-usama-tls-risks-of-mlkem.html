@@ -14,6 +14,8 @@ We, therefore, formally request the chairs to initiate the FATT review of standa
 A few WG participants have already volunteered to do formal analysis in ProVerif. 
        This draft also offers some preliminary discussion to help the developers and policy makers make informed choices.
 Finally, the draft also aims to reduce the endless repitition of arguments from both sides presented on several lists by documenting these arguments so they can simply be referred to. 
+       We see no reason to believe that hybrids are not  at least  as strong as the stronger of the two.
+We thus believe that standalone ML-KEM in TLS is a security regression compared to hybrid key exchange in TLS. 
     " name="description">
 <meta content="xml2rfc 3.33.0" name="generator">
 <meta content="draft-usama-tls-risks-of-mlkem-latest" name="ietf.draft">
@@ -1048,11 +1050,11 @@ svg {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">Potential Risks of Standalone ML-KEM in </td>
-<td class="right">May 2026</td>
+<td class="right">June 2026</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Sardar</td>
-<td class="center">Expires 2 December 2026</td>
+<td class="center">Expires 3 December 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1065,12 +1067,12 @@ svg {
 <dd class="internet-draft">draft-usama-tls-risks-of-mlkem-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-05-31" class="published">31 May 2026</time>
+<time datetime="2026-06-01" class="published">1 June 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Informational</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-12-02">2 December 2026</time></dd>
+<dd class="expires"><time datetime="2026-12-03">3 December 2026</time></dd>
 <dt class="label-authors">Author:</dt>
 <dd class="authors">
 <div class="author">
@@ -1090,6 +1092,8 @@ We, therefore, formally request the chairs to initiate the FATT review of standa
 A few WG participants have already volunteered to do formal analysis in ProVerif.<a href="#section-abstract-2" class="pilcrow">¶</a></p>
 <p id="section-abstract-3">This draft also offers some preliminary discussion to help the developers and policy makers make informed choices.
 Finally, the draft also aims to reduce the endless repitition of arguments from both sides presented on several lists by documenting these arguments so they can simply be referred to.<a href="#section-abstract-3" class="pilcrow">¶</a></p>
+<p id="section-abstract-4">We see no reason to believe that hybrids are not <em>at least</em> as strong as the stronger of the two.
+We thus believe that standalone ML-KEM in TLS is a security regression compared to hybrid key exchange in TLS.<a href="#section-abstract-4" class="pilcrow">¶</a></p>
 </section>
 <section class="note rfcEditorRemove" id="section-note.1">
       <h2 id="name-about-this-document">
@@ -1126,7 +1130,7 @@ Finally, the draft also aims to reduce the endless repitition of arguments from 
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 2 December 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 3 December 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1165,7 +1169,7 @@ Finally, the draft also aims to reduce the endless repitition of arguments from 
                     <p id="section-toc.1-1.1.2.1.2.1.1" class="keepWithNext"><a href="#section-1.1.1" class="auto internal xref">1.1.1</a>.  <a href="#name-expected-learning" class="internal xref">Expected Learning</a></p>
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.1.2.2">
-                    <p id="section-toc.1-1.1.2.1.2.2.1" class="keepWithNext"><a href="#section-1.1.2" class="auto internal xref">1.1.2</a>.  <a href="#name-what-to-model-and-analyze" class="internal xref">What to Model and Analyze?</a></p>
+                    <p id="section-toc.1-1.1.2.1.2.2.1" class="keepWithNext"><a href="#section-1.1.2" class="auto internal xref">1.1.2</a>.  <a href="#name-minimum-viable-modeling" class="internal xref">Minimum Viable Modeling</a></p>
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.1.2.3">
                     <p id="section-toc.1-1.1.2.1.2.3.1" class="keepWithNext"><a href="#section-1.1.3" class="auto internal xref">1.1.3</a>.  <a href="#name-previous-formal-requests-fo" class="internal xref">Previous Formal Requests for FATT Review</a></p>
@@ -1353,8 +1357,8 @@ It can also help identify all the assumptions under which the properties hold.<a
 </div>
 <div id="sec-model-analyze">
 <section id="section-1.1.2">
-          <h4 id="name-what-to-model-and-analyze">
-<a href="#section-1.1.2" class="section-number selfRef">1.1.2. </a><a href="#name-what-to-model-and-analyze" class="section-name selfRef">What to Model and Analyze?</a>
+          <h4 id="name-minimum-viable-modeling">
+<a href="#section-1.1.2" class="section-number selfRef">1.1.2. </a><a href="#name-minimum-viable-modeling" class="section-name selfRef">Minimum Viable Modeling</a>
           </h4>
 <p id="section-1.1.2-1">Simply replacing ideal DHKE by ideal ML-KEM in the formal model is not very useful. We instead need to focus on the more security-critical questions about integration of ML-KEM in TLS. A few high-level observations to consider for security considerations of <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span>:<a href="#section-1.1.2-1" class="pilcrow">¶</a></p>
 <ul class="normal">
@@ -1374,7 +1378,7 @@ It can also help identify all the assumptions under which the properties hold.<a
               <p id="section-1.1.2-2.5.1">We believe brainstorming about some robustness (vs. security) properties would also be useful. Even if the security properties hold, does standalone ML-KEM make side-channel leakage easier? This might be a valuable consideration for the implementers.<a href="#section-1.1.2-2.5.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
-<p id="section-1.1.2-3">We invite collaborations to extend the ProVerif models to perform this analysis.<a href="#section-1.1.2-3" class="pilcrow">¶</a></p>
+<p id="section-1.1.2-3">We invite collaborations or independent analysis to extend the ProVerif models to perform this analysis.<a href="#section-1.1.2-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sec-sol-ml-kem">
@@ -1383,7 +1387,7 @@ It can also help identify all the assumptions under which the properties hold.<a
 <a href="#section-1.1.3" class="section-number selfRef">1.1.3. </a><a href="#name-previous-formal-requests-fo" class="section-name selfRef">Previous Formal Requests for FATT Review</a>
           </h4>
 <p id="section-1.1.3-1">We have formally requested the chairs to initiate the FATT process for <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span>.
-See <a href="https://mailarchive.ietf.org/arch/msg/tls/rClgrWm2hnhESXHx56U8InbwQQs/">this</a> and <a href="https://mailarchive.ietf.org/arch/msg/tls/7lj6fYAweMBwNMxFerNl7xhY0pk/">this</a>.<a href="#section-1.1.3-1" class="pilcrow">¶</a></p>
+See <a href="https://mailarchive.ietf.org/arch/msg/tls/rClgrWm2hnhESXHx56U8InbwQQs/">this</a>, <a href="https://mailarchive.ietf.org/arch/msg/tls/7lj6fYAweMBwNMxFerNl7xhY0pk/">this</a>, and <a href="https://mailarchive.ietf.org/arch/msg/tls/2LukH1riSE5PQPpMVlVGygp4lpg/">this</a>.<a href="#section-1.1.3-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1539,14 +1543,14 @@ Based on that, we see no reason to believe that <span>[<a href="#I-D.ietf-tls-ml
 <a href="#section-4.2" class="section-number selfRef">4.2. </a><a href="#name-fatt-review-for-hybrid-key-" class="section-name selfRef">FATT Review for Hybrid Key Exchange?</a>
         </h3>
 <p id="section-4.2-1">Some participants have raised concern that the same issue <em>may</em> apply to hybrid key exchange as well and one of the proposals is to block that draft. We strongly oppose this proposal because that draft has IETF consensus and is in the publication queue. Given the consensus, we see absolutely no reason to block that. As we understand, FATT process was specifically designed to <em>resolve</em> concerns rather than <em>gatekeeping</em>.<a href="#section-4.2-1" class="pilcrow">¶</a></p>
-<p id="section-4.2-2">In contrast, as mentioned in <a href="#sec-mot" class="auto internal xref">Section 1.1</a>, standalone MLKEM has a very different consensus profile with ca. 25 oppositions in our understanding. FWIW, this is exactly what makes formal analysis potentially helpful to resolve the issue, build high confidence and offer a statement for security considerations after a careful formal analysis.<a href="#section-4.2-2" class="pilcrow">¶</a></p>
+<p id="section-4.2-2">In contrast, as mentioned in <a href="#sec-mot" class="auto internal xref">Section 1.1</a>, standalone MLKEM has a very different consensus profile with ca. 25 oppositions in our understanding in the last WGLC. FWIW, this is exactly what makes formal analysis potentially helpful to resolve the issue, build high confidence and offer a statement for security considerations after a careful formal analysis.<a href="#section-4.2-2" class="pilcrow">¶</a></p>
 <div id="technical-rationale">
 <section id="section-4.2.1">
           <h4 id="name-technical-rationale">
 <a href="#section-4.2.1" class="section-number selfRef">4.2.1. </a><a href="#name-technical-rationale" class="section-name selfRef">Technical Rationale</a>
           </h4>
 <p id="section-4.2.1-1">Technically, a proof of <span>[<a href="#I-D.ietf-tls-hybrid-design-09" class="cite xref">I-D.ietf-tls-hybrid-design-09</a>]</span> is done in the computational model using CryptoVerif (cf. <a href="https://bblanche.gitlabpages.inria.fr/publications/BlanchetJacommeCSF24.pdf">ref</a>). As per list discussion, it appears that the proof applies to the latest version of the spec <span>[<a href="#I-D.ietf-tls-hybrid-design" class="cite xref">I-D.ietf-tls-hybrid-design</a>]</span>, as there are no substantive changes from the perspective of formal proof.<a href="#section-4.2.1-1" class="pilcrow">¶</a></p>
-<p id="section-4.2.1-2">Moreover, we believe that the two drafts <span>[<a href="#I-D.ietf-tls-hybrid-design" class="cite xref">I-D.ietf-tls-hybrid-design</a>]</span> and <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span> are incomparable on this specific point as hybrid key exchange still has some level of symmetry. From formal (symbolic) analysis perspective, g<sup>x</sup> and  g<sup>y</sup> are still sent in hybrid key exchange,  g<sup>xy</sup> is still computed and we believe the commutativity property is applicable for that part as-is. From formal (symbolic) analysis perspective, ML-KEM is complementary to that.<a href="#section-4.2.1-2" class="pilcrow">¶</a></p>
+<p id="section-4.2.1-2">Moreover, we believe that the two drafts <span>[<a href="#I-D.ietf-tls-hybrid-design" class="cite xref">I-D.ietf-tls-hybrid-design</a>]</span> and <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span> are incomparable on this specific point as hybrid key exchange still maintains the symmetry in the DHKE part. From formal (symbolic) analysis perspective, g<sup>x</sup> and  g<sup>y</sup> are still sent in hybrid key exchange,  g<sup>xy</sup> is still computed and we believe the commutativity property is applicable for that part as-is. From formal (symbolic) analysis perspective, ML-KEM is complementary to that.<a href="#section-4.2.1-2" class="pilcrow">¶</a></p>
 <p id="section-4.2.1-3">Specifically, from <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-ecdhe-mlkem-05#section-4" class="relref">Section 4</a> of [<a href="#I-D.ietf-tls-ecdhe-mlkem" class="cite xref">I-D.ietf-tls-ecdhe-mlkem</a>]</span>, for the symbolic analysis, X25519MLKEM768 in TLS may be viewed as:<a href="#section-4.2.1-3" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-4.2.1-4">
 <pre>
@@ -1567,7 +1571,8 @@ shared secret = ss || gxy
 <a href="#section-5" class="section-number selfRef">5. </a><a href="#name-formal-analysis-work-in-pro" class="section-name selfRef">Formal Analysis (Work-in-progress)</a>
       </h2>
 <p id="section-5-1">We have presented observation from our ongoing symbolic security analysis (cf. limitations in <a href="#sec-sec-cons" class="auto internal xref">Section 7</a>) using ProVerif on the mailing list.<a href="#section-5-1" class="pilcrow">¶</a></p>
-<p id="section-5-2">For brevity, we omit other assumptions in the properties below and focus on the difference.<a href="#section-5-2" class="pilcrow">¶</a></p>
+<p id="section-5-2">For brevity, we omit other assumptions in the properties below and focus on the difference.
+This assumes hybrid constructor to be secure.<a href="#section-5-2" class="pilcrow">¶</a></p>
 <p id="section-5-3">We argue that <em>in general</em>:<a href="#section-5-3" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-5-4">
 <pre>
@@ -1611,7 +1616,7 @@ Protocol is secure unless ML-KEM is broken.
 <a href="#section-5.3" class="section-number selfRef">5.3. </a><a href="#name-comparison" class="section-name selfRef">Comparison</a>
         </h3>
 <p id="section-5.3-1">Leak out the ECDHE key from hybrid key exchange and you get a standalone ML-KEM.
-Clearly, hybrid is <em>in general</em> more secure, unless ECDHE is fully broken, in which case it still falls equivalent to standalone ML-KEM, or in the hypothetical scenario that there is an implementation bug in the ECDHE part which is triggered only in composition.<a href="#section-5.3-1" class="pilcrow">¶</a></p>
+Clearly, hybrid is <em>in general</em> more secure, unless ECDHE is fully broken, in which case it still falls equivalent to standalone ML-KEM, or in the <em>hypothetical</em> scenario that there is an implementation bug in the ECDHE part which is triggered only in composition. No concrete evidence of such a hypothetical scenario has been presented.<a href="#section-5.3-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1628,7 +1633,7 @@ Clearly, hybrid is <em>in general</em> more secure, unless ECDHE is fully broken
 Disclaimer: This is not meant to be an exhaustive list.
 This is also not meant to pritoritize any concerns over others.
 This is a sincere attempt to slowly capture the opinions
-to avoid endless repititions from both sides.
+to avoid endless repetitions from both sides.
 Many substantive concerns are missing.
 We are slowly collecting the concerns, as time allows.
 If your substantive concern is missing, it is unintentional.
