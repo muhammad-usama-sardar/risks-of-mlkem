@@ -91,15 +91,22 @@ Readers are assumed to be familiar with {{NistFips203}}, {{I-D.ietf-tls-rfc8446b
 TODO: Replace hyperlinks by proper references.
 
 We assert that the security considerations of {{I-D.ietf-tls-mlkem}} are insufficient.
-We believe that consistent with {{TLS-FATT}} process, *symbolic* and *computational* analysis (to be interpreted as in [SoK](https://eprint.iacr.org/2019/1393.pdf)) of integration of standalone ML-KEM in the context of TLS is helpful here.
-We believe that the focus of such analysis should be on the integration details (transcript binding, key schedule, agreement) standalone ML-KEM in the context of TLS, rather than the primitive itself.
+We believe that consistent with {{TLS-FATT}} process, *symbolic* and *computational* analysis (to be interpreted as in [SoK](https://eprint.iacr.org/2019/1393.pdf)) of **integration** of standalone ML-KEM in the context of TLS is helpful here.
+
+~~~
+We believe that the focus of such analysis should be on the
+*integration* details (transcript binding, key schedule, agreement)
+standalone ML-KEM in the context of TLS, rather than the *primitive*
+itself.
+~~~
+
 We believe that if the author or any WG participant has done any formal analysis, it would be very helpful to present the current state of formal analysis in the next meeting for discussion.
 
 Some existing computational analysis for standalone ML-KEM in TLS include [this](https://eprint.iacr.org/2021/844) and [this](https://eprint.iacr.org/2024/1360).
 Both are based on pen-and-paper proofs.
 At the symbolic level, some analysis -- such as [this](https://eprint.iacr.org/2022/1111.pdf) for KEMTLS in Tamarin -- exists. In our understanding, both client and server encapsulate, which may bring the symmetry.
 
-We are not aware of any peer-reviewed work on integration of standalone ML-KEM in TLS based on ProVerif.
+We are not aware of any peer-reviewed work on **integration** of standalone ML-KEM in TLS based on ProVerif.
 We are not aware of any literature which claims that standalone ML-KEM in TLS is better than hybrid key exchange in TLS.
 
 ## Motivation
@@ -112,7 +119,7 @@ This is because of the following reasons.
 In the last WGLC, {{I-D.ietf-tls-mlkem}} had an opposition of several (ca. 25 in our understanding) WG participants -- even more than the supporters (ca. 21 in our understanding). We see 2 possible options:
 
 * Continue tabletop discussions on **subjective** estimation of urgency, risks, costs, tradeoffs, etc., and keep burning WG energy by endless repitition.
-* Do some technical analysis using (*symbolic* and *computational*) formal methods to get a confirmation on the security of integration of standalone ML-KEM in the context of TLS and offer a statement for security considerations.
+* Do some technical analysis using (*symbolic* and *computational*) formal methods to get a confirmation on the security of **integration** of standalone ML-KEM in the context of TLS and offer a statement for security considerations.
 
 We believe the former cannot resolve the dispute. We sincerely **hope** the latter will help.
 
@@ -138,7 +145,7 @@ equally well to standalone ML-KEM.
 
 Adversary can record all traffic and decrypt it when ML-KEM is broken.
 The opinions here vary from "ML-KEM is probably secure" to "ML-KEM is probably already secrectly broken."
-Formal methods can operate under the assumption that ML-KEM is secure, and focus on the integration of ML-KEM in TLS under this assumption.
+Formal methods can operate under the assumption that ML-KEM is secure, and focus on the **integration** of ML-KEM in TLS under this assumption.
 
 * As an example, formal methods can help justify design choices, such as the preference for hybrids.
 It can also help identify all the assumptions under which the properties hold.
@@ -148,7 +155,7 @@ It can also help identify all the assumptions under which the properties hold.
 ### Minimum Viable Modeling
 {: #sec-model-analyze }
 
-Simply replacing ideal DHKE by ideal ML-KEM in the formal model is not very useful. We instead need to focus on the more security-critical questions about integration of ML-KEM in TLS. A few high-level observations to consider for security considerations of {{I-D.ietf-tls-mlkem}}:
+Simply replacing ideal DHKE by ideal ML-KEM in the formal model is not very useful. We instead need to focus on the more security-critical questions about **integration** of ML-KEM in TLS. A few high-level observations to consider for security considerations of {{I-D.ietf-tls-mlkem}}:
 
 * The model needs to consider that either side could have initiated the TLS, rather than modeling client and server as static roles in the model. When it will be modeled as non-static, it would be interesting to see whether the asymmetry issue becomes visible in at least some property. We consider it very critical for security considerations of {{I-D.ietf-tls-mlkem}} and this is the key point of this draft.
 * Different failure modes proposed on list can be modeled.
@@ -386,7 +393,7 @@ In any case, some participants see no reason to create panic for publication of 
 "Cost" has been presented on the list as the motivation for standalone ML-KEM in TLS but no supporting analysis has yet been presented.
 Our observation from {{Section 4 of -hybrid}} is that -- for example -- for X25519MLKEM768, the traditional part seems negligible compared to ML-KEM part in `key_exchange`:
 
-| Field         | ML-KEM part        | X25519      |
+| Bytes in field| Post- PQ part (ML-KEM)      | Pre-PQ part (X25519) |
 |---------------|--------------------|-------------|
 | Client share  | 1184               | 32          |
 | Server share  | 1088               | 32          |
@@ -416,6 +423,10 @@ Some participants believe that NIST has rushed through the process and not addre
 
 ## Too Early
 Some participants simply believe that publication of {{I-D.ietf-tls-mlkem}} and related discussions are just too early and unnecessary.
+
+## Patents
+
+Some WG participants have raised some concerns related to patents. See some relevant patents [here](https://datatracker.ietf.org/ipr/search/?submit=draft&id=draft-ietf-tls-mlkem).
 
 
 # Security Considerations
