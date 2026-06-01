@@ -80,6 +80,9 @@ A few WG participants have already volunteered to do formal analysis in ProVerif
 This draft also offers some preliminary discussion to help the developers and policy makers make informed choices.
 Finally, the draft also aims to reduce the endless repitition of arguments from both sides presented on several lists by documenting these arguments so they can simply be referred to.
 
+We see no reason to believe that hybrids are not *at least* as strong as the stronger of the two.
+We thus believe that standalone ML-KEM in TLS is a security regression compared to hybrid key exchange in TLS.
+
 --- middle
 
 # Introduction
@@ -142,7 +145,7 @@ It can also help identify all the assumptions under which the properties hold.
 * As a relevant data point in the context of standardization, LAKE WG has done formal analysis for EDHOC-PSK with KEM ([ref](https://mailarchive.ietf.org/arch/msg/lake/2XGOI9OCwylJUfSCasvvwM2FXmw/)).
 * *Computational* analysis (cf. [SoK](https://eprint.iacr.org/2019/1393.pdf)) -- using tools such as CryptoVerif -- seems like a reasonable approach to ensure security of ML-KEM in TLS, such as binding shared secret to the TLS transcript hash.
 
-### What to Model and Analyze?
+### Minimum Viable Modeling
 {: #sec-model-analyze }
 
 Simply replacing ideal DHKE by ideal ML-KEM in the formal model is not very useful. We instead need to focus on the more security-critical questions about integration of ML-KEM in TLS. A few high-level observations to consider for security considerations of {{I-D.ietf-tls-mlkem}}:
@@ -153,13 +156,13 @@ Simply replacing ideal DHKE by ideal ML-KEM in the formal model is not very usef
 * It will be interesting to see some analysis about any subtle cases where hybrid key exchange in TLS is *not better* than standalone ML-KEM in TLS. Our understanding is that some participants would like to see some statement on the comparison since hybrid key exchange is the de facto standard.
 * We believe brainstorming about some robustness (vs. security) properties would also be useful. Even if the security properties hold, does standalone ML-KEM make side-channel leakage easier? This might be a valuable consideration for the implementers.
 
-We invite collaborations to extend the ProVerif models to perform this analysis.
+We invite collaborations or independent analysis to extend the ProVerif models to perform this analysis.
 
 ### Previous Formal Requests for FATT Review
 {: #sec-sol-ml-kem }
 
 We have formally requested the chairs to initiate the FATT process for {{I-D.ietf-tls-mlkem}}.
-See [this](https://mailarchive.ietf.org/arch/msg/tls/rClgrWm2hnhESXHx56U8InbwQQs/) and [this](https://mailarchive.ietf.org/arch/msg/tls/7lj6fYAweMBwNMxFerNl7xhY0pk/).
+See [this](https://mailarchive.ietf.org/arch/msg/tls/rClgrWm2hnhESXHx56U8InbwQQs/), [this](https://mailarchive.ietf.org/arch/msg/tls/7lj6fYAweMBwNMxFerNl7xhY0pk/), and [this](https://mailarchive.ietf.org/arch/msg/tls/2LukH1riSE5PQPpMVlVGygp4lpg/).
 
 # Conventions and Definitions
 
@@ -253,13 +256,13 @@ Based on that, we see no reason to believe that {{I-D.ietf-tls-mlkem}} -- with k
 
 Some participants have raised concern that the same issue *may* apply to hybrid key exchange as well and one of the proposals is to block that draft. We strongly oppose this proposal because that draft has IETF consensus and is in the publication queue. Given the consensus, we see absolutely no reason to block that. As we understand, FATT process was specifically designed to *resolve* concerns rather than *gatekeeping*.
 
-In contrast, as mentioned in {{sec-mot}}, standalone MLKEM has a very different consensus profile with ca. 25 oppositions in our understanding. FWIW, this is exactly what makes formal analysis potentially helpful to resolve the issue, build high confidence and offer a statement for security considerations after a careful formal analysis.
+In contrast, as mentioned in {{sec-mot}}, standalone MLKEM has a very different consensus profile with ca. 25 oppositions in our understanding in the last WGLC. FWIW, this is exactly what makes formal analysis potentially helpful to resolve the issue, build high confidence and offer a statement for security considerations after a careful formal analysis.
 
 ### Technical Rationale
 
 Technically, a proof of {{I-D.ietf-tls-hybrid-design-09}} is done in the computational model using CryptoVerif (cf. [ref](https://bblanche.gitlabpages.inria.fr/publications/BlanchetJacommeCSF24.pdf)). As per list discussion, it appears that the proof applies to the latest version of the spec {{I-D.ietf-tls-hybrid-design}}, as there are no substantive changes from the perspective of formal proof.
 
-Moreover, we believe that the two drafts {{I-D.ietf-tls-hybrid-design}} and {{I-D.ietf-tls-mlkem}} are incomparable on this specific point as hybrid key exchange still has some level of symmetry. From formal (symbolic) analysis perspective, g<sup>x</sup> and  g<sup>y</sup> are still sent in hybrid key exchange,  g<sup>xy</sup> is still computed and we believe the commutativity property is applicable for that part as-is. From formal (symbolic) analysis perspective, ML-KEM is complementary to that.
+Moreover, we believe that the two drafts {{I-D.ietf-tls-hybrid-design}} and {{I-D.ietf-tls-mlkem}} are incomparable on this specific point as hybrid key exchange still maintains the symmetry in the DHKE part. From formal (symbolic) analysis perspective, g<sup>x</sup> and  g<sup>y</sup> are still sent in hybrid key exchange,  g<sup>xy</sup> is still computed and we believe the commutativity property is applicable for that part as-is. From formal (symbolic) analysis perspective, ML-KEM is complementary to that.
 
 Specifically, from {{Section 4 of -hybrid}}, for the symbolic analysis, X25519MLKEM768 in TLS may be viewed as:
 
@@ -273,6 +276,7 @@ shared secret = ss || gxy
 We have presented observation from our ongoing symbolic security analysis (cf. limitations in {{sec-sec-cons}}) using ProVerif on the mailing list.
 
 For brevity, we omit other assumptions in the properties below and focus on the difference.
+This assumes hybrid constructor to be secure.
 
 We argue that *in general*:
 
@@ -305,7 +309,7 @@ If ML-KEM is broken, the whole system is broken.
 
 ## Comparison
 Leak out the ECDHE key from hybrid key exchange and you get a standalone ML-KEM.
-Clearly, hybrid is *in general* more secure, unless ECDHE is fully broken, in which case it still falls equivalent to standalone ML-KEM, or in the hypothetical scenario that there is an implementation bug in the ECDHE part which is triggered only in composition.
+Clearly, hybrid is *in general* more secure, unless ECDHE is fully broken, in which case it still falls equivalent to standalone ML-KEM, or in the *hypothetical* scenario that there is an implementation bug in the ECDHE part which is triggered only in composition. No concrete evidence of such a hypothetical scenario has been presented.
 
 
 # Issues That Formal Methods Probably Cannot Solve
@@ -319,7 +323,7 @@ It is necessary to mention that even several respectable cryptographers in the c
 Disclaimer: This is not meant to be an exhaustive list.
 This is also not meant to pritoritize any concerns over others.
 This is a sincere attempt to slowly capture the opinions
-to avoid endless repititions from both sides.
+to avoid endless repetitions from both sides.
 Many substantive concerns are missing.
 We are slowly collecting the concerns, as time allows.
 If your substantive concern is missing, it is unintentional.
