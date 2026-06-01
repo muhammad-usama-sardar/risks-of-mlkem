@@ -1247,6 +1247,9 @@ We thus believe that standalone ML-KEM in TLS is a security regression compared 
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.10">
                 <p id="section-toc.1-1.6.2.10.1"><a href="#section-6.10" class="auto internal xref">6.10</a>. <a href="#name-too-early" class="internal xref">Too Early</a></p>
 </li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.11">
+                <p id="section-toc.1-1.6.2.11.1"><a href="#section-6.11" class="auto internal xref">6.11</a>. <a href="#name-patents" class="internal xref">Patents</a></p>
+</li>
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7">
@@ -1287,14 +1290,21 @@ We thus believe that standalone ML-KEM in TLS is a security regression compared 
 <p id="section-1-1">Readers are assumed to be familiar with <span>[<a href="#NistFips203" class="cite xref">NistFips203</a>]</span>, <span>[<a href="#I-D.ietf-tls-rfc8446bis" class="cite xref">I-D.ietf-tls-rfc8446bis</a>]</span>, and <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span>. Note that the draft has currently several hyperlinks.
 TODO: Replace hyperlinks by proper references.<a href="#section-1-1" class="pilcrow">¶</a></p>
 <p id="section-1-2">We assert that the security considerations of <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span> are insufficient.
-We believe that consistent with <span>[<a href="#TLS-FATT" class="cite xref">TLS-FATT</a>]</span> process, <em>symbolic</em> and <em>computational</em> analysis (to be interpreted as in <a href="https://eprint.iacr.org/2019/1393.pdf">SoK</a>) of integration of standalone ML-KEM in the context of TLS is helpful here.
-We believe that the focus of such analysis should be on the integration details (transcript binding, key schedule, agreement) standalone ML-KEM in the context of TLS, rather than the primitive itself.
-We believe that if the author or any WG participant has done any formal analysis, it would be very helpful to present the current state of formal analysis in the next meeting for discussion.<a href="#section-1-2" class="pilcrow">¶</a></p>
-<p id="section-1-3">Some existing computational analysis for standalone ML-KEM in TLS include <a href="https://eprint.iacr.org/2021/844">this</a> and <a href="https://eprint.iacr.org/2024/1360">this</a>.
+We believe that consistent with <span>[<a href="#TLS-FATT" class="cite xref">TLS-FATT</a>]</span> process, <em>symbolic</em> and <em>computational</em> analysis (to be interpreted as in <a href="https://eprint.iacr.org/2019/1393.pdf">SoK</a>) of <strong>integration</strong> of standalone ML-KEM in the context of TLS is helpful here.<a href="#section-1-2" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-1-3">
+<pre>
+We believe that the focus of such analysis should be on the
+*integration* details (transcript binding, key schedule, agreement)
+standalone ML-KEM in the context of TLS, rather than the *primitive*
+itself.
+</pre><a href="#section-1-3" class="pilcrow">¶</a>
+</div>
+<p id="section-1-4">We believe that if the author or any WG participant has done any formal analysis, it would be very helpful to present the current state of formal analysis in the next meeting for discussion.<a href="#section-1-4" class="pilcrow">¶</a></p>
+<p id="section-1-5">Some existing computational analysis for standalone ML-KEM in TLS include <a href="https://eprint.iacr.org/2021/844">this</a> and <a href="https://eprint.iacr.org/2024/1360">this</a>.
 Both are based on pen-and-paper proofs.
-At the symbolic level, some analysis -- such as <a href="https://eprint.iacr.org/2022/1111.pdf">this</a> for KEMTLS in Tamarin -- exists. In our understanding, both client and server encapsulate, which may bring the symmetry.<a href="#section-1-3" class="pilcrow">¶</a></p>
-<p id="section-1-4">We are not aware of any peer-reviewed work on integration of standalone ML-KEM in TLS based on ProVerif.
-We are not aware of any literature which claims that standalone ML-KEM in TLS is better than hybrid key exchange in TLS.<a href="#section-1-4" class="pilcrow">¶</a></p>
+At the symbolic level, some analysis -- such as <a href="https://eprint.iacr.org/2022/1111.pdf">this</a> for KEMTLS in Tamarin -- exists. In our understanding, both client and server encapsulate, which may bring the symmetry.<a href="#section-1-5" class="pilcrow">¶</a></p>
+<p id="section-1-6">We are not aware of any peer-reviewed work on <strong>integration</strong> of standalone ML-KEM in TLS based on ProVerif.
+We are not aware of any literature which claims that standalone ML-KEM in TLS is better than hybrid key exchange in TLS.<a href="#section-1-6" class="pilcrow">¶</a></p>
 <div id="sec-mot">
 <section id="section-1.1">
         <h3 id="name-motivation">
@@ -1309,7 +1319,7 @@ This is because of the following reasons.<a href="#section-1.1-1" class="pilcrow
             <p id="section-1.1-3.1.1">Continue tabletop discussions on <strong>subjective</strong> estimation of urgency, risks, costs, tradeoffs, etc., and keep burning WG energy by endless repitition.<a href="#section-1.1-3.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-1.1-3.2">
-            <p id="section-1.1-3.2.1">Do some technical analysis using (<em>symbolic</em> and <em>computational</em>) formal methods to get a confirmation on the security of integration of standalone ML-KEM in the context of TLS and offer a statement for security considerations.<a href="#section-1.1-3.2.1" class="pilcrow">¶</a></p>
+            <p id="section-1.1-3.2.1">Do some technical analysis using (<em>symbolic</em> and <em>computational</em>) formal methods to get a confirmation on the security of <strong>integration</strong> of standalone ML-KEM in the context of TLS and offer a statement for security considerations.<a href="#section-1.1-3.2.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 <p id="section-1.1-4">We believe the former cannot resolve the dispute. We sincerely <strong>hope</strong> the latter will help.<a href="#section-1.1-4" class="pilcrow">¶</a></p>
@@ -1340,7 +1350,7 @@ equally well to standalone ML-KEM.
 </div>
 <p id="section-1.1.1-3">Adversary can record all traffic and decrypt it when ML-KEM is broken.
 The opinions here vary from "ML-KEM is probably secure" to "ML-KEM is probably already secrectly broken."
-Formal methods can operate under the assumption that ML-KEM is secure, and focus on the integration of ML-KEM in TLS under this assumption.<a href="#section-1.1.1-3" class="pilcrow">¶</a></p>
+Formal methods can operate under the assumption that ML-KEM is secure, and focus on the <strong>integration</strong> of ML-KEM in TLS under this assumption.<a href="#section-1.1.1-3" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-1.1.1-4.1">
               <p id="section-1.1.1-4.1.1">As an example, formal methods can help justify design choices, such as the preference for hybrids.
@@ -1360,7 +1370,7 @@ It can also help identify all the assumptions under which the properties hold.<a
           <h4 id="name-minimum-viable-modeling">
 <a href="#section-1.1.2" class="section-number selfRef">1.1.2. </a><a href="#name-minimum-viable-modeling" class="section-name selfRef">Minimum Viable Modeling</a>
           </h4>
-<p id="section-1.1.2-1">Simply replacing ideal DHKE by ideal ML-KEM in the formal model is not very useful. We instead need to focus on the more security-critical questions about integration of ML-KEM in TLS. A few high-level observations to consider for security considerations of <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span>:<a href="#section-1.1.2-1" class="pilcrow">¶</a></p>
+<p id="section-1.1.2-1">Simply replacing ideal DHKE by ideal ML-KEM in the formal model is not very useful. We instead need to focus on the more security-critical questions about <strong>integration</strong> of ML-KEM in TLS. A few high-level observations to consider for security considerations of <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span>:<a href="#section-1.1.2-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-1.1.2-2.1">
               <p id="section-1.1.2-2.1.1">The model needs to consider that either side could have initiated the TLS, rather than modeling client and server as static roles in the model. When it will be modeled as non-static, it would be interesting to see whether the asymmetry issue becomes visible in at least some property. We consider it very critical for security considerations of <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span> and this is the key point of this draft.<a href="#section-1.1.2-2.1.1" class="pilcrow">¶</a></p>
@@ -1716,9 +1726,9 @@ Our observation from <span><a href="https://datatracker.ietf.org/doc/html/draft-
           <caption><a href="#table-1" class="selfRef">Table 1</a></caption>
 <thead>
             <tr>
-              <th class="text-left" rowspan="1" colspan="1">Field</th>
-              <th class="text-left" rowspan="1" colspan="1">ML-KEM part</th>
-              <th class="text-left" rowspan="1" colspan="1">X25519</th>
+              <th class="text-left" rowspan="1" colspan="1">Bytes in field</th>
+              <th class="text-left" rowspan="1" colspan="1">Post- PQ part (ML-KEM)</th>
+              <th class="text-left" rowspan="1" colspan="1">Pre-PQ part (X25519)</th>
             </tr>
           </thead>
           <tbody>
@@ -1779,6 +1789,14 @@ We invite the WG participants to perform this analysis and share the results wit
 <a href="#section-6.10" class="section-number selfRef">6.10. </a><a href="#name-too-early" class="section-name selfRef">Too Early</a>
         </h3>
 <p id="section-6.10-1">Some participants simply believe that publication of <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span> and related discussions are just too early and unnecessary.<a href="#section-6.10-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="patents">
+<section id="section-6.11">
+        <h3 id="name-patents">
+<a href="#section-6.11" class="section-number selfRef">6.11. </a><a href="#name-patents" class="section-name selfRef">Patents</a>
+        </h3>
+<p id="section-6.11-1">Some WG participants have raised some concerns related to patents. See some relevant patents <a href="https://datatracker.ietf.org/ipr/search/?submit=draft&amp;id=draft-ietf-tls-mlkem">here</a>.<a href="#section-6.11-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
