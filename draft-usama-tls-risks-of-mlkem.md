@@ -80,7 +80,7 @@ A few WG participants have already volunteered to do formal analysis in ProVerif
 This draft also offers some preliminary discussion to help the developers and policy makers make informed choices.
 Finally, the draft also aims to reduce the endless repitition of arguments from both sides presented on several lists by documenting these arguments so they can simply be referred to.
 
-We see no reason to believe that hybrids are not *at least* as strong as the stronger of the two.
+We see no reason to believe that hybrids are not *at least* as strong as the stronger of the two components.
 We thus believe that standalone ML-KEM in TLS is a security regression compared to hybrid key exchange in TLS.
 
 --- middle
@@ -96,8 +96,8 @@ We believe that consistent with {{TLS-FATT}} process, *symbolic* and *computatio
 ~~~
 We believe that the focus of such analysis should be on the
 *integration* details (transcript binding, key schedule, agreement)
-standalone ML-KEM in the context of TLS, rather than the *primitive*
-itself.
+for standalone ML-KEM in the context of TLS, rather than the
+*primitive* itself.
 ~~~
 
 We believe that if the author or any WG participant has done any formal analysis, it would be very helpful to present the current state of formal analysis in the next meeting for discussion.
@@ -107,7 +107,7 @@ Both are based on pen-and-paper proofs.
 At the symbolic level, some analysis -- such as [this](https://eprint.iacr.org/2022/1111.pdf) for KEMTLS in Tamarin -- exists. In our understanding, both client and server encapsulate, which may bring the symmetry.
 
 We are not aware of any peer-reviewed work on **integration** of standalone ML-KEM in TLS based on ProVerif.
-We are not aware of any literature which claims that standalone ML-KEM in TLS is better than hybrid key exchange in TLS.
+We are not aware of any literature which claims that standalone ML-KEM in TLS is *better* than hybrid key exchange in TLS.
 
 ## Motivation
 {: #sec-mot }
@@ -170,6 +170,31 @@ We invite collaborations or independent analysis to extend the ProVerif models t
 
 We have formally requested the chairs to initiate the FATT process for {{I-D.ietf-tls-mlkem}}.
 See [this](https://mailarchive.ietf.org/arch/msg/tls/rClgrWm2hnhESXHx56U8InbwQQs/), [this](https://mailarchive.ietf.org/arch/msg/tls/7lj6fYAweMBwNMxFerNl7xhY0pk/), and [this](https://mailarchive.ietf.org/arch/msg/tls/2LukH1riSE5PQPpMVlVGygp4lpg/).
+
+### FATT Review is Harmless
+
+For those who are worried, please note the legitimate outcome *nothing required* in {{TLS-FATT}}.
+
+~~~
+Recommendations output from the FATT for a particular document
+may range from 'nothing required' to 'pen-and-paper proof
+can be updated' to 'a formal methods model using a specific
+tool ought to be done' - the 'formal' is not limited to
+formal methods but to formal security modeling generally.
+~~~
+
+Please also note {{TLS-FATT}}:
+
+~~~
+The output may say that additional analysis is not warranted
+or it may indicate what type of analysis should be done.
+~~~
+
+Moreover, WG retains its authority {{TLS-FATT}}:
+
+~~~
+The working group is not obligated to follow the FATT recommendation.
+~~~
 
 # Conventions and Definitions
 
