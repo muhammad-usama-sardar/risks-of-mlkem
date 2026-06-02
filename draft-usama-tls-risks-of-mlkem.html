@@ -14,7 +14,7 @@ We, therefore, formally request the chairs to initiate the FATT review of standa
 A few WG participants have already volunteered to do formal analysis in ProVerif. 
        This draft also offers some preliminary discussion to help the developers and policy makers make informed choices.
 Finally, the draft also aims to reduce the endless repitition of arguments from both sides presented on several lists by documenting these arguments so they can simply be referred to. 
-       We see no reason to believe that hybrids are not  at least  as strong as the stronger of the two.
+       We see no reason to believe that hybrids are not  at least  as strong as the stronger of the two components.
 We thus believe that standalone ML-KEM in TLS is a security regression compared to hybrid key exchange in TLS. 
     " name="description">
 <meta content="xml2rfc 3.33.0" name="generator">
@@ -1054,7 +1054,7 @@ svg {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Sardar</td>
-<td class="center">Expires 3 December 2026</td>
+<td class="center">Expires 4 December 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1067,12 +1067,12 @@ svg {
 <dd class="internet-draft">draft-usama-tls-risks-of-mlkem-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-06-01" class="published">1 June 2026</time>
+<time datetime="2026-06-02" class="published">2 June 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Informational</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-12-03">3 December 2026</time></dd>
+<dd class="expires"><time datetime="2026-12-04">4 December 2026</time></dd>
 <dt class="label-authors">Author:</dt>
 <dd class="authors">
 <div class="author">
@@ -1092,7 +1092,7 @@ We, therefore, formally request the chairs to initiate the FATT review of standa
 A few WG participants have already volunteered to do formal analysis in ProVerif.<a href="#section-abstract-2" class="pilcrow">¶</a></p>
 <p id="section-abstract-3">This draft also offers some preliminary discussion to help the developers and policy makers make informed choices.
 Finally, the draft also aims to reduce the endless repitition of arguments from both sides presented on several lists by documenting these arguments so they can simply be referred to.<a href="#section-abstract-3" class="pilcrow">¶</a></p>
-<p id="section-abstract-4">We see no reason to believe that hybrids are not <em>at least</em> as strong as the stronger of the two.
+<p id="section-abstract-4">We see no reason to believe that hybrids are not <em>at least</em> as strong as the stronger of the two components.
 We thus believe that standalone ML-KEM in TLS is a security regression compared to hybrid key exchange in TLS.<a href="#section-abstract-4" class="pilcrow">¶</a></p>
 </section>
 <section class="note rfcEditorRemove" id="section-note.1">
@@ -1130,7 +1130,7 @@ We thus believe that standalone ML-KEM in TLS is a security regression compared 
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 3 December 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 4 December 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1173,6 +1173,9 @@ We thus believe that standalone ML-KEM in TLS is a security regression compared 
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.1.2.3">
                     <p id="section-toc.1-1.1.2.1.2.3.1" class="keepWithNext"><a href="#section-1.1.3" class="auto internal xref">1.1.3</a>.  <a href="#name-previous-formal-requests-fo" class="internal xref">Previous Formal Requests for FATT Review</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.1.2.4">
+                    <p id="section-toc.1-1.1.2.1.2.4.1"><a href="#section-1.1.4" class="auto internal xref">1.1.4</a>.  <a href="#name-fatt-review-is-harmless" class="internal xref">FATT Review is Harmless</a></p>
 </li>
                 </ul>
 </li>
@@ -1295,8 +1298,8 @@ We believe that consistent with <span>[<a href="#TLS-FATT" class="cite xref">TLS
 <pre>
 We believe that the focus of such analysis should be on the
 *integration* details (transcript binding, key schedule, agreement)
-standalone ML-KEM in the context of TLS, rather than the *primitive*
-itself.
+for standalone ML-KEM in the context of TLS, rather than the
+*primitive* itself.
 </pre><a href="#section-1-3" class="pilcrow">¶</a>
 </div>
 <p id="section-1-4">We believe that if the author or any WG participant has done any formal analysis, it would be very helpful to present the current state of formal analysis in the next meeting for discussion.<a href="#section-1-4" class="pilcrow">¶</a></p>
@@ -1304,7 +1307,7 @@ itself.
 Both are based on pen-and-paper proofs.
 At the symbolic level, some analysis -- such as <a href="https://eprint.iacr.org/2022/1111.pdf">this</a> for KEMTLS in Tamarin -- exists. In our understanding, both client and server encapsulate, which may bring the symmetry.<a href="#section-1-5" class="pilcrow">¶</a></p>
 <p id="section-1-6">We are not aware of any peer-reviewed work on <strong>integration</strong> of standalone ML-KEM in TLS based on ProVerif.
-We are not aware of any literature which claims that standalone ML-KEM in TLS is better than hybrid key exchange in TLS.<a href="#section-1-6" class="pilcrow">¶</a></p>
+We are not aware of any literature which claims that standalone ML-KEM in TLS is <em>better</em> than hybrid key exchange in TLS.<a href="#section-1-6" class="pilcrow">¶</a></p>
 <div id="sec-mot">
 <section id="section-1.1">
         <h3 id="name-motivation">
@@ -1398,6 +1401,36 @@ It can also help identify all the assumptions under which the properties hold.<a
           </h4>
 <p id="section-1.1.3-1">We have formally requested the chairs to initiate the FATT process for <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span>.
 See <a href="https://mailarchive.ietf.org/arch/msg/tls/rClgrWm2hnhESXHx56U8InbwQQs/">this</a>, <a href="https://mailarchive.ietf.org/arch/msg/tls/7lj6fYAweMBwNMxFerNl7xhY0pk/">this</a>, and <a href="https://mailarchive.ietf.org/arch/msg/tls/2LukH1riSE5PQPpMVlVGygp4lpg/">this</a>.<a href="#section-1.1.3-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="fatt-review-is-harmless">
+<section id="section-1.1.4">
+          <h4 id="name-fatt-review-is-harmless">
+<a href="#section-1.1.4" class="section-number selfRef">1.1.4. </a><a href="#name-fatt-review-is-harmless" class="section-name selfRef">FATT Review is Harmless</a>
+          </h4>
+<p id="section-1.1.4-1">For those who are worried, please note the legitimate outcome <em>nothing required</em> in <span>[<a href="#TLS-FATT" class="cite xref">TLS-FATT</a>]</span>.<a href="#section-1.1.4-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-1.1.4-2">
+<pre>
+Recommendations output from the FATT for a particular document
+may range from 'nothing required' to 'pen-and-paper proof
+can be updated' to 'a formal methods model using a specific
+tool ought to be done' - the 'formal' is not limited to
+formal methods but to formal security modeling generally.
+</pre><a href="#section-1.1.4-2" class="pilcrow">¶</a>
+</div>
+<p id="section-1.1.4-3">Please also note <span>[<a href="#TLS-FATT" class="cite xref">TLS-FATT</a>]</span>:<a href="#section-1.1.4-3" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-1.1.4-4">
+<pre>
+The output may say that additional analysis is not warranted
+or it may indicate what type of analysis should be done.
+</pre><a href="#section-1.1.4-4" class="pilcrow">¶</a>
+</div>
+<p id="section-1.1.4-5">Moreover, WG retains its authority <span>[<a href="#TLS-FATT" class="cite xref">TLS-FATT</a>]</span>:<a href="#section-1.1.4-5" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-1.1.4-6">
+<pre>
+The working group is not obligated to follow the FATT recommendation.
+</pre><a href="#section-1.1.4-6" class="pilcrow">¶</a>
+</div>
 </section>
 </div>
 </section>

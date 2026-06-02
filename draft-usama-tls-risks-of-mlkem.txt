@@ -4,8 +4,8 @@
 
 Transport Layer Security                                    M. U. Sardar
 Internet-Draft                                       TU Dresden, Germany
-Intended status: Informational                               1 June 2026
-Expires: 3 December 2026
+Intended status: Informational                               2 June 2026
+Expires: 4 December 2026
 
 
             Potential Risks of Standalone ML-KEM in TLS 1.3
@@ -35,9 +35,9 @@ Abstract
    so they can simply be referred to.
 
    We see no reason to believe that hybrids are not _at least_ as strong
-   as the stronger of the two.  We thus believe that standalone ML-KEM
-   in TLS is a security regression compared to hybrid key exchange in
-   TLS.
+   as the stronger of the two components.  We thus believe that
+   standalone ML-KEM in TLS is a security regression compared to hybrid
+   key exchange in TLS.
 
 About This Document
 
@@ -71,7 +71,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 3 December 2026.
+   This Internet-Draft will expire on 4 December 2026.
 
 Copyright Notice
 
@@ -94,6 +94,7 @@ Table of Contents
        1.1.1.  Expected Learning
        1.1.2.  Minimum Viable Modeling
        1.1.3.  Previous Formal Requests for FATT Review
+       1.1.4.  FATT Review is Harmless
    2.  Conventions and Definitions
    3.  Where ProVerif Proofs Break
    4.  Justification based on FATT Process
@@ -140,8 +141,8 @@ Table of Contents
 
    We believe that the focus of such analysis should be on the
    *integration* details (transcript binding, key schedule, agreement)
-   standalone ML-KEM in the context of TLS, rather than the *primitive*
-   itself.
+   for standalone ML-KEM in the context of TLS, rather than the
+   *primitive* itself.
 
    We believe that if the author or any WG participant has done any
    formal analysis, it would be very helpful to present the current
@@ -157,8 +158,8 @@ Table of Contents
 
    We are not aware of any peer-reviewed work on *integration* of
    standalone ML-KEM in TLS based on ProVerif.  We are not aware of any
-   literature which claims that standalone ML-KEM in TLS is better than
-   hybrid key exchange in TLS.
+   literature which claims that standalone ML-KEM in TLS is _better_
+   than hybrid key exchange in TLS.
 
 1.1.  Motivation
 
@@ -271,6 +272,26 @@ Table of Contents
    tls/7lj6fYAweMBwNMxFerNl7xhY0pk/), and this
    (https://mailarchive.ietf.org/arch/msg/
    tls/2LukH1riSE5PQPpMVlVGygp4lpg/).
+
+1.1.4.  FATT Review is Harmless
+
+   For those who are worried, please note the legitimate outcome
+   _nothing required_ in [TLS-FATT].
+
+   Recommendations output from the FATT for a particular document
+   may range from 'nothing required' to 'pen-and-paper proof
+   can be updated' to 'a formal methods model using a specific
+   tool ought to be done' - the 'formal' is not limited to
+   formal methods but to formal security modeling generally.
+
+   Please also note [TLS-FATT]:
+
+   The output may say that additional analysis is not warranted
+   or it may indicate what type of analysis should be done.
+
+   Moreover, WG retains its authority [TLS-FATT]:
+
+   The working group is not obligated to follow the FATT recommendation.
 
 2.  Conventions and Definitions
 
