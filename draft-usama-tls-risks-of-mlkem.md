@@ -106,8 +106,15 @@ Some existing computational analysis for standalone ML-KEM in TLS include [this]
 Both are based on pen-and-paper proofs.
 At the symbolic level, some analysis -- such as [this](https://eprint.iacr.org/2022/1111.pdf) for KEMTLS in Tamarin -- exists. In our understanding, both client and server encapsulate, which may bring the symmetry.
 
+## Gap Analysis
+{: #gap-analysis }
+
 We are not aware of any peer-reviewed work on **integration** of standalone ML-KEM in TLS based on ProVerif.
+Getting a confirmation on the symbolic level seems valuable.
+
+Some WG participants seem to have denied the statement that the hybrid key exchange in TLS is better than standalone ML-KEM in TLS.
 We are not aware of any literature which claims that standalone ML-KEM in TLS is *better* than hybrid key exchange in TLS.
+Getting a confirmation on these subtleties seems very critical.
 
 ## Motivation
 {: #sec-mot }
@@ -162,6 +169,7 @@ Simply replacing ideal DHKE by ideal ML-KEM in the formal model is not very usef
 * A large part of the problem is the careful investigation of what to model, under what threat model, under what system model, under what implementation scenarios etc. We believe some of this is important for security considerations of {{I-D.ietf-tls-mlkem}}.
 * It will be interesting to see some analysis about any subtle cases where hybrid key exchange in TLS is *not better* than standalone ML-KEM in TLS. Our understanding is that some participants would like to see some statement on the comparison since hybrid key exchange is the de facto standard.
 * We believe brainstorming about some robustness (vs. security) properties would also be useful. Even if the security properties hold, does standalone ML-KEM make side-channel leakage easier? This might be a valuable consideration for the implementers.
+* Analysis may be helpful to ensure that the changes -- such as the removal of hash function (cf. Appendix C.1, bullet 3 in {{NistFips203}}) -- from Kyber to ML-KEM preserve the security proofs of Kyber.
 
 We invite collaborations or independent analysis to extend the ProVerif models to perform this analysis.
 
@@ -172,6 +180,7 @@ We have formally requested the chairs to initiate the FATT process for {{I-D.iet
 See [this](https://mailarchive.ietf.org/arch/msg/tls/rClgrWm2hnhESXHx56U8InbwQQs/), [this](https://mailarchive.ietf.org/arch/msg/tls/7lj6fYAweMBwNMxFerNl7xhY0pk/), and [this](https://mailarchive.ietf.org/arch/msg/tls/2LukH1riSE5PQPpMVlVGygp4lpg/).
 
 ### FATT Review is Harmless
+{: #sec-fatt-harmless }
 
 For those who are worried, please note the legitimate outcome *nothing required* in {{TLS-FATT}}.
 
@@ -278,6 +287,7 @@ Readers are welcome to make their own opinions by exploring the repos or contact
 The hyperlinks provide one instance of usage of `equation` in the main branch based on what is publicly available.
 
 In our understanding, a couple of WG participants are already working on formal analysis of {{I-D.ietf-tls-mlkem}} analyzing the items mentioned in {{sec-model-analyze}}.
+A new section will be added when they will share their results of the items in {{sec-model-analyze}}.
 
 ## Comparison with 8773bis
 Please note that 8773bis is a much smaller change: it's pretty much standard TLS and still went for FATT review.
@@ -286,9 +296,12 @@ Based on that, we see no reason to believe that {{I-D.ietf-tls-mlkem}} -- with k
 ## FATT Review for Hybrid Key Exchange?
 {: #sec-hybrid-ml-kem }
 
-Some participants have raised concern that the same issue *may* apply to hybrid key exchange as well and one of the proposals is to block that draft. We strongly oppose this proposal because that draft has IETF consensus and is in the publication queue. Given the consensus, we see absolutely no reason to block that. As we understand, FATT process was specifically designed to *resolve* concerns rather than *gatekeeping*.
+Some participants have raised concern that the same issue *may* apply to hybrid key exchange as well and one of the proposals is to block that draft. We strongly oppose this proposal because of the following reasons:
 
-In contrast, as mentioned in {{sec-mot}}, standalone MLKEM has a very different consensus profile with ca. 25 oppositions in our understanding in the last WGLC. FWIW, this is exactly what makes formal analysis potentially helpful to resolve the issue, build high confidence and offer a statement for security considerations after a careful formal analysis.
+### Stage of Publication
+{{I-D.ietf-tls-hybrid-design}} has IETF consensus and is in the publication queue. Given the consensus, we see absolutely no reason to block that. As we understand, FATT process was specifically designed to **resolve** concerns rather than **gatekeeping**.
+
+In contrast, as mentioned in {{sec-mot}}, standalone MLKEM {{I-D.ietf-tls-mlkem}} is still within the WG and has a very different consensus profile with ca. 25 oppositions in our understanding in the last WGLC. FWIW, this is exactly what makes formal analysis potentially helpful to resolve the issue, build high confidence and offer a statement for security considerations after a careful formal analysis.
 
 ### Technical Rationale
 
@@ -303,6 +316,14 @@ client's key_exchange value = ek || gx
 server's key_exchange value = ct || gy
 shared secret = ss || gxy
 ~~~
+
+### Additional Effort for Hybrids
+
+We expect that the additional effort for hybrid {{I-D.ietf-tls-hybrid-design}} will only be marginal, as the building blocks for DHKE already exist in ProVerif.
+
+### What if Issue is Found?
+
+Should there be a groundbreaking discovery of an issue which applies also to {{I-D.ietf-tls-hybrid-design}}, we are confident that the WG will find a way out, such as doing a very quick WGLC and IETF LC while requesting the AD and RFC Editor to keep the draft at its place in the publication queue.
 
 # Formal Analysis (Work-in-progress)
 We have presented observation from our ongoing symbolic security analysis (cf. limitations in {{sec-sec-cons}}) using ProVerif on the mailing list.
@@ -363,6 +384,7 @@ Please simply submit a *precise* and *concise* PR.
 ~~~
 
 ## Recommendation of Designers
+{: #sec-designers-view }
 
 The authors of Kyber/ML-KEM (see [this](https://pq-crystals.org/kyber/index.shtml)) say:
 
@@ -503,5 +525,8 @@ The research work is funded by German Research Foundation ("Deutsche Forschungsg
 
 -02
 
+* Added gap analysis {{gap-analysis}}
 * What to model and analyze? {{sec-model-analyze}}
-* Opinion of designers
+* Added FATT review is harmless {{sec-fatt-harmless}}
+* Extended comparison with hybrid key exchange {{sec-hybrid-ml-kem}}
+* Opinion of designers {{sec-designers-view}}
