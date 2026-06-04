@@ -1059,7 +1059,7 @@ svg {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Sardar</td>
-<td class="center">Expires 5 December 2026</td>
+<td class="center">Expires 6 December 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1072,12 +1072,12 @@ svg {
 <dd class="internet-draft">draft-usama-tls-risks-of-mlkem-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-06-03" class="published">3 June 2026</time>
+<time datetime="2026-06-04" class="published">4 June 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Informational</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-12-05">5 December 2026</time></dd>
+<dd class="expires"><time datetime="2026-12-06">6 December 2026</time></dd>
 <dt class="label-authors">Author:</dt>
 <dd class="authors">
 <div class="author">
@@ -1140,7 +1140,7 @@ This draft captures what <em>we</em> understand them to be saying.<a href="#sect
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 5 December 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 6 December 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1805,8 +1805,15 @@ then the probability of both being broken is pq.
 </div>
 <p id="section-6.3-3">Please see <a href="https://github.com/FiloSottile/ecc-vs-lattices-long-bet#2a-what-counts-as-a-break">this</a> for what "broken" may mean here modulo some <a href="https://github.com/FiloSottile/ecc-vs-lattices-long-bet#5-exclusions">exclusions</a>.<a href="#section-6.3-3" class="pilcrow">¶</a></p>
 <p id="section-6.3-4">Given the very different type of cryptographic constructions involved, independence might be a reasonable assumption.
-However, some participants disagree with 'significantly harder' argument with some reasonable arguments that in reality, cryptography is much more complicated than that (cf. <a href="https://mailarchive.ietf.org/arch/msg/tls/AK7QUiiGX3ynsOhXeUuwn_IY7ik/">this</a>). In our understanding, most other counter-arguments seem to break the exclusions.<a href="#section-6.3-4" class="pilcrow">¶</a></p>
-<p id="section-6.3-5">Please note that this argument is based on the security of <em>primitives</em>, rather than the <em>composition</em> of primitives in protocols. Hence, formal methods probably have nothing to help here.<a href="#section-6.3-5" class="pilcrow">¶</a></p>
+However, some participants disagree with 'significantly harder' argument with a reasonable counter-argument that in reality, cryptography is much more complicated than that (cf. <a href="https://mailarchive.ietf.org/arch/msg/tls/AK7QUiiGX3ynsOhXeUuwn_IY7ik/">this</a>):<a href="#section-6.3-4" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-6.3-5">
+<pre>
+Depending on the algorithms and the composition method,
+the probability can clearly be q, or smaller than pq.
+</pre><a href="#section-6.3-5" class="pilcrow">¶</a>
+</div>
+<p id="section-6.3-6">In our understanding, most other counter-arguments seem to break the <a href="https://github.com/FiloSottile/ecc-vs-lattices-long-bet#5-exclusions">exclusions</a>.<a href="#section-6.3-6" class="pilcrow">¶</a></p>
+<p id="section-6.3-7">Please note that this argument is based on the security of <em>primitives</em>, rather than the <em>composition</em> of primitives in protocols. Hence, formal methods probably have nothing to help here.<a href="#section-6.3-7" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="urgency">

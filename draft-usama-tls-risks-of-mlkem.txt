@@ -4,8 +4,8 @@
 
 Transport Layer Security                                    M. U. Sardar
 Internet-Draft                                       TU Dresden, Germany
-Intended status: Informational                               3 June 2026
-Expires: 5 December 2026
+Intended status: Informational                               4 June 2026
+Expires: 6 December 2026
 
 
             Potential Risks of Standalone ML-KEM in TLS 1.3
@@ -80,7 +80,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 5 December 2026.
+   This Internet-Draft will expire on 6 December 2026.
 
 Copyright Notice
 
@@ -666,11 +666,17 @@ Table of Contents
    Given the very different type of cryptographic constructions
    involved, independence might be a reasonable assumption.  However,
    some participants disagree with 'significantly harder' argument with
-   some reasonable arguments that in reality, cryptography is much more
-   complicated than that (cf. this
+   a reasonable counter-argument that in reality, cryptography is much
+   more complicated than that (cf. this
    (https://mailarchive.ietf.org/arch/msg/tls/
-   AK7QUiiGX3ynsOhXeUuwn_IY7ik/)).  In our understanding, most other
-   counter-arguments seem to break the exclusions.
+   AK7QUiiGX3ynsOhXeUuwn_IY7ik/)):
+
+   Depending on the algorithms and the composition method,
+   the probability can clearly be q, or smaller than pq.
+
+   In our understanding, most other counter-arguments seem to break the
+   exclusions (https://github.com/FiloSottile/ecc-vs-lattices-long-
+   bet#5-exclusions).
 
    Please note that this argument is based on the security of
    _primitives_, rather than the _composition_ of primitives in
