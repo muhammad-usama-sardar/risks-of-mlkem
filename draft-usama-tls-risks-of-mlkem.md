@@ -436,7 +436,14 @@ then the probability of both being broken is pq.
 Please see [this](https://github.com/FiloSottile/ecc-vs-lattices-long-bet#2a-what-counts-as-a-break) for what "broken" may mean here modulo some [exclusions](https://github.com/FiloSottile/ecc-vs-lattices-long-bet#5-exclusions).
 
 Given the very different type of cryptographic constructions involved, independence might be a reasonable assumption.
-However, some participants disagree with 'significantly harder' argument with some reasonable arguments that in reality, cryptography is much more complicated than that (cf. [this](https://mailarchive.ietf.org/arch/msg/tls/AK7QUiiGX3ynsOhXeUuwn_IY7ik/)). In our understanding, most other counter-arguments seem to break the exclusions.
+However, some participants disagree with 'significantly harder' argument with a reasonable counter-argument that in reality, cryptography is much more complicated than that (cf. [this](https://mailarchive.ietf.org/arch/msg/tls/AK7QUiiGX3ynsOhXeUuwn_IY7ik/)):
+
+~~~
+Depending on the algorithms and the composition method,
+the probability can clearly be q, or smaller than pq.
+~~~
+
+In our understanding, most other counter-arguments seem to break the [exclusions](https://github.com/FiloSottile/ecc-vs-lattices-long-bet#5-exclusions).
 
 Please note that this argument is based on the security of *primitives*, rather than the *composition* of primitives in protocols. Hence, formal methods probably have nothing to help here.
 
