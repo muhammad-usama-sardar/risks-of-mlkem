@@ -1,0 +1,2116 @@
+<!DOCTYPE html>
+<html lang="en" class="Internet-Draft">
+<head>
+<meta charset="utf-8">
+<meta content="Common,Latin" name="scripts">
+<meta content="initial-scale=1.0" name="viewport">
+<title>Potential Risks of Standalone ML-KEM in TLS 1.3</title>
+<meta content="Muhammad Usama Sardar" name="author">
+<meta content="
+       We attest that standalone ML-KEM in TLS 1.3 breaks the existing formal proofs of TLS in state-of-the-art symbolic security analysis tool, ProVerif.
+We believe this requires a new symbolic proof in ProVerif.
+To help inform the analysis, we share our understanding of  exactly  where the ProVerif proofs break, namely transition from symmetric DHKE to asymmetric KEM.
+More specifically, our understanding is that the existing proofs of TLS in ProVerif are based on commutativity property, whereas commutativity does not apply to standalone ML-KEM in TLS. 
+       In general, we see no reason to believe that hybrid key exchanges are not  at least  as strong as the stronger of the two components.
+We invite collaborations or independent analysis to extend the ProVerif models to perform such analysis and offer a statement for security considerations of   .
+In our understanding, a couple of WG participants have already started formal analysis in ProVerif. 
+       We also attest that from a formal analysis perspective, this is a much bigger change than RFC8773bis, which indeed went for FATT review (cf.  ).
+We, therefore, formally request the chairs to initiate the FATT review of standalone ML-KEM in TLS. 
+       This draft also offers some preliminary discussion to help the developers and policy makers make informed choices.
+Finally, the draft also aims to reduce the endless repitition of arguments from both sides presented on several lists by documenting these arguments so they can simply be referred to.
+We sincerely believe this will help to focus the discussion on technical matters, such as system model, threat model, security properties, and deployments. 
+       We acknowledge several IETF participants who have contributed to this draft with their insights.
+This draft captures what  we  understand them to be saying. 
+    " name="description">
+<meta content="xml2rfc 3.33.0" name="generator">
+<meta content="draft-usama-tls-risks-of-mlkem-latest" name="ietf.draft">
+<!-- Generator version information:
+  xml2rfc 3.33.0
+    Python 3.12.13
+    ConfigArgParse 1.7
+    google-i18n-address 3.1.1
+    intervaltree 3.2.1
+    Jinja2 3.1.6
+    lxml 6.0.2
+    platformdirs 4.9.6
+    pycountry 24.6.1
+    PyYAML 6.0.3
+    requests 2.33.1
+    wcwidth 0.7.0
+-->
+<link href="draft-usama-tls-risks-of-mlkem.xml" rel="alternate" type="application/rfc+xml">
+<link href="#copyright" rel="license">
+<style type="text/css">@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Italic'), local('Lora-Italic'), url('https://martinthomson.github.io/rfc-css/fonts/lora-italic-cyrillic-ext.woff2') format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Italic'), local('Lora-Italic'), url('https://martinthomson.github.io/rfc-css/fonts/lora-italic-cyrillic-ext.woff2') format('woff2');
+  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Italic'), local('Lora-Italic'), url('https://martinthomson.github.io/rfc-css/fonts/lora-italic-vietnamese.woff2') format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+1EA0-1EF9, U+20AB;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Italic'), local('Lora-Italic'), url('https://martinthomson.github.io/rfc-css/fonts/lora-italic-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Italic'), local('Lora-Italic'), url('https://martinthomson.github.io/rfc-css/fonts/lora-italic-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Regular'), local('Lora-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/lora-regular-cyrillic-ext.woff2') format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Regular'), local('Lora-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/lora-regular-cyrillic.woff2') format('woff2');
+  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Regular'), local('Lora-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/lora-regular-vietnamese.woff2') format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+1EA0-1EF9, U+20AB;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Regular'), local('Lora-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/lora-regular-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Regular'), local('Lora-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/lora-regular-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Lora Bold'), local('Lora-Bold'), url('https://martinthomson.github.io/rfc-css/fonts/lora-bold-cyrillic-ext.woff2') format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Lora Bold'), local('Lora-Bold'), url('https://martinthomson.github.io/rfc-css/fonts/lora-bold-cyrillic.woff2') format('woff2');
+  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Lora Bold'), local('Lora-Bold'), url('https://martinthomson.github.io/rfc-css/fonts/lora-bold-vietnamese.woff2') format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+1EA0-1EF9, U+20AB;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Lora Bold'), local('Lora-Bold'), url('https://martinthomson.github.io/rfc-css/fonts/lora-bold-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Lora Bold'), local('Lora-Bold'), url('https://martinthomson.github.io/rfc-css/fonts/lora-bold-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: local('Lora SemiBold'), local('Lora-SemiBold'), url('https://martinthomson.github.io/rfc-css/fonts/lora-semibold-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Oxygen Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Oxygen Mono'), local('OxygenMono-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/oxygenmono-regular-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Oxygen Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Oxygen Mono'), local('OxygenMono-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/oxygenmono-regular-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+}
+
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: italic;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-italic-cyrillic-ext.woff2') format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: italic;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-italic-cyrillic.woff2') format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: italic;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-italic-greek.woff2') format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: italic;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-italic-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: italic;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-italic-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: normal;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-regular-cyrillic-ext.woff2') format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: normal;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-regular-cyrillic.woff2') format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: normal;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-regular-greek.woff2') format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: normal;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-regular-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: normal;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-regular-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+:root {
+  color-scheme: light dark;
+  --background-color: #fff;
+  --text-color: #222;
+  --title-color: #191919;
+  --link-color: #2a6496;
+  --highlight-color: #f9f9f9;
+  --line-color: #eee;
+  --pilcrow-weak: #ddd;
+  --pilcrow-strong: #bbb;
+  --small-font-size: 14.5px;
+  --font-mono: 'Oxygen Mono', monospace;
+  --font-title: "Sofia Sans Semi Condensed", sans-serif;
+  scrollbar-color: #bbb #eee;
+}
+body {
+  max-width: 600px;
+  margin: 75px auto;
+  padding: 0 5px;
+  color: var(--text-color);
+  background-color: var(--background-color);
+  font: 16px/22px "Lora", serif;
+  scroll-behavior: smooth;
+}
+
+.ears {
+  display: none;
+}
+
+/* headings */
+section {
+  clear: both;
+}
+.section-number {
+  padding-right: 0.5em;
+}
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-title);
+  font-weight: 680;
+  margin: 0.8em 0 0.3em;
+  font-size-adjust: 0.5;
+  color: var(--title-color);
+}
+h1 {
+  &#title {
+    font-size: 32px;
+    line-height: 40px;
+    clear: both;
+    margin: 1.5em 0 0.2em;
+  }
+  &#rfcnum {
+    margin: 1.5em 0 0.2em;
+    & + h1#title {
+      margin: 0.2em 0;
+    }
+  }
+}
+
+h1, h2, h3 {
+  font-size: 22px;
+  line-height: 27px;
+}
+h4, h5, h6 {
+  font-size: 20px;
+  line-height: 24px;
+}
+
+/* general structure */
+.author {
+  padding-bottom: 0.3em;
+  vertical-align: top;
+}
+#abstract+p {
+  font-size: 18px;
+  line-height: 24px;
+  & code, & samp, & tt {
+    font-size: 16px;
+    line-height: 0;
+  }
+}
+
+p {
+  padding: 0;
+  margin: 0.5em 0;
+  text-align: left;
+}
+div {
+  margin: 0;
+}
+.alignRight {
+  margin: 1em 0;
+  &.art-text {
+    background-color: var(--highlight-color);
+    border: 1px solid var(--line-color);
+    border-radius: 3px;
+    padding: 0.5em 1em 0;
+    margin-bottom: 0.5em;
+    & pre {
+      padding: 0;
+      width: auto;
+    }
+  }
+  & > *:first-child {
+    border: none;
+    margin: 0;
+    float: right;
+    clear: both;
+  }
+  & > *:nth-child(2) {
+    clear: both;
+    display: block;
+    border: none;
+  }
+}
+svg {
+  display: block;
+  /* font-family isn't space-separated, but =~ will have to do */
+  &[font-family~="monospace" i], & [font-family~="monospace" i] {
+    font-family: var(--font-mono);
+  }
+}
+.alignCenter {
+  margin: 1em 0;
+  &.art-text {
+    background-color: var(--highlight-color);
+    border: 1px solid var(--line-color);
+    border-radius: 3px;
+    padding: 0.5em 1em 0;
+    margin-bottom: 0.5em;
+    & pre {
+      padding: 0;
+      width: auto;
+    }
+  }
+  & > *:first-child {
+    border: none;
+    /* this isn't optimal, but it's an existence proof.  PrinceXML doesn't
+       support flexbox yet.
+    */
+    display: table;
+    margin: 0 auto;
+  }
+}
+
+/* lists */
+ol, ul {
+  padding: 0;
+  margin: 0 0 0.5em 2em;
+  & :is(ol, ul) {
+    margin-left: 1em;
+  }
+}
+li {
+  margin: 0 0 0.25em 0;
+}
+ul.empty, .ulEmpty {
+  list-style-type: none;
+  & li {
+    margin-top: 0.5em;
+  }
+}
+:is(ul, ol).compact, .ulCompact, .olCompact {
+  margin: 0 0 0 2em;
+  & li {
+    margin: 0;
+    & :first-child { margin-top: 0; }
+    & :last-child { margin-bottom: 0; }
+  }
+}
+
+/* definition lists */
+dl {
+  clear: left;
+  --indent: 3ch;
+  /* --indent: attr(indent ch); not supported in any browser, but we can dream */
+  &.olPercent {
+    --indent: 5ch;
+    & > dt {
+      min-width: calc(var(--indent) - 2ch);
+      float: none;
+    }
+  }
+
+  dl > dd > & {
+    margin-top: 0.5em;
+    margin-bottom: 0;
+  }
+
+  &:not(.dlNewline) > dt {
+    float: left;
+    margin-right: 2ch;
+    min-width: 8ch;
+  }
+  & > dd {
+    margin-bottom: .8em;
+    margin-left: var(--indent) !important; /* stupid element overrides */
+    min-height: 2ex;
+  }
+}
+:is(dl.compact, .dlCompact) > dd {
+  margin-bottom: 0;
+  & > :is(:first-child, .break:first-child + *) {
+    margin-top: 0;
+  }
+  & > :is(:last-child) {
+    margin-bottom: 0;
+  }
+}
+:is(dd, span).break {
+  display: none;
+}
+
+/* links */
+a {
+  text-decoration: none;
+  &[href] {
+    color: var(--link-color);
+    &:hover { text-decoration: underline; }
+    &.selfRef {
+      color: var(--text-color);
+      &:hover {
+        text-decoration: none;
+        background-color: var(--highlight-color);
+      }
+    }
+  }
+}
+.iref + a[href].internal {
+  color: var(--text-color);
+}
+a.xref:is(.cite, .auto), :is(#status-of-memo, #copyright) a {
+  white-space: nowrap;
+}
+
+/* Figures */
+tt, code, pre {
+  background-color: var(--highlight-color);
+  font: 14px/22px var(--font-mono);
+}
+tt, code {
+  /* changing the font for inline elements leads to different ascender
+     and descender heights; as we want to retain baseline alignment,
+     remove leading to avoid altering the final height of lines
+     note: this fails if these blocks take an entire line,
+     a different solution would be great */
+  line-height: 0;
+}
+:is(h1, h2, h3, h4, h5, h6) :is(tt, code) {
+  font-size: 84%;
+}
+pre {
+  border: 1px solid var(--line-color);
+  font-size: 13.5px;
+  line-height: 16px;
+  letter-spacing: -0.2px;
+  margin: 5px;
+  padding: 5px;
+}
+img {
+  max-width: 100%;
+}
+figure {
+  margin: 0.5em 0;
+  padding: 0;
+  & blockquote {
+    margin: 0.8em 0.4em 0.4em;
+  }
+}
+figcaption, caption {
+  font-style: italic;
+  margin: 0.5em 1.5em;
+  text-align: left;
+  caption-side: bottom;
+}
+@media screen {
+  /* Auto-collapse boilerplate. */
+  :is(#status-of-memo, #copyright) {
+    & p {
+      margin: -2px 0;
+      max-height: 0;
+      transition: max-height 2s ease, margin 0.5s ease 0.5s;
+      overflow: hidden;
+    }
+    &:hover p,
+    & h2:target ~ p {
+      margin: 0.5em 0;
+      max-height: 500px;
+      overflow: auto;
+    }
+  }
+  pre, svg {
+    display: inline-block;
+    /* In the horizontal direction, sometimes people make over-sized figures.
+       Scrollbars for those is therefore necessary: auto adds them as necessary..
+       In the vertical direction, the line-height can combine with the font
+       asender/descender height to produce scrollbars: hidden avoids that. */
+    overflow: auto hidden;
+  }
+  pre {
+    max-width: 100%;
+    width: calc(100% - 22px - 1em);
+  }
+  svg {
+    max-width: calc(100% - 22px - 1em);
+  }
+  figure pre {
+    display: block;
+    width: calc(100% - 25px);
+  }
+  :is(pre, svg) + .pilcrow {
+    display: inline-block;
+    vertical-align: text-bottom;
+    padding-bottom: 8px;
+  }
+}
+
+/* aside, blockquote */
+aside, blockquote {
+  margin-left: 0;
+  padding: 0 2em;
+  font-style: italic;
+}
+blockquote {
+  margin: 1em 0;
+  border-left: 2px var(--pilcrow-strong) solid;
+}
+cite {
+  display: block;
+  text-align: right;
+  font-style: italic;
+}
+
+/* tables */
+table {
+  width: auto;
+  max-width: 100%;
+  margin: 0 0 1em;
+  border-collapse: collapse;
+  &.right { margin-left: auto; }
+  &.center { margin-left: auto; margin-right: auto; }
+  &.left { margin-right: auto; }
+  & .text-left { text-align: left; }
+  & .text-center { text-align: center; }
+  & .text-right { text-align: right; }
+  & caption {
+    margin: 0;
+    padding: 3px 0 3px 1em;
+  }
+  & p { margin: 0; }
+}
+
+thead, tbody {
+  border: 1px solid var(--line-color);
+}
+th, td {
+  text-align: left;
+  vertical-align: top;
+  padding: 5px 10px;
+}
+th {
+  background-color: var(--line-color);
+}
+:is(tr:nth-child(2n), thead+tbody > tr:nth-child(2n+1)) > td {
+  background-color: var(--background-color);
+}
+:is(tr:nth-child(2n+1), thead+tbody > tr:nth-child(2n)) > td {
+  background-color: var(--highlight-color);
+}
+
+/* pilcrow */
+a.pilcrow {
+  margin-left: 3px;
+  opacity: 0.2;
+  user-select: none;
+  &[href] {
+    color: var(--pilcrow-weak);
+    &:hover { text-decoration: none; }
+  }
+  @media not print {
+    :hover > &, &:focus {
+      opacity: 1;
+    }
+    &[href]:hover {
+      color: var(--pilcrow-strong);
+      background-color: transparent;
+    }
+  }
+  @media print {
+    display: none;
+  }
+}
+
+/* misc */
+hr {
+  border: 0;
+  border-top: 1px solid var(--line-color);
+}
+.bcp14 {
+  font-variant: small-caps;
+  font-weight: 600;
+  font-size: var(--small-font-size);
+}
+.role {
+  font-variant: all-small-caps;
+}
+sub, sup {
+  line-height: 1;
+  font-size: 80%;
+}
+
+/* info block */
+#identifiers {
+  margin: 0;
+  font-size: var(--small-font-size);
+  line-height: 18px;
+  --identifier-width: 15ch;
+  & dt {
+    width: var(--identifier-width);
+    min-width: var(--identifier-width);
+    clear: left;
+    float: left;
+    text-align: right;
+    margin-right: 1ch;
+  }
+  & dd {
+    margin: 0;
+    margin-left: calc(1em + var(--identifier-width)) !important;
+    min-width: 5em;
+  }
+  & .authors {
+    & .author {
+      display: inline-block;
+      margin-right: 1.5em;
+    }
+    & .org {
+      font-style: italic;
+    }
+  }
+}
+
+/* The prepared/rendered info at the very bottom of the page */
+.docInfo {
+  color: #999;
+  font-size: 0.9em;
+  font-style: italic;
+  margin-top: 2em;
+  & .prepared {
+    float: right;
+  }
+}
+
+/* table of contents */
+#toc {
+  padding: 0.75em 0 2em 0;
+  margin-bottom: 1em;
+
+  & nav {
+    & ul {
+      margin: 0 0.5em 0 0;
+      padding: 0;
+      list-style: none;
+    }
+    & li {
+      line-height: 1.3em;
+      margin: 2px 0;
+      padding-left: 1.2em;
+      text-indent: -1.2em;
+    }
+  }
+  & a.xref {
+    white-space: normal;
+  }
+}
+
+.references {
+  & > dt {
+    text-align: right;
+    font-weight: bold;
+    min-width: 10ch;
+    margin-right: 1.5ch;
+    &:target::before {
+      content: "⇒";
+      margin: 0 10px 0 -25px;
+    }
+  }
+  & > dd {
+    margin-left: 12ch !important;
+    overflow: visible;
+    & .refInstance {
+      margin-bottom: 0.8em;
+    }
+    & .ascii {
+      margin-bottom: 0.25em;
+    }
+  }
+}
+
+#rfc\.index\.index + ul {
+  margin-left: 0;
+}
+
+/* authors */
+address.vcard {
+  font-style: normal;
+  max-width: 20em;
+  margin: 1em auto 1em 0;
+
+  & .nameRole {
+    font-weight: 700;
+    margin-left: 0;
+  }
+  & .label {
+    margin: 0.5em 0;
+  }
+  & .type {
+    display: none;
+  }
+  & .alternative-contact {
+    margin: 0.5em 0 0.25em 0;
+  }
+  & .non-ascii {
+    margin: 0 0 0 2em;
+  }
+  & div.left {
+    text-align: left;
+  }
+  & div.right {
+    text-align: right;
+  }
+}
+
+hr.addr {
+  border-top: 1px dashed;
+  margin: 0;
+  color: #ddd;
+  max-width: calc(100% - 16px);
+}
+@media (min-width: 500px) {
+  #authors-addresses {
+    & > section {
+      column-count: 2;
+      column-gap: 20px;
+    }
+    & > section > h2 {
+      column-span: all;
+    }
+    /* hack for break-inside: avoid-column */
+    & address {
+      display: inline-block;
+      break-inside: avoid-column;
+    }
+  }
+}
+
+/* Comments */
+.rfcEditorRemove {
+  & p:first-of-type {
+    font-style: italic;
+  }
+}
+.cref {
+  background-color: rgba(249, 232, 105, 0.3);
+  padding: 2px 4px;
+}
+.crefSource {
+  font-style: italic;
+}
+
+@media screen {
+  #toc {
+    & nav {
+      font-family: var(--font-title);
+      font-weight: 360;
+      & > ul { margin-bottom: 2em; }
+      & ul {
+        margin: 0 0 0 4px;
+        & :is(p, li) {
+          margin: 2px 0;
+        }
+      }
+    }
+    & a.toplink {
+      float: right;
+    }
+  }
+}
+@media not screen {
+  #toc a.toplink {
+    display: none;
+  }
+}
+
+
+/* TOC layout for smaller screens */
+@media screen and (max-width: 929px) {
+  #toc {
+    position: fixed;
+    z-index: 2;
+    top: 0;
+    right: 0;
+    padding: 1px 0 0 0;
+    margin: 0;
+    border-bottom: 1px solid #ccc;
+    opacity: 0.6;
+    & h2 {
+      margin: 0;
+      padding: 2px 0 2px 6px;
+      padding-right: 1em;
+      font-size: 18px;
+      line-height: 24px;
+      min-width: 190px;
+      text-align: right;
+      background-color: #444;
+      color: white;
+      cursor: pointer;
+      &::before { /* css hamburger */
+        float: right;
+        position: relative;
+        width: 1em;
+        height: 1px;
+        left: -164px;
+        margin: 8px 0 0 0;
+        background: white none repeat scroll 0 0;
+        box-shadow: 0 4px 0 0 white, 0 8px 0 0 white;
+        content: "";
+      }
+    }
+    & nav {
+      display: none;
+      background-color: var(--background-color);
+      padding: 0.5em 1em 1em;
+      overflow: auto;
+      overscroll-behavior: contain;
+      height: calc(100vh - 48px);
+      border-left: 1px solid #ddd;
+    }
+    &.active {
+      opacity: 1;
+      & nav { display: block; }
+    }
+    /* Make the collapsed ToC header render white on gray also when it's a link */
+    & h2 a,
+    & h2 a:is(:link, :focus, :hover),
+    & a.toplink,
+    & a.toplink:hover {
+      color: white;
+      background-color: #444;
+      text-decoration: none;
+    }
+    & a.toplink {
+      margin: 2px 0.5em 0;
+    }
+  }
+}
+
+/* TOC layout for wide screens */
+@media screen and (min-width: 930px) {
+  body {
+    padding-right: 360px;
+    padding-right: calc(min(180px + 20%, 500px));
+  }
+  #toc {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    right: calc(50vw - 480px);
+    width: 312px;
+    margin: 0;
+    padding: 0;
+    z-index: 1;
+    & h2 {
+      margin: 0;
+      padding: 0.25em 1em 1em 0;
+    }
+    & nav {
+      display: block;
+      height: calc(90vh - 84px);
+      bottom: 0;
+      padding: 0.5em 0 2em;
+      overflow: auto;
+      overscroll-behavior: contain;
+      scrollbar-width: thin;
+    }
+    & a.toplink {
+      margin: 8px 0.5em 0;
+    }
+  }
+  img { /* future proofing */
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+/* pagination */
+@media print {
+  body {
+    width: 100%;
+  }
+  p {
+    orphans: 3;
+    widows: 3;
+  }
+  #n-copyright-notice {
+    border-bottom: none;
+  }
+  #toc {
+    page-break-before: always;
+    border-top: none;
+    padding-top: 0;
+  }
+  #n-introduction {
+    page-break-before: always;
+  }
+  figure, pre, .vcard {
+    page-break-inside: avoid;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid;
+  }
+  :is(h2, h3, h4, h5, h6)+*, dd {
+    page-break-before: avoid;
+  }
+  pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-size: 10pt;
+  }
+  table {
+    border: 1px solid #ddd;
+  }
+  td {
+    border-top: 1px solid #ddd;
+  }
+}
+
+@page :first {
+  padding-top: 0;
+  @top-left {
+    content: normal;
+    border: none;
+  }
+  @top-center {
+    content: normal;
+    border: none;
+  }
+  @top-right {
+    content: normal;
+    border: none;
+  }
+}
+
+@page {
+  size: A4;
+  margin-bottom: 45mm;
+  padding-top: 20px;
+}
+
+/* Dark mode. */
+@media (prefers-color-scheme: dark) {
+:root {
+  --background-color: #121212;
+  --text-color: #f0f0f0;
+  --title-color: #fff;
+  --link-color: #4da4f0;
+  --highlight-color: #282828;
+  --line-color: #444;
+  --pilcrow-weak: #444;
+  --pilcrow-strong: #666;
+  scrollbar-color: #777 #333;
+}
+}
+
+/* SVG Trick: a prefix match works because only black and white are allowed */
+svg {
+  & :is([stroke="black"], [stroke^="#000"]) {
+    stroke: var(--text-color);
+  }
+  & :is([stroke="white"], [stroke^="#fff"]) {
+    stroke: var(--background-color);
+  }
+  & :is([fill="black"], [fill^="#000"], :not([fill])) {
+    fill: var(--text-color);
+  }
+  & :is([fill="white"], [fill^="#fff"]) {
+    fill: var(--background-color);
+  }
+}
+</style>
+
+</head>
+<body class="xml2rfc">
+<table class="ears">
+<thead><tr>
+<td class="left">Internet-Draft</td>
+<td class="center">Potential Risks of Standalone ML-KEM in </td>
+<td class="right">June 2026</td>
+</tr></thead>
+<tfoot><tr>
+<td class="left">Sardar</td>
+<td class="center">Expires 6 December 2026</td>
+<td class="right">[Page]</td>
+</tr></tfoot>
+</table>
+<div id="external-metadata" class="document-information"></div>
+<div id="internal-metadata" class="document-information">
+<dl id="identifiers">
+<dt class="label-workgroup">Workgroup:</dt>
+<dd class="workgroup">Transport Layer Security</dd>
+<dt class="label-internet-draft">Internet-Draft:</dt>
+<dd class="internet-draft">draft-usama-tls-risks-of-mlkem-latest</dd>
+<dt class="label-published">Published:</dt>
+<dd class="published">
+<time datetime="2026-06-04" class="published">4 June 2026</time>
+    </dd>
+<dt class="label-intended-status">Intended Status:</dt>
+<dd class="intended-status">Informational</dd>
+<dt class="label-expires">Expires:</dt>
+<dd class="expires"><time datetime="2026-12-06">6 December 2026</time></dd>
+<dt class="label-authors">Author:</dt>
+<dd class="authors">
+<div class="author">
+      <div class="author-name">M. U. Sardar</div>
+<div class="org">TU Dresden, Germany</div>
+</div>
+</dd>
+</dl>
+</div>
+<h1 id="title">Potential Risks of Standalone ML-KEM in TLS 1.3</h1>
+<section id="section-abstract">
+      <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
+<p id="section-abstract-1">We attest that standalone ML-KEM in TLS 1.3 breaks the existing formal proofs of TLS in state-of-the-art symbolic security analysis tool, ProVerif.
+We believe this requires a new symbolic proof in ProVerif.
+To help inform the analysis, we share our understanding of <strong>exactly</strong> where the ProVerif proofs break, namely transition from symmetric DHKE to asymmetric KEM.
+More specifically, our understanding is that the existing proofs of TLS in ProVerif are based on commutativity property, whereas commutativity does not apply to standalone ML-KEM in TLS.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+<p id="section-abstract-2">In general, we see no reason to believe that hybrid key exchanges are not <em>at least</em> as strong as the stronger of the two components.
+We invite collaborations or independent analysis to extend the ProVerif models to perform such analysis and offer a statement for security considerations of  <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span>.
+In our understanding, a couple of WG participants have already started formal analysis in ProVerif.<a href="#section-abstract-2" class="pilcrow">¶</a></p>
+<p id="section-abstract-3">We also attest that from a formal analysis perspective, this is a much bigger change than RFC8773bis, which indeed went for FATT review (cf. <span>[<a href="#TLS-FATT" class="cite xref">TLS-FATT</a>]</span>).
+We, therefore, formally request the chairs to initiate the FATT review of standalone ML-KEM in TLS.<a href="#section-abstract-3" class="pilcrow">¶</a></p>
+<p id="section-abstract-4">This draft also offers some preliminary discussion to help the developers and policy makers make informed choices.
+Finally, the draft also aims to reduce the endless repitition of arguments from both sides presented on several lists by documenting these arguments so they can simply be referred to.
+We sincerely believe this will help to focus the discussion on technical matters, such as system model, threat model, security properties, and deployments.<a href="#section-abstract-4" class="pilcrow">¶</a></p>
+<p id="section-abstract-5">We acknowledge several IETF participants who have contributed to this draft with their insights.
+This draft captures what <em>we</em> understand them to be saying.<a href="#section-abstract-5" class="pilcrow">¶</a></p>
+</section>
+<section class="note rfcEditorRemove" id="section-note.1">
+      <h2 id="name-about-this-document">
+<a href="#name-about-this-document" class="section-name selfRef">About This Document</a>
+      </h2>
+<p id="section-note.1-1">This note is to be removed before publishing as an RFC.<a href="#section-note.1-1" class="pilcrow">¶</a></p>
+<p id="section-note.1-2">
+        The latest revision of this draft can be found at <span><a href="https://muhammad-usama-sardar.github.io/risks-of-mlkem/draft-usama-tls-risks-of-mlkem.html">https://muhammad-usama-sardar.github.io/risks-of-mlkem/draft-usama-tls-risks-of-mlkem.html</a></span>.
+        Status information for this document may be found at <span><a href="https://datatracker.ietf.org/doc/draft-usama-tls-risks-of-mlkem/">https://datatracker.ietf.org/doc/draft-usama-tls-risks-of-mlkem/</a></span>.<a href="#section-note.1-2" class="pilcrow">¶</a></p>
+<p id="section-note.1-3">
+        Discussion of this document takes place on the
+        Transport Layer Security Working Group mailing list (<span><a href="mailto:tls@ietf.org">mailto:tls@ietf.org</a></span>),
+        which is archived at <span><a href="https://mailarchive.ietf.org/arch/browse/tls/">https://mailarchive.ietf.org/arch/browse/tls/</a></span>.
+        Subscribe at <span><a href="https://www.ietf.org/mailman/listinfo/tls/">https://www.ietf.org/mailman/listinfo/tls/</a></span>.<a href="#section-note.1-3" class="pilcrow">¶</a></p>
+<p id="section-note.1-4">Source for this draft and an issue tracker can be found at
+        <span><a href="https://github.com/muhammad-usama-sardar/risks-of-mlkem">https://github.com/muhammad-usama-sardar/risks-of-mlkem</a></span>.<a href="#section-note.1-4" class="pilcrow">¶</a></p>
+</section>
+<div id="status-of-memo">
+<section id="section-boilerplate.1">
+        <h2 id="name-status-of-this-memo">
+<a href="#name-status-of-this-memo" class="section-name selfRef">Status of This Memo</a>
+        </h2>
+<p id="section-boilerplate.1-1">
+        This Internet-Draft is submitted in full conformance with the
+        provisions of BCP 78 and BCP 79.<a href="#section-boilerplate.1-1" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.1-2">
+        Internet-Drafts are working documents of the Internet Engineering Task
+        Force (IETF). Note that other groups may also distribute working
+        documents as Internet-Drafts. The list of current Internet-Drafts is
+        at <span><a href="https://datatracker.ietf.org/drafts/current/">https://datatracker.ietf.org/drafts/current/</a></span>.<a href="#section-boilerplate.1-2" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.1-3">
+        Internet-Drafts are draft documents valid for a maximum of six months
+        and may be updated, replaced, or obsoleted by other documents at any
+        time. It is inappropriate to use Internet-Drafts as reference
+        material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.1-4">
+        This Internet-Draft will expire on 6 December 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="copyright">
+<section id="section-boilerplate.2">
+        <h2 id="name-copyright-notice">
+<a href="#name-copyright-notice" class="section-name selfRef">Copyright Notice</a>
+        </h2>
+<p id="section-boilerplate.2-1">
+            Copyright (c) 2026 IETF Trust and the persons identified as the
+            document authors. All rights reserved.<a href="#section-boilerplate.2-1" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.2-2">
+            This document is subject to BCP 78 and the IETF Trust's Legal
+            Provisions Relating to IETF Documents
+            (<span><a href="https://trustee.ietf.org/license-info">https://trustee.ietf.org/license-info</a></span>) in effect on the date of
+            publication of this document. Please review these documents
+            carefully, as they describe your rights and restrictions with
+            respect to this document. Code Components extracted from this
+            document must include Revised BSD License text as described in
+            Section 4.e of the Trust Legal Provisions and are provided without
+            warranty as described in the Revised BSD License.<a href="#section-boilerplate.2-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="toc">
+<section id="section-toc.1">
+        <a href="#" onclick="scroll(0,0)" class="toplink">▲</a><h2 id="name-table-of-contents">
+<a href="#name-table-of-contents" class="section-name selfRef">Table of Contents</a>
+        </h2>
+<nav class="toc"><ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1">
+            <p id="section-toc.1-1.1.1"><a href="#section-1" class="auto internal xref">1</a>.  <a href="#name-introduction" class="internal xref">Introduction</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.1">
+                <p id="section-toc.1-1.1.2.1.1" class="keepWithNext"><a href="#section-1.1" class="auto internal xref">1.1</a>.  <a href="#name-gap-analysis" class="internal xref">Gap Analysis</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.2">
+                <p id="section-toc.1-1.1.2.2.1"><a href="#section-1.2" class="auto internal xref">1.2</a>.  <a href="#name-motivation" class="internal xref">Motivation</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.2.2.1">
+                    <p id="section-toc.1-1.1.2.2.2.1.1" class="keepWithNext"><a href="#section-1.2.1" class="auto internal xref">1.2.1</a>.  <a href="#name-expected-learning" class="internal xref">Expected Learning</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.2.2.2">
+                    <p id="section-toc.1-1.1.2.2.2.2.1" class="keepWithNext"><a href="#section-1.2.2" class="auto internal xref">1.2.2</a>.  <a href="#name-minimum-viable-modeling" class="internal xref">Minimum Viable Modeling</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.2.2.3">
+                    <p id="section-toc.1-1.1.2.2.2.3.1"><a href="#section-1.2.3" class="auto internal xref">1.2.3</a>.  <a href="#name-previous-formal-requests-fo" class="internal xref">Previous Formal Requests for FATT Review</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.2.2.4">
+                    <p id="section-toc.1-1.1.2.2.2.4.1"><a href="#section-1.2.4" class="auto internal xref">1.2.4</a>.  <a href="#name-fatt-review-is-harmless" class="internal xref">FATT Review is Harmless</a></p>
+</li>
+                </ul>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2">
+            <p id="section-toc.1-1.2.1"><a href="#section-2" class="auto internal xref">2</a>.  <a href="#name-conventions-and-definitions" class="internal xref">Conventions and Definitions</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3">
+            <p id="section-toc.1-1.3.1"><a href="#section-3" class="auto internal xref">3</a>.  <a href="#name-where-proverif-proofs-break" class="internal xref">Where ProVerif Proofs Break</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4">
+            <p id="section-toc.1-1.4.1"><a href="#section-4" class="auto internal xref">4</a>.  <a href="#name-justification-based-on-fatt" class="internal xref">Justification based on FATT Process</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.1">
+                <p id="section-toc.1-1.4.2.1.1"><a href="#section-4.1" class="auto internal xref">4.1</a>.  <a href="#name-comparison-with-rfc8773bis" class="internal xref">Comparison with RFC8773bis</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.2">
+                <p id="section-toc.1-1.4.2.2.1"><a href="#section-4.2" class="auto internal xref">4.2</a>.  <a href="#name-fatt-review-for-hybrid-key-" class="internal xref">FATT Review for Hybrid Key Exchange?</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.2.2.1">
+                    <p id="section-toc.1-1.4.2.2.2.1.1"><a href="#section-4.2.1" class="auto internal xref">4.2.1</a>.  <a href="#name-stage-of-publication" class="internal xref">Stage of Publication</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.2.2.2">
+                    <p id="section-toc.1-1.4.2.2.2.2.1"><a href="#section-4.2.2" class="auto internal xref">4.2.2</a>.  <a href="#name-technical-rationale" class="internal xref">Technical Rationale</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.2.2.3">
+                    <p id="section-toc.1-1.4.2.2.2.3.1"><a href="#section-4.2.3" class="auto internal xref">4.2.3</a>.  <a href="#name-marginal-additional-effort-" class="internal xref">Marginal Additional Effort for Hybrid Key Exchange</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.2.2.4">
+                    <p id="section-toc.1-1.4.2.2.2.4.1"><a href="#section-4.2.4" class="auto internal xref">4.2.4</a>.  <a href="#name-what-if-issue-is-found" class="internal xref">What if Issue is Found?</a></p>
+</li>
+                </ul>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5">
+            <p id="section-toc.1-1.5.1"><a href="#section-5" class="auto internal xref">5</a>.  <a href="#name-formal-analysis-work-in-pro" class="internal xref">Formal Analysis (Work-in-progress)</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.1">
+                <p id="section-toc.1-1.5.2.1.1"><a href="#section-5.1" class="auto internal xref">5.1</a>.  <a href="#name-hybrid-key-exchange" class="internal xref">Hybrid Key Exchange</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.2">
+                <p id="section-toc.1-1.5.2.2.1"><a href="#section-5.2" class="auto internal xref">5.2</a>.  <a href="#name-standalone-ml-kem" class="internal xref">Standalone ML-KEM</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.3">
+                <p id="section-toc.1-1.5.2.3.1"><a href="#section-5.3" class="auto internal xref">5.3</a>.  <a href="#name-comparison" class="internal xref">Comparison</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6">
+            <p id="section-toc.1-1.6.1"><a href="#section-6" class="auto internal xref">6</a>.  <a href="#name-issues-that-formal-methods-" class="internal xref">Issues That Formal Methods Probably Cannot Solve</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.1">
+                <p id="section-toc.1-1.6.2.1.1"><a href="#section-6.1" class="auto internal xref">6.1</a>.  <a href="#name-recommendation-of-designers" class="internal xref">Recommendation of Designers</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.2">
+                <p id="section-toc.1-1.6.2.2.1"><a href="#section-6.2" class="auto internal xref">6.2</a>.  <a href="#name-thorough-review" class="internal xref">Thorough Review</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.3">
+                <p id="section-toc.1-1.6.2.3.1"><a href="#section-6.3" class="auto internal xref">6.3</a>.  <a href="#name-significantly-harder-argume" class="internal xref">'Significantly Harder' Argument</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.4">
+                <p id="section-toc.1-1.6.2.4.1"><a href="#section-6.4" class="auto internal xref">6.4</a>.  <a href="#name-urgency" class="internal xref">Urgency</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.5">
+                <p id="section-toc.1-1.6.2.5.1"><a href="#section-6.5" class="auto internal xref">6.5</a>.  <a href="#name-cost" class="internal xref">"Cost"</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.6">
+                <p id="section-toc.1-1.6.2.6.1"><a href="#section-6.6" class="auto internal xref">6.6</a>.  <a href="#name-is-publication-necessary" class="internal xref">Is Publication Necessary?</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.7">
+                <p id="section-toc.1-1.6.2.7.1"><a href="#section-6.7" class="auto internal xref">6.7</a>.  <a href="#name-shiny-new-crypto" class="internal xref">Shiny New Crypto</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.8">
+                <p id="section-toc.1-1.6.2.8.1"><a href="#section-6.8" class="auto internal xref">6.8</a>.  <a href="#name-formal-mapping-of-fips-to-i" class="internal xref">Formal Mapping of FIPS to IETF BCP14</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.9">
+                <p id="section-toc.1-1.6.2.9.1"><a href="#section-6.9" class="auto internal xref">6.9</a>.  <a href="#name-outstanding-nist-comments" class="internal xref">Outstanding NIST Comments</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.10">
+                <p id="section-toc.1-1.6.2.10.1"><a href="#section-6.10" class="auto internal xref">6.10</a>. <a href="#name-too-early" class="internal xref">Too Early</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.11">
+                <p id="section-toc.1-1.6.2.11.1"><a href="#section-6.11" class="auto internal xref">6.11</a>. <a href="#name-patents" class="internal xref">Patents</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7">
+            <p id="section-toc.1-1.7.1"><a href="#section-7" class="auto internal xref">7</a>.  <a href="#name-security-considerations" class="internal xref">Security Considerations</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8">
+            <p id="section-toc.1-1.8.1"><a href="#section-8" class="auto internal xref">8</a>.  <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9">
+            <p id="section-toc.1-1.9.1"><a href="#section-9" class="auto internal xref">9</a>.  <a href="#name-references" class="internal xref">References</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.1">
+                <p id="section-toc.1-1.9.2.1.1"><a href="#section-9.1" class="auto internal xref">9.1</a>.  <a href="#name-normative-references" class="internal xref">Normative References</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.2">
+                <p id="section-toc.1-1.9.2.2.1"><a href="#section-9.2" class="auto internal xref">9.2</a>.  <a href="#name-informative-references" class="internal xref">Informative References</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10">
+            <p id="section-toc.1-1.10.1"><a href="#appendix-A" class="auto internal xref"></a><a href="#name-acknowledgments" class="internal xref">Acknowledgments</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11">
+            <p id="section-toc.1-1.11.1"><a href="#appendix-B" class="auto internal xref"></a><a href="#name-history" class="internal xref">History</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12">
+            <p id="section-toc.1-1.12.1"><a href="#appendix-C" class="auto internal xref"></a><a href="#name-authors-address" class="internal xref">Author's Address</a></p>
+</li>
+        </ul>
+</nav>
+</section>
+</div>
+<div id="introduction">
+<section id="section-1">
+      <h2 id="name-introduction">
+<a href="#section-1" class="section-number selfRef">1. </a><a href="#name-introduction" class="section-name selfRef">Introduction</a>
+      </h2>
+<p id="section-1-1">Readers are assumed to be familiar with <span>[<a href="#NistFips203" class="cite xref">NistFips203</a>]</span>, <span>[<a href="#I-D.ietf-tls-rfc8446bis" class="cite xref">I-D.ietf-tls-rfc8446bis</a>]</span>, and <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span>. Please note that the draft has currently several hyperlinks.<a href="#section-1-1" class="pilcrow">¶</a></p>
+<p id="section-1-2">We assert that the security considerations of <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span> are insufficient.
+We believe that consistent with <span>[<a href="#TLS-FATT" class="cite xref">TLS-FATT</a>]</span> process, <em>symbolic</em> and <em>computational</em> analysis (to be interpreted as in <a href="https://eprint.iacr.org/2019/1393.pdf">SoK</a>) of <strong>integration</strong> of standalone ML-KEM in the context of TLS is helpful here.<a href="#section-1-2" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-1-3">
+<pre>
+We believe that the focus of symbolic analysis ought to be on the
+*integration* details (transcript binding, key schedule, agreement)
+for standalone ML-KEM in the context of TLS, rather than the
+*primitive* itself.
+</pre><a href="#section-1-3" class="pilcrow">¶</a>
+</div>
+<p id="section-1-4">We believe that if any WG participant has done any formal analysis, it would be very helpful to share the results with the WG for discussion.<a href="#section-1-4" class="pilcrow">¶</a></p>
+<p id="section-1-5">Literature review is currently ongoing.
+Some existing computational analysis for standalone ML-KEM in TLS include <a href="https://eprint.iacr.org/2021/844">this</a> and <a href="https://eprint.iacr.org/2024/1360">this</a>.
+Both are based on pen-and-paper (computational) proofs.
+At the symbolic level, some analysis -- such as <a href="https://eprint.iacr.org/2022/1111.pdf">this</a> for KEMTLS in Tamarin -- exists. In our understanding, both client and server encapsulate, which may bring the symmetry.<a href="#section-1-5" class="pilcrow">¶</a></p>
+<div id="gap-analysis">
+<section id="section-1.1">
+        <h3 id="name-gap-analysis">
+<a href="#section-1.1" class="section-number selfRef">1.1. </a><a href="#name-gap-analysis" class="section-name selfRef">Gap Analysis</a>
+        </h3>
+<p id="section-1.1-1">We are currently not aware of any peer-reviewed work on <strong>integration</strong> of standalone ML-KEM in TLS based on ProVerif.
+Getting a confirmation on the symbolic level seems valuable.<a href="#section-1.1-1" class="pilcrow">¶</a></p>
+<p id="section-1.1-2">Some WG participants seem to disagree with the statement that the hybrid key exchange in TLS is at least as good as standalone ML-KEM in TLS.
+We are not aware of any literature which claims that standalone ML-KEM in TLS is <em>better</em> than hybrid key exchange in TLS.
+Getting a confirmation on these subtleties via formal analysis seems very useful for resolving this difference of opinions.<a href="#section-1.1-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="sec-mot">
+<section id="section-1.2">
+        <h3 id="name-motivation">
+<a href="#section-1.2" class="section-number selfRef">1.2. </a><a href="#name-motivation" class="section-name selfRef">Motivation</a>
+        </h3>
+<p id="section-1.2-1"><span>[<a href="#rfc3552" class="cite xref">rfc3552</a>]</span> requires to document the risks in the security considerations.
+To support those requirements for <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span>, this draft aims to formally study the security of standalone ML-KEM in TLS 1.3.
+This is because of the following reasons.<a href="#section-1.2-1" class="pilcrow">¶</a></p>
+<p id="section-1.2-2">In the last WGLC, <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span> had an opposition of several (ca. 25 in our understanding) WG participants -- even more than the supporters (ca. 21 in our understanding). We see 2 possible options:<a href="#section-1.2-2" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-1.2-3.1">
+            <p id="section-1.2-3.1.1">Continue tabletop discussions on <strong>subjective</strong> estimation of urgency, risks, costs, tradeoffs, etc., and keep burning WG energy by endless repitition.<a href="#section-1.2-3.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-1.2-3.2">
+            <p id="section-1.2-3.2.1">Do some technical analysis using (<em>symbolic</em> and <em>computational</em>) formal methods to get a confirmation on the security of <strong>integration</strong> of standalone ML-KEM in the context of TLS and offer a statement for security considerations.<a href="#section-1.2-3.2.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-1.2-4">We believe the former cannot resolve the dispute. We sincerely <strong>hope</strong> the latter will help.<a href="#section-1.2-4" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-1.2-5">
+<pre>
+We believe the security considerations of {{I-D.ietf-tls-mlkem}} are
+insufficient. We also believe FATT review could have significantly
+improved it, including but not limited to the preference of hybrid
+key exchanges, and potential issues regarding KEM binding in TLS.
+WG participants have provided significant feedback during the two
+WGLCs. However, not much of that is actually reflected in the
+updated editor's version at the time of writing.
+</pre><a href="#section-1.2-5" class="pilcrow">¶</a>
+</div>
+<div id="expected-learning">
+<section id="section-1.2.1">
+          <h4 id="name-expected-learning">
+<a href="#section-1.2.1" class="section-number selfRef">1.2.1. </a><a href="#name-expected-learning" class="section-name selfRef">Expected Learning</a>
+          </h4>
+<p id="section-1.2.1-1">We believe formal methods can provide additional value for security considerations of this draft in order to maintain the high cryptographic assurance of TLS.<a href="#section-1.2.1-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-1.2.1-2">
+<pre>
+Since we have no guarantee on whether ECDHE will break before ML-KEM,
+it seems appropriate to do thorough cryptographic analysis.
+We believe the Harvest Now, Decrypt Later (HNDL) attack applies
+equally well to standalone ML-KEM.
+</pre><a href="#section-1.2.1-2" class="pilcrow">¶</a>
+</div>
+<p id="section-1.2.1-3">Adversary can record all traffic and decrypt it when ML-KEM is broken.
+The opinions of WG participants here vary from "ML-KEM is secure" to "ML-KEM is probably already secrectly broken."
+Formal methods can operate under the assumption that ML-KEM is secure, and focus on the <strong>integration</strong> of ML-KEM in TLS under this assumption.<a href="#section-1.2.1-3" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-1.2.1-4.1">
+              <p id="section-1.2.1-4.1.1">As an example, formal methods can help justify design choices, such as the preference for hybrid key exchanges.
+It can also help identify all the assumptions under which the properties hold.<a href="#section-1.2.1-4.1.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-1.2.1-4.2">
+              <p id="section-1.2.1-4.2.1">As a relevant data point in the context of standardization, LAKE WG has done formal analysis for EDHOC-PSK with KEM (<a href="https://mailarchive.ietf.org/arch/msg/lake/2XGOI9OCwylJUfSCasvvwM2FXmw/">ref</a>).<a href="#section-1.2.1-4.2.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-1.2.1-4.3">
+              <p id="section-1.2.1-4.3.1"><em>Computational</em> analysis (cf. <a href="https://eprint.iacr.org/2019/1393.pdf">SoK</a>) -- using tools such as CryptoVerif -- seems like a reasonable approach to ensure security of ML-KEM in TLS, such as binding shared secret <code>ss</code> to the TLS transcript hash.<a href="#section-1.2.1-4.3.1" class="pilcrow">¶</a></p>
+</li>
+          </ul>
+</section>
+</div>
+<div id="sec-model-analyze">
+<section id="section-1.2.2">
+          <h4 id="name-minimum-viable-modeling">
+<a href="#section-1.2.2" class="section-number selfRef">1.2.2. </a><a href="#name-minimum-viable-modeling" class="section-name selfRef">Minimum Viable Modeling</a>
+          </h4>
+<p id="section-1.2.2-1">Based on the discussion on list, simply replacing ideal DHKE by ideal ML-KEM in the formal model is not very useful. We ought to focus on the more security-critical questions about <strong>integration</strong> of ML-KEM in TLS.
+We present a few high-level observations to consider for security considerations of <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span>:<a href="#section-1.2.2-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-1.2.2-2.1">
+              <p id="section-1.2.2-2.1.1">The model ought to consider that any agent could have initiated the TLS, rather than assigning the agents with static roles of client and server in the model. When agents are assigned non-static roles, it would be interesting to see whether the asymmetry issue becomes visible in some property. We consider it very critical for security considerations of <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span> and this is the key point of this draft.<a href="#section-1.2.2-2.1.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-1.2.2-2.2">
+              <p id="section-1.2.2-2.2.1">Different failure modes proposed on list can be modeled.<a href="#section-1.2.2-2.2.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-1.2.2-2.3">
+              <p id="section-1.2.2-2.3.1">A large part of the problem is the careful investigation of what to model, under what threat model, under what system model, under what implementation scenarios etc. We believe some of this is important for security considerations of <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span>.<a href="#section-1.2.2-2.3.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-1.2.2-2.4">
+              <p id="section-1.2.2-2.4.1">It will be interesting to see some analysis about any subtle cases where hybrid key exchange in TLS is <em>not</em> at least as good as standalone ML-KEM in TLS. Our understanding is that some participants would like to see some statement on the comparison since hybrid key exchange is the de facto industry standard.<a href="#section-1.2.2-2.4.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-1.2.2-2.5">
+              <p id="section-1.2.2-2.5.1">We believe brainstorming about some robustness (vs. security) properties would also be useful. Even if the security properties hold, does standalone ML-KEM make side-channel leakage easier? This might be a valuable consideration for the implementers.<a href="#section-1.2.2-2.5.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-1.2.2-2.6">
+              <p id="section-1.2.2-2.6.1">Analysis may be helpful to ensure that the changes -- such as the removal of hash function (cf. Appendix C.1, bullet 3 in <span>[<a href="#NistFips203" class="cite xref">NistFips203</a>]</span>) -- from Kyber to ML-KEM preserve the security proofs of Kyber.<a href="#section-1.2.2-2.6.1" class="pilcrow">¶</a></p>
+</li>
+          </ul>
+<p id="section-1.2.2-3">We invite collaborations or independent analysis to extend the ProVerif models to perform this analysis.
+Any analysis on these or related security and robustness matters is very welcome.<a href="#section-1.2.2-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="sec-sol-ml-kem">
+<section id="section-1.2.3">
+          <h4 id="name-previous-formal-requests-fo">
+<a href="#section-1.2.3" class="section-number selfRef">1.2.3. </a><a href="#name-previous-formal-requests-fo" class="section-name selfRef">Previous Formal Requests for FATT Review</a>
+          </h4>
+<p id="section-1.2.3-1">We have formally requested the chairs to initiate the FATT process for <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span>.
+See <a href="https://mailarchive.ietf.org/arch/msg/tls/rClgrWm2hnhESXHx56U8InbwQQs/">this</a>, <a href="https://mailarchive.ietf.org/arch/msg/tls/7lj6fYAweMBwNMxFerNl7xhY0pk/">this</a>, and <a href="https://mailarchive.ietf.org/arch/msg/tls/2LukH1riSE5PQPpMVlVGygp4lpg/">this</a>.<a href="#section-1.2.3-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="sec-fatt-harmless">
+<section id="section-1.2.4">
+          <h4 id="name-fatt-review-is-harmless">
+<a href="#section-1.2.4" class="section-number selfRef">1.2.4. </a><a href="#name-fatt-review-is-harmless" class="section-name selfRef">FATT Review is Harmless</a>
+          </h4>
+<p id="section-1.2.4-1">For those who are worried, please note the legitimate outcome <em>nothing required</em> in <span>[<a href="#TLS-FATT" class="cite xref">TLS-FATT</a>]</span>.<a href="#section-1.2.4-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-1.2.4-2">
+<pre>
+Recommendations output from the FATT for a particular document
+may range from 'nothing required' to 'pen-and-paper proof
+can be updated' to 'a formal methods model using a specific
+tool ought to be done' - the 'formal' is not limited to
+formal methods but to formal security modeling generally.
+</pre><a href="#section-1.2.4-2" class="pilcrow">¶</a>
+</div>
+<p id="section-1.2.4-3">Please also note <span>[<a href="#TLS-FATT" class="cite xref">TLS-FATT</a>]</span>:<a href="#section-1.2.4-3" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-1.2.4-4">
+<pre>
+The output may say that additional analysis is not warranted
+or it may indicate what type of analysis should be done.
+</pre><a href="#section-1.2.4-4" class="pilcrow">¶</a>
+</div>
+<p id="section-1.2.4-5">Moreover, WG retains its authority <span>[<a href="#TLS-FATT" class="cite xref">TLS-FATT</a>]</span>:<a href="#section-1.2.4-5" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-1.2.4-6">
+<pre>
+The working group is not obligated to follow the FATT recommendation.
+</pre><a href="#section-1.2.4-6" class="pilcrow">¶</a>
+</div>
+</section>
+</div>
+</section>
+</div>
+</section>
+</div>
+<div id="conventions-and-definitions">
+<section id="section-2">
+      <h2 id="name-conventions-and-definitions">
+<a href="#section-2" class="section-number selfRef">2. </a><a href="#name-conventions-and-definitions" class="section-name selfRef">Conventions and Definitions</a>
+      </h2>
+<p id="section-2-1">The key words "<span class="bcp14">MUST</span>", "<span class="bcp14">MUST NOT</span>", "<span class="bcp14">REQUIRED</span>", "<span class="bcp14">SHALL</span>", "<span class="bcp14">SHALL NOT</span>", "<span class="bcp14">SHOULD</span>", "<span class="bcp14">SHOULD NOT</span>", "<span class="bcp14">RECOMMENDED</span>", "<span class="bcp14">NOT RECOMMENDED</span>",
+"<span class="bcp14">MAY</span>", and "<span class="bcp14">OPTIONAL</span>" in this document are to be interpreted as
+described in BCP 14 <span>[<a href="#RFC2119" class="cite xref">RFC2119</a>]</span> <span>[<a href="#RFC8174" class="cite xref">RFC8174</a>]</span> when, and only when, they
+appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-2-2.1">
+          <p id="section-2-2.1.1">Symbolic analysis: see <a href="https://eprint.iacr.org/2019/1393.pdf">SoK</a><a href="#section-2-2.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-2-2.2">
+          <p id="section-2-2.2.1">Computational analysis: see <a href="https://eprint.iacr.org/2019/1393.pdf">SoK</a><a href="#section-2-2.2.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-2-2.3">
+          <p id="section-2-2.3.1">Standalone ML-KEM refers to <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span>.<a href="#section-2-2.3.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-2-2.4">
+          <p id="section-2-2.4.1">Hybrid key exchange refers to <span>[<a href="#I-D.ietf-tls-ecdhe-mlkem" class="cite xref">I-D.ietf-tls-ecdhe-mlkem</a>]</span> and <span>[<a href="#I-D.ietf-tls-hybrid-design" class="cite xref">I-D.ietf-tls-hybrid-design</a>]</span>.<a href="#section-2-2.4.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
+<p id="section-2-3">We believe that symbolic and computational models are complementary and not a substitute of each other.<a href="#section-2-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="sec-proof-break">
+<section id="section-3">
+      <h2 id="name-where-proverif-proofs-break">
+<a href="#section-3" class="section-number selfRef">3. </a><a href="#name-where-proverif-proofs-break" class="section-name selfRef">Where ProVerif Proofs Break</a>
+      </h2>
+<p id="section-3-1">We attest that:<a href="#section-3-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-3-2">
+<pre>
+1. existing proofs of TLS in ProVerif are based on commutativity
+2. commutativity does not apply to standalone ML-KEM in TLS
+Hence, a new proof is required.
+This entails updating ProVerif models, e.g., modeling KEMs.
+</pre><a href="#section-3-2" class="pilcrow">¶</a>
+</div>
+<p id="section-3-3">While ML-KEM <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span> looks like just a "trivial" addition, it makes changes as deep as the key schedule of TLS. It essentially replaces the <em>key exchange</em> by <em>key encapsulation</em>. While the former is symmetric, the latter is asymmetric.
+This symmetry is in terms of exchange of roles assigned to the agents, and that the order does not matter.
+The existing proofs in ProVerif, therefore, utilize this symmetry for the commutativity of the key shares g<sup>x</sup> and g<sup>y</sup>, where g<sup>x</sup> and g<sup>y</sup> represent the public key shares of the endpoints.
+In ProVerif syntax:
+(see original source <a href="https://github.com/Inria-Prosecco/reftls/blob/634f7da5940f8d1f09cfcd56280b4ef3b533df6b/pv/tls-lib-draft20.pvl#L45-L48">here</a> and re-used <a href="https://github.com/CCC-Attestation/formal-spec-id-crisis/blob/6c3d17a428198aa058f805d16fe6baef7894028f/TLS-a/fix/tls-lib-simple.pvl#L38-L41">here</a>)<a href="#section-3-3" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-3-4">
+<pre>
+fun dh_ideal(element,bitstring):element.
+equation forall x:bitstring, y:bitstring;
+         dh_ideal(dh_ideal(G,x),y) =
+         dh_ideal(dh_ideal(G,y),x).
+</pre><a href="#section-3-4" class="pilcrow">¶</a>
+</div>
+<p id="section-3-5">Key encapsulation does not enjoy this commutativity property, or even an analogous symmetry argument. There is essentially only one endpoint (say client) which generates the key pair <code>(dk,ek)</code> where <code>dk</code> represents the <em>secret decapsulation key</em> and <code>ek</code> represents the <em>public encapsulation key</em>.
+As opposed to both endpoints sending their public key shares g<sup>x</sup> and g<sup>y</sup> in a traditional key exchange (DHKE), a KEM creates a roles-asymmetry where only one of the endpoints (client in above example) sends the public encapsulation key <code>ek</code> and the peer (server) sends a ciphertext <code>ct</code>. This asymmetry breaks the existing proofs of TLS 1.3 in ProVerif and requires a new proof.<a href="#section-3-5" class="pilcrow">¶</a></p>
+<p id="section-3-6">Please note that breaking the existing ProVerif proof does not imply that the standalone ML-KEM proposal in TLS <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span> is insecure.
+It just means that a new proof is required.
+We welcome feedback and collaborations from the community on doing a thorough analysis in ProVerif -- such as in <a href="#sec-model-analyze" class="auto internal xref">Section 1.2.2</a> --  while preserving the cryptographic soundness.<a href="#section-3-6" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="sec-just-process">
+<section id="section-4">
+      <h2 id="name-justification-based-on-fatt">
+<a href="#section-4" class="section-number selfRef">4. </a><a href="#name-justification-based-on-fatt" class="section-name selfRef">Justification based on FATT Process</a>
+      </h2>
+<p id="section-4-1">Our formal request for FATT review is fully in conformance with the current <span>[<a href="#TLS-FATT" class="cite xref">TLS-FATT</a>]</span> process, which explicitly states:<a href="#section-4-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-4-2">
+<pre>
+For example a proposal that modifies the TLS key schedule or the
+authentication process or any other part of the cryptographic
+protocol that has been formally modeled and analyzed in the past
+would likely result in asking the FATT, whereas a change such
+as modifying the SSLKEYLOG format would not.
+</pre><a href="#section-4-2" class="pilcrow">¶</a>
+</div>
+<p id="section-4-3">As presented in <a href="#sec-proof-break" class="auto internal xref">Section 3</a>, we attest that <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span> modifies the:<a href="#section-4-3" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4-4.1">
+          <p id="section-4-4.1.1">TLS key schedule<a href="#section-4-4.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-4-4.2">
+          <p id="section-4-4.2.1">cryptographic protocol such that commutativity property is no longer valid.<a href="#section-4-4.2.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
+<p id="section-4-5">This breaks the following proofs in ProVerif:<a href="#section-4-5" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4-6.1">
+          <p id="section-4-6.1.1">Bhargavan et al.'s model of draft 20 of TLS 1.3: <span>[<a href="#reftls" class="cite xref">reftls</a>]</span> and <span>[<a href="#reftls-Repo" class="cite xref">reftls-Repo</a>]</span> and all 5 <em>public</em> forks as well as one nested fork:<a href="#section-4-6.1.1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4-6.1.2.1">
+              <p id="section-4-6.1.2.1.1"><a href="https://github.com/arthuraa/reftls/blob/d6bc5dd8eb4373683cb1ce64845691954d0d7601/pv/tls-lib-draft20.pvl#L44-L47">arthuraa/reftls</a><a href="#section-4-6.1.2.1.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-4-6.1.2.2">
+              <p id="section-4-6.1.2.2.1"><a href="https://github.com/blipp/reftls/blob/5bc66d14d4accbff6edb0ae7a263df5ea880857d/pv/tls-lib-draft20.pvl#L44-L47">blipp/reftls</a><a href="#section-4-6.1.2.2.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-4-6.1.2.3">
+              <p id="section-4-6.1.2.3.1"><a href="https://github.com/chris-wood/reftls/blob/d6bc5dd8eb4373683cb1ce64845691954d0d7601/pv/tls-lib-draft20.pvl#L44-L47">chris-wood/reftls</a><a href="#section-4-6.1.2.3.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-4-6.1.2.4">
+              <p id="section-4-6.1.2.4.1"><a href="https://github.com/ekr/reftls/blob/5bc66d14d4accbff6edb0ae7a263df5ea880857d/pv/tls-lib-draft20.pvl#L44-L47">ekr/reftls</a><a href="#section-4-6.1.2.4.1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4-6.1.2.4.2.1">
+                  <p id="section-4-6.1.2.4.2.1.1"><a href="https://github.com/ajayeeralla/reftls/blob/b97196fa0c3885da0fe0f412c9902e85a7f5323a/pv/tls-lib-draft20.pvl#L44-L47">ajayeeralla/reftls</a><a href="#section-4-6.1.2.4.2.1.1" class="pilcrow">¶</a></p>
+</li>
+              </ul>
+</li>
+            <li class="normal" id="section-4-6.1.2.5">
+              <p id="section-4-6.1.2.5.1"><a href="https://github.com/jhoyla/reftls/blob/d6bc5dd8eb4373683cb1ce64845691954d0d7601/pv/tls-lib-draft20.pvl#L44-L47">jhoyla/reftls</a><a href="#section-4-6.1.2.5.1" class="pilcrow">¶</a></p>
+</li>
+          </ul>
+</li>
+        <li class="normal" id="section-4-6.2">
+          <p id="section-4-6.2.1">Our previous work extending the model of Bhargavan et al. to the current state of <span>[<a href="#I-D.ietf-tls-rfc8446bis" class="cite xref">I-D.ietf-tls-rfc8446bis</a>]</span> and integrating remote attestation: <span>[<a href="#ID-Crisis" class="cite xref">ID-Crisis</a>]</span> and <span>[<a href="#ID-Crisis-Repo" class="cite xref">ID-Crisis-Repo</a>]</span> (under Apache-2.0 License) and all 3 public forks:<a href="#section-4-6.2.1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4-6.2.2.1">
+              <p id="section-4-6.2.2.1.1"><a href="https://github.com/jupenur/formal-spec-id-crisis/blob/de2bdec9967bf535f648f0cc8e8d2d90a49104a4/TLS-a/fix/tls-lib-simple.pvl#L38-L41">jupenur/formal-spec-id-crisis</a><a href="#section-4-6.2.2.1.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-4-6.2.2.2">
+              <p id="section-4-6.2.2.2.1"><a href="https://github.com/nathanaelritz/formal-spec-id-crisis/blob/a028cec823b7d9bf13dd5a1dd71ab14c75b1a83d/TLS-a/fix/tls-lib-simple.pvl#L38-L41">nathanaelritz/formal-spec-id-crisis</a><a href="#section-4-6.2.2.2.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-4-6.2.2.3">
+              <p id="section-4-6.2.2.3.1"><a href="https://github.com/telephonicrobotics/formal-id-crisis-spec/blob/c1953127ce004e51b888250591ec9971ad50e98c/TLS-a/fix/tls-lib-simple.pvl#L38-L41">telephonicrobotics/formal-id-crisis-spec</a> (owner of this repo is the same as the one before this and has indicated that there was no active <em>private</em> development in this repo)<a href="#section-4-6.2.2.3.1" class="pilcrow">¶</a></p>
+</li>
+          </ul>
+</li>
+        <li class="normal" id="section-4-6.3">
+          <p id="section-4-6.3.1">A couple of our ongoing works which are not yet public<a href="#section-4-6.3.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
+<p id="section-4-7"><strong>Note</strong>: Forks may or may not have substantive changes.
+It is hard for us to know and judge how much research and development effort someone did <em>privately</em> and did not make it public and hence, we do not want to add our personal estimation of whether someone has substantially worked after forking.
+Readers are welcome to make their own opinions by exploring the repos or contact the respective repo owners for further details.
+The hyperlinks provide one instance of usage of <code>equation</code> in the main branch based on what is publicly available.<a href="#section-4-7" class="pilcrow">¶</a></p>
+<p id="section-4-8">In our understanding, a couple of WG participants are already working on formal analysis of <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span> analyzing the items mentioned in <a href="#sec-model-analyze" class="auto internal xref">Section 1.2.2</a>.
+A new section will be added when they will share their results of the items in <a href="#sec-model-analyze" class="auto internal xref">Section 1.2.2</a>.<a href="#section-4-8" class="pilcrow">¶</a></p>
+<div id="comparison-with-rfc8773bis">
+<section id="section-4.1">
+        <h3 id="name-comparison-with-rfc8773bis">
+<a href="#section-4.1" class="section-number selfRef">4.1. </a><a href="#name-comparison-with-rfc8773bis" class="section-name selfRef">Comparison with RFC8773bis</a>
+        </h3>
+<p id="section-4.1-1">Please note that RFC8773bis is a much smaller change: it's pretty much standard TLS and still went for FATT review.
+Based on that, we see no reason to believe that <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span> -- with key schedule level changes -- should not be sent to FATT.<a href="#section-4.1-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="sec-hybrid-ml-kem">
+<section id="section-4.2">
+        <h3 id="name-fatt-review-for-hybrid-key-">
+<a href="#section-4.2" class="section-number selfRef">4.2. </a><a href="#name-fatt-review-for-hybrid-key-" class="section-name selfRef">FATT Review for Hybrid Key Exchange?</a>
+        </h3>
+<p id="section-4.2-1">Some participants have raised concern that the same issue <em>may</em> apply to hybrid key exchange as well and one of the proposals is to block that draft. We <strong>very strongly</strong> oppose this proposal because of the following reasons:<a href="#section-4.2-1" class="pilcrow">¶</a></p>
+<div id="stage-of-publication">
+<section id="section-4.2.1">
+          <h4 id="name-stage-of-publication">
+<a href="#section-4.2.1" class="section-number selfRef">4.2.1. </a><a href="#name-stage-of-publication" class="section-name selfRef">Stage of Publication</a>
+          </h4>
+<p id="section-4.2.1-1"><span>[<a href="#I-D.ietf-tls-hybrid-design" class="cite xref">I-D.ietf-tls-hybrid-design</a>]</span> has IETF consensus and is in the publication queue. Given the consensus, we see absolutely no reason to block that. As we understand, FATT process was specifically designed to <strong>resolve</strong> concerns rather than <strong>gatekeeping</strong>.<a href="#section-4.2.1-1" class="pilcrow">¶</a></p>
+<p id="section-4.2.1-2">In contrast, as mentioned in <a href="#sec-mot" class="auto internal xref">Section 1.2</a>, standalone MLKEM <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span> is still within the WG and has a very different profile with ca. 25 oppositions in our understanding in the last WGLC. FWIW, this is exactly what makes formal analysis potentially helpful to resolve the issue, build high confidence and offer a statement for security considerations after a careful formal analysis.<a href="#section-4.2.1-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="sec-tech-rat">
+<section id="section-4.2.2">
+          <h4 id="name-technical-rationale">
+<a href="#section-4.2.2" class="section-number selfRef">4.2.2. </a><a href="#name-technical-rationale" class="section-name selfRef">Technical Rationale</a>
+          </h4>
+<p id="section-4.2.2-1">Technically, a proof of <span>[<a href="#I-D.ietf-tls-hybrid-design-09" class="cite xref">I-D.ietf-tls-hybrid-design-09</a>]</span> is done in the computational model using CryptoVerif (cf. <a href="https://bblanche.gitlabpages.inria.fr/publications/BlanchetJacommeCSF24.pdf">ref</a>). As per list discussion, it appears that the proof applies to the latest version of the spec <span>[<a href="#I-D.ietf-tls-hybrid-design" class="cite xref">I-D.ietf-tls-hybrid-design</a>]</span>, as there seem to be no substantive changes from the perspective of formal proof.<a href="#section-4.2.2-1" class="pilcrow">¶</a></p>
+<p id="section-4.2.2-2">Moreover, we believe that the two drafts <span>[<a href="#I-D.ietf-tls-hybrid-design" class="cite xref">I-D.ietf-tls-hybrid-design</a>]</span> and <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span> are incomparable on this specific point as hybrid key exchange still maintains the symmetry in the DHKE part. From formal (symbolic) analysis perspective, g<sup>x</sup> and  g<sup>y</sup> are still sent in hybrid key exchange,  g<sup>xy</sup> is still computed and we believe the commutativity property is applicable for that part as-is. From formal (symbolic) analysis perspective, ML-KEM is complementary to that.<a href="#section-4.2.2-2" class="pilcrow">¶</a></p>
+<p id="section-4.2.2-3">Specifically, from <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-ecdhe-mlkem-05#section-4" class="relref">Section 4</a> of [<a href="#I-D.ietf-tls-ecdhe-mlkem" class="cite xref">I-D.ietf-tls-ecdhe-mlkem</a>]</span>, for the symbolic analysis, X25519MLKEM768 in TLS may be viewed as:<a href="#section-4.2.2-3" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-4.2.2-4">
+<pre>
+client's key_exchange value = ek || gx
+server's key_exchange value = ct || gy
+shared secret = ss || gxy
+</pre><a href="#section-4.2.2-4" class="pilcrow">¶</a>
+</div>
+</section>
+</div>
+<div id="marginal-additional-effort-for-hybrid-key-exchange">
+<section id="section-4.2.3">
+          <h4 id="name-marginal-additional-effort-">
+<a href="#section-4.2.3" class="section-number selfRef">4.2.3. </a><a href="#name-marginal-additional-effort-" class="section-name selfRef">Marginal Additional Effort for Hybrid Key Exchange</a>
+          </h4>
+<p id="section-4.2.3-1">Once the formal analysis for standalone ML-KEM in TLS <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span> is done, we expect that the additional effort for hybrid key exchange in TLS <span>[<a href="#I-D.ietf-tls-hybrid-design" class="cite xref">I-D.ietf-tls-hybrid-design</a>]</span> will only be marginal, as the building blocks for DHKE already exist in ProVerif.<a href="#section-4.2.3-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="what-if-issue-is-found">
+<section id="section-4.2.4">
+          <h4 id="name-what-if-issue-is-found">
+<a href="#section-4.2.4" class="section-number selfRef">4.2.4. </a><a href="#name-what-if-issue-is-found" class="section-name selfRef">What if Issue is Found?</a>
+          </h4>
+<p id="section-4.2.4-1">Should there be a groundbreaking discovery of an issue which applies also to <span>[<a href="#I-D.ietf-tls-hybrid-design" class="cite xref">I-D.ietf-tls-hybrid-design</a>]</span>, we are confident that the WG will find a way out, such as very quickly applying the fix proposed by the formal analysis, doing a very quick WGLC and IETF LC while requesting the AD and RFC Editor to keep the draft at its place in the publication queue.<a href="#section-4.2.4-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+</section>
+</div>
+<div id="formal-analysis-work-in-progress">
+<section id="section-5">
+      <h2 id="name-formal-analysis-work-in-pro">
+<a href="#section-5" class="section-number selfRef">5. </a><a href="#name-formal-analysis-work-in-pro" class="section-name selfRef">Formal Analysis (Work-in-progress)</a>
+      </h2>
+<p id="section-5-1">We have presented observation from our ongoing symbolic security analysis (cf. limitations in <a href="#sec-sec-cons" class="auto internal xref">Section 7</a>) using ProVerif on the mailing list.<a href="#section-5-1" class="pilcrow">¶</a></p>
+<p id="section-5-2">For brevity, we omit other assumptions in the properties below and focus on the difference.
+This assumes hybrid constructor to be secure.<a href="#section-5-2" class="pilcrow">¶</a></p>
+<p id="section-5-3">We believe that <em>in general</em>:<a href="#section-5-3" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5-4">
+<pre>
+1. Migration from ECDHE to hybrid key exchange is security improvement.
+2. Migration from hybrid key exchange to standalone ML-KEM is security
+regression.
+</pre><a href="#section-5-4" class="pilcrow">¶</a>
+</div>
+<div id="hybrid-key-exchange">
+<section id="section-5.1">
+        <h3 id="name-hybrid-key-exchange">
+<a href="#section-5.1" class="section-number selfRef">5.1. </a><a href="#name-hybrid-key-exchange" class="section-name selfRef">Hybrid Key Exchange</a>
+        </h3>
+<p id="section-5.1-1">More formally, the property hybrid key exchange <em>should</em> provide is:<a href="#section-5.1-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5.1-2">
+<pre>
+Security properties of TLS hold unless *both* `gxy` and `ss` are
+available to the adversary.
+</pre><a href="#section-5.1-2" class="pilcrow">¶</a>
+</div>
+<p id="section-5.1-3">As presented in <a href="#sec-tech-rat" class="auto internal xref">Section 4.2.2</a>, hybrid key exchange preserves ECDHE component <code>gxy</code>, and concatenates ML-KEM component <code>ss</code> as an additional factor.
+So as long as <em>at least</em> one of these two secrets is not available to the adversary, all security properties should hold.
+In particular, even if ML-KEM is completely broken, i.e., <code>ss</code> is available to the adversary, the protocol retains the security level of ECDHE.<a href="#section-5.1-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="standalone-ml-kem">
+<section id="section-5.2">
+        <h3 id="name-standalone-ml-kem">
+<a href="#section-5.2" class="section-number selfRef">5.2. </a><a href="#name-standalone-ml-kem" class="section-name selfRef">Standalone ML-KEM</a>
+        </h3>
+<p id="section-5.2-1">On the other hand, the formal property standalone ML-KEM can provide is:<a href="#section-5.2-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5.2-2">
+<pre>
+Security properties of TLS hold unless `ss` is available to the
+adversary.
+</pre><a href="#section-5.2-2" class="pilcrow">¶</a>
+</div>
+</section>
+</div>
+<div id="comparison">
+<section id="section-5.3">
+        <h3 id="name-comparison">
+<a href="#section-5.3" class="section-number selfRef">5.3. </a><a href="#name-comparison" class="section-name selfRef">Comparison</a>
+        </h3>
+<p id="section-5.3-1">Leaking out the ECDHE key from hybrid key exchange should downgrade the security to the level of a standalone ML-KEM.
+Therefore, hybrid key exchange is <em>in general</em> more secure, unless:<a href="#section-5.3-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-5.3-2.1">
+            <p id="section-5.3-2.1.1">ECDHE is fully broken, in which case it still falls equivalent to standalone ML-KEM,<a href="#section-5.3-2.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-5.3-2.2">
+            <p id="section-5.3-2.2.1">in the <em>hypothetical</em> scenario that there is an implementation bug in the ECDHE part which is triggered only in composition. We have not yet seen any concrete evidence of such a scenario on the list.<a href="#section-5.3-2.2.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+</section>
+</div>
+</section>
+</div>
+<div id="sec-gen-issues">
+<section id="section-6">
+      <h2 id="name-issues-that-formal-methods-">
+<a href="#section-6" class="section-number selfRef">6. </a><a href="#name-issues-that-formal-methods-" class="section-name selfRef">Issues That Formal Methods Probably Cannot Solve</a>
+      </h2>
+<p id="section-6-1">The answers to the following issues are largely dependent on several factors, and the opinions vary largely.<a href="#section-6-1" class="pilcrow">¶</a></p>
+<p id="section-6-2">It is necessary to mention that even several respectable cryptographers in the community are not aligned on the issue -- for example see the <a href="https://github.com/FiloSottile/ecc-vs-lattices-long-bet">long bet</a>. Hence, our personal opinion is probably not that important. Probably the best we can do is to capture <em>our</em> understanding of the views of WG participants.<a href="#section-6-2" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-6-3">
+<pre>
+Disclaimer: This is not meant to be an exhaustive list.
+This is also not meant to pritoritize any concerns over others.
+This is a sincere attempt to slowly capture the opinions
+to avoid endless repetitions from both sides.
+Many substantive concerns are missing.
+We are slowly collecting the concerns, as time allows.
+If your substantive concern is missing, it is unintentional.
+Please simply submit a *precise* and *concise* PR.
+</pre><a href="#section-6-3" class="pilcrow">¶</a>
+</div>
+<div id="sec-designers-view">
+<section id="section-6.1">
+        <h3 id="name-recommendation-of-designers">
+<a href="#section-6.1" class="section-number selfRef">6.1. </a><a href="#name-recommendation-of-designers" class="section-name selfRef">Recommendation of Designers</a>
+        </h3>
+<p id="section-6.1-1">The authors of Kyber/ML-KEM (see <a href="https://pq-crystals.org/kyber/index.shtml">this</a>) say:<a href="#section-6.1-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-6.1-2">
+<pre>
+For users who are interested in using Kyber, we recommend the
+following:
+
+* Use Kyber in a so-called hybrid mode in combination with
+established "pre-quantum" security; for example in combination
+with elliptic-curve Diffie-Hellman.
+[...]
+</pre><a href="#section-6.1-2" class="pilcrow">¶</a>
+</div>
+<p id="section-6.1-3">A WG participant <a href="https://mailarchive.ietf.org/arch/msg/tls/NnGrdavTY6KGTVQo46xaPbSHQzw/">shares</a> that:<a href="#section-6.1-3" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-6.1-4">
+<pre>
+I recently asked one of the members of the CRYSTALS team
+whether this is still his view, and the response was:
+"Yes, of course."
+</pre><a href="#section-6.1-4" class="pilcrow">¶</a>
+</div>
+</section>
+</div>
+<div id="thorough-review">
+<section id="section-6.2">
+        <h3 id="name-thorough-review">
+<a href="#section-6.2" class="section-number selfRef">6.2. </a><a href="#name-thorough-review" class="section-name selfRef">Thorough Review</a>
+        </h3>
+<p id="section-6.2-1">Please see a very thorough review <a href="https://mailarchive.ietf.org/arch/msg/tls/jlsYHENwqMv-4XPRvunqKsAL36k/">here</a>, which is self-sufficient.<a href="#section-6.2-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="significantly-harder-argument">
+<section id="section-6.3">
+        <h3 id="name-significantly-harder-argume">
+<a href="#section-6.3" class="section-number selfRef">6.3. </a><a href="#name-significantly-harder-argume" class="section-name selfRef">'Significantly Harder' Argument</a>
+        </h3>
+<p id="section-6.3-1">Some participants believe in the 'significantly harder' argument, which assumes independence of breakage of ML-KEM and traditionals:<a href="#section-6.3-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-6.3-2">
+<pre>
+If the probablity of one being broken over the next n years is p, and
+the probability of the other being broken over the next n years is q,
+then the probability of both being broken is pq.
+</pre><a href="#section-6.3-2" class="pilcrow">¶</a>
+</div>
+<p id="section-6.3-3">Please see <a href="https://github.com/FiloSottile/ecc-vs-lattices-long-bet#2a-what-counts-as-a-break">this</a> for what "broken" may mean here modulo some <a href="https://github.com/FiloSottile/ecc-vs-lattices-long-bet#5-exclusions">exclusions</a>.<a href="#section-6.3-3" class="pilcrow">¶</a></p>
+<p id="section-6.3-4">Given the very different type of cryptographic constructions involved, independence might be a reasonable assumption.
+However, some participants disagree with 'significantly harder' argument with a reasonable counter-argument that in reality, cryptography is much more complicated than that (cf. <a href="https://mailarchive.ietf.org/arch/msg/tls/AK7QUiiGX3ynsOhXeUuwn_IY7ik/">this</a>):<a href="#section-6.3-4" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-6.3-5">
+<pre>
+Depending on the algorithms and the composition method,
+the probability can clearly be q, or smaller than pq.
+</pre><a href="#section-6.3-5" class="pilcrow">¶</a>
+</div>
+<p id="section-6.3-6">In our understanding, most other counter-arguments seem to break the <a href="https://github.com/FiloSottile/ecc-vs-lattices-long-bet#5-exclusions">exclusions</a>.<a href="#section-6.3-6" class="pilcrow">¶</a></p>
+<p id="section-6.3-7">Please note that this argument is based on the security of <em>primitives</em>, rather than the <em>composition</em> of primitives in protocols. Hence, formal methods probably have nothing to help here.<a href="#section-6.3-7" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="urgency">
+<section id="section-6.4">
+        <h3 id="name-urgency">
+<a href="#section-6.4" class="section-number selfRef">6.4. </a><a href="#name-urgency" class="section-name selfRef">Urgency</a>
+        </h3>
+<p id="section-6.4-1">It is unclear <em>whether</em> and if applicable <em>when</em> Cryptographically-Relevant Quantum Computer (CRQC) will eventually become practical.
+The opinions vary from never because of complicated physics (see <a href="https://eprint.iacr.org/2025/1237">this</a>) to be <em>prepared</em> for it as early as 2029 (see <a href="https://blog.google/innovation-and-ai/technology/safety-security/cryptography-migration-timeline/">Google 2029</a> and <a href="https://blog.cloudflare.com/post-quantum-roadmap/">Cloudflare 2029</a>).
+Technically, please note that Google has not even released the <strong>quantum circuit</strong> underlying their recent claims -- apparently the reason for this urgency. So Google's claims may not yet be justified.<a href="#section-6.4-1" class="pilcrow">¶</a></p>
+<p id="section-6.4-2">Moreover, in our understanding, these deadlines are for PQ-based protection in general regardless of hybrid key exchange or standalone KEMs in TLS. Since hybrid key exchange is wildly in use, these deadlines are mainly for quantum-safe authentication.<a href="#section-6.4-2" class="pilcrow">¶</a></p>
+<p id="section-6.4-3">In any case, some participants see no reason to create panic for publication of <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span> based on this because many implementations -- such as OpenSSL -- have already implemented standalone ML-KEM, and it is just a matter of enabling it. And frankly, nobody needs permission from the IETF to enable it.<a href="#section-6.4-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="cost">
+<section id="section-6.5">
+        <h3 id="name-cost">
+<a href="#section-6.5" class="section-number selfRef">6.5. </a><a href="#name-cost" class="section-name selfRef">"Cost"</a>
+        </h3>
+<p id="section-6.5-1">"Cost" has been presented on the list as the motivation for standalone ML-KEM in TLS but we have not seen any supporting analysis.
+Our observation from <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-ecdhe-mlkem-05#section-4" class="relref">Section 4</a> of [<a href="#I-D.ietf-tls-ecdhe-mlkem" class="cite xref">I-D.ietf-tls-ecdhe-mlkem</a>]</span> is that -- for example -- for X25519MLKEM768, the traditional part seems negligible compared to ML-KEM part in <code>key_exchange</code>:<a href="#section-6.5-1" class="pilcrow">¶</a></p>
+<table class="center" id="table-1">
+          <caption><a href="#table-1" class="selfRef">Table 1</a></caption>
+<thead>
+            <tr>
+              <th class="text-left" rowspan="1" colspan="1">Bytes in field</th>
+              <th class="text-left" rowspan="1" colspan="1">PQ part (ML-KEM)</th>
+              <th class="text-left" rowspan="1" colspan="1">Traditional part (X25519)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">Client share</td>
+              <td class="text-left" rowspan="1" colspan="1">1184</td>
+              <td class="text-left" rowspan="1" colspan="1">32</td>
+            </tr>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">Server share</td>
+              <td class="text-left" rowspan="1" colspan="1">1088</td>
+              <td class="text-left" rowspan="1" colspan="1">32</td>
+            </tr>
+          </tbody>
+        </table>
+<p id="section-6.5-3">We believe other "costs" will depend on several factors -- including but not limited to implementation details and deployment scenario -- and it is quite <strong>subjective</strong>.<a href="#section-6.5-3" class="pilcrow">¶</a></p>
+<p id="section-6.5-4">There seems to be a need for a thorough study to understand the "cost."
+We invite the WG participants to perform cost analysis and share the results with the WG.<a href="#section-6.5-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="is-publication-necessary">
+<section id="section-6.6">
+        <h3 id="name-is-publication-necessary">
+<a href="#section-6.6" class="section-number selfRef">6.6. </a><a href="#name-is-publication-necessary" class="section-name selfRef">Is Publication Necessary?</a>
+        </h3>
+<p id="section-6.6-1">Code Points for ML-KEM have already been assigned.
+<span>[<a href="#I-D.barnes-tls-this-could-have-been-an-email" class="cite xref">I-D.barnes-tls-this-could-have-been-an-email</a>]</span> provides detailed rationale as to why publication of such documents and the debates around that may be unnecessary. In our understanding, <span>[<a href="#I-D.pwouters-crypto-current-practices" class="cite xref">I-D.pwouters-crypto-current-practices</a>]</span> makes similar arguments.<a href="#section-6.6-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="shiny-new-crypto">
+<section id="section-6.7">
+        <h3 id="name-shiny-new-crypto">
+<a href="#section-6.7" class="section-number selfRef">6.7. </a><a href="#name-shiny-new-crypto" class="section-name selfRef">Shiny New Crypto</a>
+        </h3>
+<p id="section-6.7-1">ML-KEM is quite new in the IETF and even in the IRTF. Some WG participants have shown concern over premature publication of <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span> until a detailed analysis has been done by CFRG.<a href="#section-6.7-1" class="pilcrow">¶</a></p>
+<p id="section-6.7-2">CFRG is starting some efforts for analysis. The extended deadline for submission is 22.06. Please see the latest <a href="https://mailarchive.ietf.org/arch/msg/cfrg/6K43Ycr062Ym1G0q4WHxZQ2HW8M/">CFRG chairs email</a> for further details.<a href="#section-6.7-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="formal-mapping-of-fips-to-ietf-bcp14">
+<section id="section-6.8">
+        <h3 id="name-formal-mapping-of-fips-to-i">
+<a href="#section-6.8" class="section-number selfRef">6.8. </a><a href="#name-formal-mapping-of-fips-to-i" class="section-name selfRef">Formal Mapping of FIPS to IETF BCP14</a>
+        </h3>
+<p id="section-6.8-1">As discussed on the TLS list, we are not aware of any formal mapping of the FIPS recommendations to the IETF BCP14 terminology, such as <span class="bcp14">SHOULD</span> vs. <span class="bcp14">MUST</span>. In general, we believe re-using FIPS recommendations is ambiguous for IETF readers.<a href="#section-6.8-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="outstanding-nist-comments">
+<section id="section-6.9">
+        <h3 id="name-outstanding-nist-comments">
+<a href="#section-6.9" class="section-number selfRef">6.9. </a><a href="#name-outstanding-nist-comments" class="section-name selfRef">Outstanding NIST Comments</a>
+        </h3>
+<p id="section-6.9-1">Some participants believe that NIST has rushed through the process and not addressed all the comments that were submitted during the open review. Please see comments <a href="https://csrc.nist.gov/files/pubs/fips/203/ipd/docs/fips-203-initial-public-comments-2023.pdf">here</a>.<a href="#section-6.9-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="too-early">
+<section id="section-6.10">
+        <h3 id="name-too-early">
+<a href="#section-6.10" class="section-number selfRef">6.10. </a><a href="#name-too-early" class="section-name selfRef">Too Early</a>
+        </h3>
+<p id="section-6.10-1">Some participants simply believe that publication of <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span> and related discussions are just too early and unnecessary.<a href="#section-6.10-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="patents">
+<section id="section-6.11">
+        <h3 id="name-patents">
+<a href="#section-6.11" class="section-number selfRef">6.11. </a><a href="#name-patents" class="section-name selfRef">Patents</a>
+        </h3>
+<p id="section-6.11-1">Some WG participants have raised some concerns related to patents. See some relevant patents <a href="https://datatracker.ietf.org/ipr/search/?submit=draft&amp;id=draft-ietf-tls-mlkem">here</a>.<a href="#section-6.11-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="sec-sec-cons">
+<section id="section-7">
+      <h2 id="name-security-considerations">
+<a href="#section-7" class="section-number selfRef">7. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
+      </h2>
+<p id="section-7-1">The whole document is about improving security considerations.<a href="#section-7-1" class="pilcrow">¶</a></p>
+<p id="section-7-2">Like all security proofs, formal analysis is only as strong as its assumptions and model.
+The scope is typically limited, and the model does not necessarily capture real-world deployment complexity, implementation details, operational constraints, or misuse scenarios.
+Formal methods should be used as complementary and not as subtitute of other analysis methods.<a href="#section-7-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="iana-considerations">
+<section id="section-8">
+      <h2 id="name-iana-considerations">
+<a href="#section-8" class="section-number selfRef">8. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
+      </h2>
+<p id="section-8-1">This document has no IANA actions.<a href="#section-8-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="sec-combined-references">
+<section id="section-9">
+      <h2 id="name-references">
+<a href="#section-9" class="section-number selfRef">9. </a><a href="#name-references" class="section-name selfRef">References</a>
+      </h2>
+<div id="sec-normative-references">
+<section id="section-9.1">
+        <h3 id="name-normative-references">
+<a href="#section-9.1" class="section-number selfRef">9.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
+        </h3>
+<dl class="references">
+<dt id="I-D.ietf-tls-mlkem">[I-D.ietf-tls-mlkem]</dt>
+        <dd>
+<span class="refAuthor">Connolly, D.</span>, <span class="refTitle">"ML-KEM Post-Quantum Key Agreement for TLS 1.3"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-tls-mlkem-07</span>, <time datetime="2026-02-12" class="refDate">12 February 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-mlkem-07">https://datatracker.ietf.org/doc/html/draft-ietf-tls-mlkem-07</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="I-D.ietf-tls-rfc8446bis">[I-D.ietf-tls-rfc8446bis]</dt>
+        <dd>
+<span class="refAuthor">Rescorla, E.</span>, <span class="refTitle">"The Transport Layer Security (TLS) Protocol Version 1.3"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-tls-rfc8446bis-14</span>, <time datetime="2025-09-13" class="refDate">13 September 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-rfc8446bis-14">https://datatracker.ietf.org/doc/html/draft-ietf-tls-rfc8446bis-14</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="NistFips203">[NistFips203]</dt>
+        <dd>
+<span class="refTitle">"Module-lattice-based key-encapsulation mechanism standard"</span>, <span class="refContent">National Institute of Standards and Technology (U.S.)</span>, <span class="seriesInfo">DOI 10.6028/nist.fips.203</span>, <time datetime="2024-08" class="refDate">August 2024</time>, <span>&lt;<a href="https://doi.org/10.6028/nist.fips.203">https://doi.org/10.6028/nist.fips.203</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC2119">[RFC2119]</dt>
+        <dd>
+<span class="refAuthor">Bradner, S.</span>, <span class="refTitle">"Key words for use in RFCs to Indicate Requirement Levels"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 2119</span>, <span class="seriesInfo">DOI 10.17487/RFC2119</span>, <time datetime="1997-03" class="refDate">March 1997</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc2119">https://www.rfc-editor.org/rfc/rfc2119</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8174">[RFC8174]</dt>
+        <dd>
+<span class="refAuthor">Leiba, B.</span>, <span class="refTitle">"Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 8174</span>, <span class="seriesInfo">DOI 10.17487/RFC8174</span>, <time datetime="2017-05" class="refDate">May 2017</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8174">https://www.rfc-editor.org/rfc/rfc8174</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="TLS-FATT">[TLS-FATT]</dt>
+      <dd>
+<span class="refAuthor">IETF TLS WG</span>, <span class="refTitle">"TLS FATT Process"</span>, <time datetime="2025-06" class="refDate">June 2025</time>, <span>&lt;<a href="https://github.com/tlswg/tls-fatt">https://github.com/tlswg/tls-fatt</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+</dl>
+</section>
+</div>
+<div id="sec-informative-references">
+<section id="section-9.2">
+        <h3 id="name-informative-references">
+<a href="#section-9.2" class="section-number selfRef">9.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
+        </h3>
+<dl class="references">
+<dt id="I-D.barnes-tls-this-could-have-been-an-email">[I-D.barnes-tls-this-could-have-been-an-email]</dt>
+        <dd>
+<span class="refAuthor">Barnes, R.</span>, <span class="refTitle">"Stop Doing Cryptographic Algorithm Drafts when Email to IANA is All You Need"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-barnes-tls-this-could-have-been-an-email-00</span>, <time datetime="2026-02-23" class="refDate">23 February 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-barnes-tls-this-could-have-been-an-email-00">https://datatracker.ietf.org/doc/html/draft-barnes-tls-this-could-have-been-an-email-00</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="I-D.ietf-tls-ecdhe-mlkem">[I-D.ietf-tls-ecdhe-mlkem]</dt>
+        <dd>
+<span class="refAuthor">Kwiatkowski, K.</span>, <span class="refAuthor">Kampanakis, P.</span>, <span class="refAuthor">Westerbaan, B.</span>, and <span class="refAuthor">D. Stebila</span>, <span class="refTitle">"Post-quantum hybrid ECDHE-MLKEM Key Agreement for TLSv1.3"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-tls-ecdhe-mlkem-05</span>, <time datetime="2026-05-26" class="refDate">26 May 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-ecdhe-mlkem-05">https://datatracker.ietf.org/doc/html/draft-ietf-tls-ecdhe-mlkem-05</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="I-D.ietf-tls-hybrid-design">[I-D.ietf-tls-hybrid-design]</dt>
+        <dd>
+<span class="refAuthor">Stebila, D.</span>, <span class="refAuthor">Fluhrer, S.</span>, and <span class="refAuthor">S. Gueron</span>, <span class="refTitle">"Hybrid key exchange in TLS 1.3"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-tls-hybrid-design-16</span>, <time datetime="2025-09-07" class="refDate">7 September 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-hybrid-design-16">https://datatracker.ietf.org/doc/html/draft-ietf-tls-hybrid-design-16</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="I-D.ietf-tls-hybrid-design-09">[I-D.ietf-tls-hybrid-design-09]</dt>
+        <dd>
+<span class="refAuthor">Stebila, D.</span>, <span class="refAuthor">Fluhrer, S.</span>, and <span class="refAuthor">S. Gueron</span>, <span class="refTitle">"Hybrid key exchange in TLS 1.3"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-tls-hybrid-design-09</span>, <time datetime="2023-09-07" class="refDate">7 September 2023</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-hybrid-design-09">https://datatracker.ietf.org/doc/html/draft-ietf-tls-hybrid-design-09</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="I-D.pwouters-crypto-current-practices">[I-D.pwouters-crypto-current-practices]</dt>
+        <dd>
+<span class="refAuthor">Wouters, P.</span>, <span class="refTitle">"Current practices for new cryptography at the IETF"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-pwouters-crypto-current-practices-00</span>, <time datetime="2024-11-03" class="refDate">3 November 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-pwouters-crypto-current-practices-00">https://datatracker.ietf.org/doc/html/draft-pwouters-crypto-current-practices-00</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="I-D.usama-tls-fatt-extension">[I-D.usama-tls-fatt-extension]</dt>
+        <dd>
+<span class="refAuthor">Sardar, M. U.</span>, <span class="refTitle">"Extensions to TLS FATT Process"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-usama-tls-fatt-extension-07</span>, <time datetime="2026-05-02" class="refDate">2 May 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-usama-tls-fatt-extension-07">https://datatracker.ietf.org/doc/html/draft-usama-tls-fatt-extension-07</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="ID-Crisis">[ID-Crisis]</dt>
+        <dd>
+<span class="refAuthor">Sardar, M. U.</span>, <span class="refAuthor">Moustafa, M.</span>, and <span class="refAuthor">T. Aura</span>, <span class="refTitle">"Identity Crisis in Confidential Computing: Formal Analysis of Attested TLS"</span>, <time datetime="2025-11" class="refDate">November 2025</time>, <span>&lt;<a href="https://www.researchgate.net/publication/398839141_Identity_Crisis_in_Confidential_Computing_Formal_Analysis_of_Attested_TLS">https://www.researchgate.net/publication/398839141_Identity_Crisis_in_Confidential_Computing_Formal_Analysis_of_Attested_TLS</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="ID-Crisis-Repo">[ID-Crisis-Repo]</dt>
+        <dd>
+<span class="refAuthor">Muhammad Usama Sardar</span>, <span class="refTitle">"Identity Crisis in Confidential Computing: Formal Analysis of Attested TLS Protocols"</span>, <span>&lt;<a href="https://github.com/CCC-Attestation/formal-spec-id-crisis">https://github.com/CCC-Attestation/formal-spec-id-crisis</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="reftls">[reftls]</dt>
+        <dd>
+<span class="refAuthor">Bhargavan, K.</span>, <span class="refAuthor">Blanchet, B.</span>, and <span class="refAuthor">N. Kobeissi</span>, <span class="refTitle">"Verified Models and Reference Implementations for the TLS 1.3 Standard Candidate"</span>, <span class="refContent">IEEE</span>, <span class="seriesInfo">2017 IEEE Symposium on Security and Privacy (SP) pp. 483-502</span>, <span class="seriesInfo">DOI 10.1109/sp.2017.26</span>, <time datetime="2017-05" class="refDate">May 2017</time>, <span>&lt;<a href="https://doi.org/10.1109/sp.2017.26">https://doi.org/10.1109/sp.2017.26</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="reftls-Repo">[reftls-Repo]</dt>
+        <dd>
+<span class="refAuthor">Bhargavan, K.</span>, <span class="refAuthor">Blanchet, B.</span>, and <span class="refAuthor">N. Kobeissi</span>, <span class="refTitle">"Verified Models and Reference Implementations for the TLS 1.3 Standard Candidate"</span>, <span>&lt;<a href="https://github.com/Inria-Prosecco/reftls">https://github.com/Inria-Prosecco/reftls</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="rfc3552">[rfc3552]</dt>
+      <dd>
+<span class="refAuthor">Rescorla, E.</span> and <span class="refAuthor">B. Korver</span>, <span class="refTitle">"Guidelines for Writing RFC Text on Security Considerations"</span>, <span class="seriesInfo">BCP 72</span>, <span class="seriesInfo">RFC 3552</span>, <span class="seriesInfo">DOI 10.17487/RFC3552</span>, <time datetime="2003-07" class="refDate">July 2003</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc3552">https://www.rfc-editor.org/rfc/rfc3552</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+</dl>
+</section>
+</div>
+</section>
+</div>
+<div id="acknowledgments">
+<section id="appendix-A">
+      <h2 id="name-acknowledgments">
+<a href="#name-acknowledgments" class="section-name selfRef">Acknowledgments</a>
+      </h2>
+<p id="appendix-A-1">We would like to thank Yaakov Stein, Ilari Liusvaara, John Preuß Mattsson, Eric Rescorla, Brian E Carpenter, Nadim Kobeissi, and Tibor Jager for their valuable feedback and contributions.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
+<p id="appendix-A-2"><a href="#sec-gen-issues" class="auto internal xref">Section 6</a> is largely based on the opinions of many IETF participants.<a href="#appendix-A-2" class="pilcrow">¶</a></p>
+<p id="appendix-A-3">Text in <a href="#sec-sec-cons" class="auto internal xref">Section 7</a> is based on the proposal by John Preuß Mattsson.<a href="#appendix-A-3" class="pilcrow">¶</a></p>
+<p id="appendix-A-4">The research work is funded by German Research Foundation ("Deutsche Forschungsgemeinschaft.")<a href="#appendix-A-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="history">
+<section id="appendix-B">
+      <h2 id="name-history">
+<a href="#name-history" class="section-name selfRef">History</a>
+      </h2>
+<p id="appendix-B-1">-00<a href="#appendix-B-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="appendix-B-2.1">
+          <p id="appendix-B-2.1.1">On popular demand, moved from <span>[<a href="#I-D.usama-tls-fatt-extension" class="cite xref">I-D.usama-tls-fatt-extension</a>]</span> to an independent I-D<a href="#appendix-B-2.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-B-2.2">
+          <p id="appendix-B-2.2.1">Major change: added <a href="#sec-proof-break" class="auto internal xref">Section 3</a><a href="#appendix-B-2.2.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-B-2.3">
+          <p id="appendix-B-2.3.1">Some minor clarifications<a href="#appendix-B-2.3.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
+<p id="appendix-B-3">-01<a href="#appendix-B-3" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="appendix-B-4.1">
+          <p id="appendix-B-4.1.1">Added justification based on FATT process: <a href="#sec-just-process" class="auto internal xref">Section 4</a><a href="#appendix-B-4.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-B-4.2">
+          <p id="appendix-B-4.2.1">Reorganization, specially in motivation<a href="#appendix-B-4.2.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-B-4.3">
+          <p id="appendix-B-4.3.1">Added some common arguments: <a href="#sec-gen-issues" class="auto internal xref">Section 6</a><a href="#appendix-B-4.3.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-B-4.4">
+          <p id="appendix-B-4.4.1">Comparison with hybrid key exchange <a href="#sec-hybrid-ml-kem" class="auto internal xref">Section 4.2</a><a href="#appendix-B-4.4.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
+<p id="appendix-B-5">-02<a href="#appendix-B-5" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="appendix-B-6.1">
+          <p id="appendix-B-6.1.1">Added gap analysis <a href="#gap-analysis" class="auto internal xref">Section 1.1</a><a href="#appendix-B-6.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-B-6.2">
+          <p id="appendix-B-6.2.1">What to model and analyze? <a href="#sec-model-analyze" class="auto internal xref">Section 1.2.2</a><a href="#appendix-B-6.2.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-B-6.3">
+          <p id="appendix-B-6.3.1">Added FATT review is harmless <a href="#sec-fatt-harmless" class="auto internal xref">Section 1.2.4</a><a href="#appendix-B-6.3.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-B-6.4">
+          <p id="appendix-B-6.4.1">Extended comparison with hybrid key exchange <a href="#sec-hybrid-ml-kem" class="auto internal xref">Section 4.2</a><a href="#appendix-B-6.4.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-B-6.5">
+          <p id="appendix-B-6.5.1">Opinion of designers <a href="#sec-designers-view" class="auto internal xref">Section 6.1</a><a href="#appendix-B-6.5.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
+</section>
+</div>
+<div id="authors-addresses">
+<section id="appendix-C">
+      <h2 id="name-authors-address">
+<a href="#name-authors-address" class="section-name selfRef">Author's Address</a>
+      </h2>
+<address class="vcard">
+        <div dir="auto" class="left"><span class="fn nameRole">Muhammad Usama Sardar</span></div>
+<div dir="auto" class="left"><span class="org">TU Dresden, Germany</span></div>
+<div class="email">
+<span>Email:</span>
+<a href="mailto:muhammad_usama.sardar@tu-dresden.de" class="email">muhammad_usama.sardar@tu-dresden.de</a>
+</div>
+</address>
+</section>
+</div>
+<script>const toc = document.getElementById("toc");
+toc.querySelector("h2").addEventListener("click", e => {
+  toc.classList.toggle("active");
+});
+toc.querySelector("nav").addEventListener("click", e => {
+  toc.classList.remove("active");
+});
+</script>
+</body>
+</html>
