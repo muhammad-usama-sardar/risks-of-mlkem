@@ -284,6 +284,27 @@ They are implementation-facing checks that help bridge the formal
 "both components are bound and accepted" property to concrete failure
 modes that implementations can accidentally mishandle.
 
+## Argument Matrix for Implementation Review
+{: #sec-argument-matrix }
+
+The discussion above can be read as an argument matrix for implementers
+and reviewers.  The point is not to resolve every policy preference in
+this document, but to make each recurring argument map to a concrete
+review question.
+
+| Argument | Implementation-facing review question | Why it matters |
+|----------|---------------------------------------|----------------|
+| Hybrid key exchange retains two components. | Does the implementation make it clear that both the ECDHE and ML-KEM components were present, validated, and bound to the same negotiated group and transcript? | Otherwise a successful handshake may not actually reflect the formal "both components are bound and accepted" property. |
+| Standalone ML-KEM has a single KEM shared secret. | Are failures in encapsulation, decapsulation, transcript binding, and key-schedule input handled as fail-closed errors rather than as retry or fallback paths? | A standalone construction has no second key-exchange component to preserve confidentiality if the ML-KEM path is mishandled. |
+| Hybrid fallback is useful only when it is explicit. | After a hybrid group is negotiated, can either endpoint silently continue as standalone ECDHE or standalone ML-KEM? | Silent continuation changes the negotiated security property and makes interop failures hard to distinguish from downgrades. |
+| Cost claims are deployment-dependent. | Are claimed savings measured separately for wire bytes, CPU, memory, latency, code complexity, and operational rollout? | Treating "cost" as a single value can hide whether a deployment is trading away cryptographic robustness for a negligible or unmeasured gain. |
+| Formal models do not cover every implementation interface. | Do APIs, logs, exported state, and test harnesses expose enough detail to show which component failed or succeeded? | Reviewers need observable evidence that the implementation behavior matches the protocol-level claim. |
+
+This matrix is deliberately small.  It is intended to help a reviewer
+decide whether a concrete implementation or deployment argument belongs
+in the formal-methods discussion, in implementation guidance, or in a
+separate operational cost analysis.
+
 # Issues That Formal Methods Probably Cannot Solve
 {: #sec-gen-issues }
 
@@ -495,3 +516,4 @@ The research work is funded by German Research Foundation ("Deutsche Forschungsg
 -03
 
 * Completely restructured and reframed after confirmation by formal analysis
+* Added implementation-facing negative cases and argument matrix
