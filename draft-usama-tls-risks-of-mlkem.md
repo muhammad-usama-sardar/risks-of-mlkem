@@ -286,7 +286,7 @@ handling, and key schedule integration.
 In particular, implementations of hybrid key exchange ought to reject, or
 fail safely on, cases such as the following:
 
-* The negotiated group is a hybrid group, but one component of the peer
+* **malformed or missing shares**: The negotiated group is a hybrid group, but one component of the peer
   key share is missing, malformed, or associated with a different group.
 * The ECDHE and KEM values are individually well-formed, but assembled
   from different handshakes, transcript contexts, or negotiated groups.
