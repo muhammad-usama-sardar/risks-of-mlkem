@@ -294,7 +294,7 @@ fail safely on, cases such as the following:
   standalone ML-KEM after a hybrid group was negotiated.
 * **premature secret derivation**: Application traffic secrets are derived before both hybrid components
   have been validated and accepted under the negotiated group.
-* Exported state, logs, traces, or implementation APIs make a hybrid
+* **API/logging ambiguity**: Exported state, logs, traces, or implementation APIs make a hybrid
   exchange appear as if only one component was used or accepted.
 
 These cases are not intended to create a new formal proof obligation.
