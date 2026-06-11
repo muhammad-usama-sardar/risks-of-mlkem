@@ -274,6 +274,34 @@ setting analyzed here.
 
 The artifacts are available [here](https://github.com/symbolicsoft/reftls) for independent review.
 
+# Implementation-Facing Negative Cases
+{: #sec-impl-negative-cases }
+
+The formal analysis above is not an implementation test suite and does not
+replace protocol conformance testing.
+However, a short set of negative cases can help implementers check that
+the intended hybrid binding property is reflected in their APIs, transcript
+handling, and key schedule integration.
+
+In particular, implementations of hybrid key exchange ought to reject, or
+fail safely on, cases such as the following:
+
+* **malformed or missing shares**: The negotiated group is a hybrid group, but one component of the peer
+  key share is missing, malformed, or associated with a different group.
+* **mixed transcript context**: The ECDHE and KEM values are individually well-formed, but assembled
+  from different handshakes, transcript contexts, or negotiated groups.
+* **fallback after hybrid negotiation**: A peer attempts to continue the handshake as standalone ECDHE or
+  standalone ML-KEM after a hybrid group was negotiated.
+* **premature secret derivation**: Application traffic secrets are derived before both hybrid components
+  have been validated and accepted under the negotiated group.
+* **API/logging ambiguity**: Exported state, logs, traces, or implementation APIs make a hybrid
+  exchange appear as if only one component was used or accepted.
+
+These cases are not intended to create a new formal proof obligation.
+They are implementation-facing checks that help bridge the formal
+"both components are bound and accepted" property to concrete failure
+modes that implementations can accidentally mishandle.
+
 # Issues That Formal Methods Probably Cannot Solve
 {: #sec-gen-issues }
 
