@@ -4,8 +4,8 @@
 
 Transport Layer Security                                    M. U. Sardar
 Internet-Draft                                       TU Dresden, Germany
-Intended status: Informational                               4 June 2026
-Expires: 6 December 2026
+Intended status: Informational                              11 June 2026
+Expires: 13 December 2026
 
 
      Analysis of Hybrid Key Exchange and Non-hybrid KEMs in TLS 1.3
@@ -65,7 +65,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 6 December 2026.
+   This Internet-Draft will expire on 13 December 2026.
 
 Copyright Notice
 
@@ -97,23 +97,24 @@ Table of Contents
      4.2.  Hybrid Key Exchange
      4.3.  Standalone ML-KEM
      4.4.  Results
-   5.  Issues That Formal Methods Probably Cannot Solve
-     5.1.  Recommendation of Designers
-     5.2.  Thorough Review
-     5.3.  'Significantly Harder' Argument
-     5.4.  Urgency
-     5.5.  "Cost"
-     5.6.  Is Publication Necessary?
-     5.7.  Shiny New Crypto
-     5.8.  Formal Mapping of FIPS to IETF BCP14
-     5.9.  Outstanding NIST Comments
-     5.10. Too Early
-     5.11. Patents
-   6.  Security Considerations
-   7.  IANA Considerations
-   8.  References
-     8.1.  Normative References
-     8.2.  Informative References
+   5.  Implementation-Facing Negative Cases
+   6.  Issues That Formal Methods Probably Cannot Solve
+     6.1.  Recommendation of Designers
+     6.2.  Thorough Review
+     6.3.  'Significantly Harder' Argument
+     6.4.  Urgency
+     6.5.  "Cost"
+     6.6.  Is Publication Necessary?
+     6.7.  Shiny New Crypto
+     6.8.  Formal Mapping of FIPS to IETF BCP14
+     6.9.  Outstanding NIST Comments
+     6.10. Too Early
+     6.11. Patents
+   7.  Security Considerations
+   8.  IANA Considerations
+   9.  References
+     9.1.  Normative References
+     9.2.  Informative References
    Acknowledgments
    History
    Author's Address
@@ -383,7 +384,43 @@ Table of Contents
    The artifacts are available here (https://github.com/symbolicsoft/
    reftls) for independent review.
 
-5.  Issues That Formal Methods Probably Cannot Solve
+5.  Implementation-Facing Negative Cases
+
+   The formal analysis above is not an implementation test suite and
+   does not replace protocol conformance testing.  However, a short set
+   of negative cases can help implementers check that the intended
+   hybrid binding property is reflected in their APIs, transcript
+   handling, and key schedule integration.
+
+   In particular, implementations of hybrid key exchange ought to
+   reject, or fail safely on, cases such as the following:
+
+   *  *malformed or missing shares*: The negotiated group is a hybrid
+      group, but one component of the peer key share is missing,
+      malformed, or associated with a different group.
+
+   *  *mixed transcript context*: The ECDHE and KEM values are
+      individually well-formed, but assembled from different handshakes,
+      transcript contexts, or negotiated groups.
+
+   *  *fallback after hybrid negotiation*: A peer attempts to continue
+      the handshake as standalone ECDHE or standalone ML-KEM after a
+      hybrid group was negotiated.
+
+   *  *premature secret derivation*: Application traffic secrets are
+      derived before both hybrid components have been validated and
+      accepted under the negotiated group.
+
+   *  *API/logging ambiguity*: Exported state, logs, traces, or
+      implementation APIs make a hybrid exchange appear as if only one
+      component was used or accepted.
+
+   These cases are not intended to create a new formal proof obligation.
+   They are implementation-facing checks that help bridge the formal
+   "both components are bound and accepted" property to concrete failure
+   modes that implementations can accidentally mishandle.
+
+6.  Issues That Formal Methods Probably Cannot Solve
 
    The answers to the following issues are largely dependent on several
    factors, and the opinions vary largely.
@@ -404,7 +441,7 @@ Table of Contents
    If your substantive concern is missing, it is unintentional.
    Please simply submit a *precise* and *concise* PR.
 
-5.1.  Recommendation of Designers
+6.1.  Recommendation of Designers
 
    The authors of Kyber/ML-KEM (see this (https://pq-crystals.org/kyber/
    index.shtml)) say:
@@ -424,13 +461,13 @@ Table of Contents
    whether this is still his view, and the response was:
    "Yes, of course."
 
-5.2.  Thorough Review
+6.2.  Thorough Review
 
    Please see a very thorough review here
    (https://mailarchive.ietf.org/arch/msg/tls/jlsYHENwqMv-
    4XPRvunqKsAL36k/), which is self-sufficient.
 
-5.3.  'Significantly Harder' Argument
+6.3.  'Significantly Harder' Argument
 
    Some participants believe in the 'significantly harder' argument,
    which assumes independence of breakage of ML-KEM and traditionals:
@@ -463,7 +500,7 @@ Table of Contents
    _primitives_, rather than the _composition_ of primitives in
    protocols.  Hence, formal methods probably have nothing to help here.
 
-5.4.  Urgency
+6.4.  Urgency
 
    It is unclear _whether_ and if applicable _when_ Cryptographically-
    Relevant Quantum Computer (CRQC) will eventually become practical.
@@ -488,7 +525,7 @@ Table of Contents
    standalone ML-KEM, and it is just a matter of enabling it.  And
    frankly, nobody needs permission from the IETF to enable it.
 
-5.5.  "Cost"
+6.5.  "Cost"
 
    "Cost" has been presented on the list as the motivation for
    standalone ML-KEM in TLS but we have not seen any supporting
@@ -515,7 +552,7 @@ Table of Contents
    "cost."  We invite the WG participants to perform cost analysis and
    share the results with the WG.
 
-5.6.  Is Publication Necessary?
+6.6.  Is Publication Necessary?
 
    Code Points for ML-KEM have already been assigned.
    [I-D.barnes-tls-this-could-have-been-an-email] provides detailed
@@ -523,7 +560,7 @@ Table of Contents
    around that may be unnecessary.  In our understanding,
    [I-D.pwouters-crypto-current-practices] makes similar arguments.
 
-5.7.  Shiny New Crypto
+6.7.  Shiny New Crypto
 
    ML-KEM is quite new in the IETF and even in the IRTF.  Some WG
    participants have shown concern over premature publication of
@@ -534,14 +571,14 @@ Table of Contents
    (https://mailarchive.ietf.org/arch/msg/
    cfrg/6K43Ycr062Ym1G0q4WHxZQ2HW8M/) for further details.
 
-5.8.  Formal Mapping of FIPS to IETF BCP14
+6.8.  Formal Mapping of FIPS to IETF BCP14
 
    As discussed on the TLS list, we are not aware of any formal mapping
    of the FIPS recommendations to the IETF BCP14 terminology, such as
    SHOULD vs. MUST.  In general, we believe re-using FIPS
    recommendations is ambiguous for IETF readers.
 
-5.9.  Outstanding NIST Comments
+6.9.  Outstanding NIST Comments
 
    Some participants believe that NIST has rushed through the process
    and not addressed all the comments that were submitted during the
@@ -549,19 +586,19 @@ Table of Contents
    (https://csrc.nist.gov/files/pubs/fips/203/ipd/docs/fips-203-initial-
    public-comments-2023.pdf).
 
-5.10.  Too Early
+6.10.  Too Early
 
    Some participants simply believe that publication of
    [I-D.ietf-tls-mlkem] and related discussions are just too early and
    unnecessary.
 
-5.11.  Patents
+6.11.  Patents
 
    Some WG participants have raised some concerns related to patents.
    See some relevant patents here (https://datatracker.ietf.org/ipr/
    search/?submit=draft&id=draft-ietf-tls-mlkem).
 
-6.  Security Considerations
+7.  Security Considerations
 
    The whole document is about improving security considerations.
 
@@ -572,13 +609,13 @@ Table of Contents
    Formal methods should be used as complementary and not as subtitute
    of other analysis methods.
 
-7.  IANA Considerations
+8.  IANA Considerations
 
    This document has no IANA actions.
 
-8.  References
+9.  References
 
-8.1.  Normative References
+9.1.  Normative References
 
    [I-D.ietf-tls-mlkem]
               Connolly, D., "ML-KEM Post-Quantum Key Agreement for TLS
@@ -612,7 +649,7 @@ Table of Contents
    [TLS-FATT] IETF TLS WG, "TLS FATT Process", June 2025,
               <https://github.com/tlswg/tls-fatt>.
 
-8.2.  Informative References
+9.2.  Informative References
 
    [I-D.barnes-tls-this-could-have-been-an-email]
               Barnes, R., "Stop Doing Cryptographic Algorithm Drafts
@@ -692,9 +729,9 @@ Acknowledgments
    Mattsson, Eric Rescorla, Brian E Carpenter, Nadim Kobeissi, and Tibor
    Jager for their valuable feedback and contributions.
 
-   Section 5 is largely based on the opinions of many IETF participants.
+   Section 6 is largely based on the opinions of many IETF participants.
 
-   Text in Section 6 is based on the proposal by John Preuß Mattsson.
+   Text in Section 7 is based on the proposal by John Preuß Mattsson.
 
    The research work is funded by German Research Foundation ("Deutsche
    Forschungsgemeinschaft.")
@@ -716,7 +753,7 @@ History
 
    *  Reorganization, specially in motivation
 
-   *  Added some common arguments: Section 5
+   *  Added some common arguments: Section 6
 
    *  Comparison with hybrid key exchange
 
@@ -730,7 +767,7 @@ History
 
    *  Extended comparison with hybrid key exchange
 
-   *  Opinion of designers Section 5.1
+   *  Opinion of designers Section 6.1
 
 Author's Address
 
