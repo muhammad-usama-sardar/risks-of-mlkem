@@ -103,6 +103,7 @@ Table of Contents
      4.3.  Standalone ML-KEM
      4.4.  Results
    5.  Implementation-Facing Negative Cases
+     5.1.  Argument Matrix for Implementation Review
    6.  Issues That Formal Methods Probably Cannot Solve
      6.1.  Which breaks first: ML-KEM-768 or X25519?
      6.2.  Does CRQC Break All Bits of Pre-quantum?
@@ -429,6 +430,78 @@ Table of Contents
    "both components are bound and accepted" property to concrete failure
    modes that implementations can accidentally mishandle.
 
+5.1.  Argument Matrix for Implementation Review
+
+   The discussion above can be read as an argument matrix for
+   implementers and reviewers.  The point is not to resolve every policy
+   preference in this document, but to make each recurring argument map
+   to a concrete review question.
+
+   +=======================+=======================+===================+
+   | Argument              | Implementation-facing | Why it matters    |
+   |                       | review question       |                   |
+   +=======================+=======================+===================+
+   | Hybrid key exchange   | Does the              | Otherwise a       |
+   | retains two           | implementation make   | successful        |
+   | components.           | it clear that both    | handshake may     |
+   |                       | the ECDHE and ML-KEM  | not actually      |
+   |                       | components were       | reflect the       |
+   |                       | present, validated,   | formal "both      |
+   |                       | and bound to the same | components are    |
+   |                       | negotiated group and  | bound and         |
+   |                       | transcript?           | accepted"         |
+   |                       |                       | property.         |
+   +-----------------------+-----------------------+-------------------+
+   | Standalone ML-KEM has | Are failures in       | A standalone      |
+   | a single KEM shared   | encapsulation,        | construction has  |
+   | secret.               | decapsulation,        | no second key-    |
+   |                       | transcript binding,   | exchange          |
+   |                       | and key-schedule      | component to      |
+   |                       | input handled as      | preserve          |
+   |                       | fail-closed errors    | confidentiality   |
+   |                       | rather than as retry  | if the ML-KEM     |
+   |                       | or fallback paths?    | path is           |
+   |                       |                       | mishandled.       |
+   +-----------------------+-----------------------+-------------------+
+   | Hybrid fallback is    | After a hybrid group  | Silent            |
+   | useful only when it   | is negotiated, can    | continuation      |
+   | is explicit.          | either endpoint       | changes the       |
+   |                       | silently continue as  | negotiated        |
+   |                       | standalone ECDHE or   | security          |
+   |                       | standalone ML-KEM?    | property and      |
+   |                       |                       | makes interop     |
+   |                       |                       | failures hard to  |
+   |                       |                       | distinguish from  |
+   |                       |                       | downgrades.       |
+   +-----------------------+-----------------------+-------------------+
+   | Cost claims are       | Are claimed savings   | Treating "cost"   |
+   | deployment-dependent. | measured separately   | as a single       |
+   |                       | for wire bytes, CPU,  | value can hide    |
+   |                       | memory, latency, code | whether a         |
+   |                       | complexity, and       | deployment is     |
+   |                       | operational rollout?  | trading away      |
+   |                       |                       | cryptographic     |
+   |                       |                       | robustness for a  |
+   |                       |                       | negligible or     |
+   |                       |                       | unmeasured gain.  |
+   +-----------------------+-----------------------+-------------------+
+   | Formal models do not  | Do APIs, logs,        | Reviewers need    |
+   | cover every           | exported state, and   | observable        |
+   | implementation        | test harnesses expose | evidence that     |
+   | interface.            | enough detail to show | the               |
+   |                       | which component       | implementation    |
+   |                       | failed or succeeded?  | behavior matches  |
+   |                       |                       | the protocol-     |
+   |                       |                       | level claim.      |
+   +-----------------------+-----------------------+-------------------+
+
+                                  Table 1
+
+   This matrix is deliberately small.  It is intended to help a reviewer
+   decide whether a concrete implementation or deployment argument
+   belongs in the formal-methods discussion, in implementation guidance,
+   or in a separate operational cost analysis.
+
 6.  Issues That Formal Methods Probably Cannot Solve
 
    The answers to the following issues are largely dependent on several
@@ -573,7 +646,7 @@ Table of Contents
      | Server share   | 1088             | 32                        |
      +----------------+------------------+---------------------------+
 
-                                  Table 1
+                                  Table 2
 
    We believe other "costs" will depend on several factors -- including
    but not limited to implementation details and deployment scenario --
@@ -815,6 +888,8 @@ History
 
    *  Completely restructured and reframed after confirmation by formal
       analysis
+
+   *  Added implementation-facing negative cases and argument matrix
 
 Author's Address
 
