@@ -7,17 +7,10 @@
 <title>Analysis of Hybrid Key Exchange and Standalone ML-KEM in TLS 1.3</title>
 <meta content="Muhammad Usama Sardar" name="author">
 <meta content="
-       The draft presents an analysis of hybrid key exchange and standalone ML-KEM.
-Analysis covers both symbolic and computational.
-Specifically, it covers the  formal analysis  by Nadim Kobeissi on the potential issue of asymmetry.
-The analysis confirms that asymmetry is not a problem.
-Moreover, the analysis concludes that hybrid key exchange is preferable over standalone ML-KEM.
-This draft aims to propose this statement to be added in the security considerations of standalone ML-KEM. 
-       This draft offers some preliminary discussion to help the developers and policy makers make informed choices.
-Finally, the draft also aims to reduce the endless repitition of arguments from both sides presented on several lists by documenting these arguments so they can simply be referred to.
-The goal is that people can be a bit more fair and balanced to acknowledge others' opinions, rather than stating their opinion as universal truth, or else present substantial scientific evidence if they claim their opinion to be universal truth. 
-       We acknowledge several IETF participants who have contributed to this draft with their insights.
-This draft captures what  we  understand them to be saying. 
+       The draft presents  symbolic  and  computational  analysis of hybrid key exchange and standalone ML-KEM.
+The analysis concludes that hybrid key exchange is preferable over standalone ML-KEM.
+This draft also offers opinions of the IETF participants and some preliminary discussion to help the developers and policy makers make informed choices.
+Finally, it offers minimal implementation guidance for hybrids. 
     " name="description">
 <meta content="xml2rfc 3.33.0" name="generator">
 <meta content="draft-usama-tls-risks-of-mlkem-latest" name="ietf.draft">
@@ -1087,17 +1080,10 @@ svg {
 <h1 id="title">Analysis of Hybrid Key Exchange and Standalone ML-KEM in TLS 1.3</h1>
 <section id="section-abstract">
       <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
-<p id="section-abstract-1">The draft presents an analysis of hybrid key exchange and standalone ML-KEM.
-Analysis covers both symbolic and computational.
-Specifically, it covers the <a href="https://github.com/symbolicsoft/reftls/blob/master/paper/tls-hybrid.pdf">formal analysis</a> by Nadim Kobeissi on the potential issue of asymmetry.
-The analysis confirms that asymmetry is not a problem.
-Moreover, the analysis concludes that hybrid key exchange is preferable over standalone ML-KEM.
-This draft aims to propose this statement to be added in the security considerations of standalone ML-KEM.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
-<p id="section-abstract-2">This draft offers some preliminary discussion to help the developers and policy makers make informed choices.
-Finally, the draft also aims to reduce the endless repitition of arguments from both sides presented on several lists by documenting these arguments so they can simply be referred to.
-The goal is that people can be a bit more fair and balanced to acknowledge others' opinions, rather than stating their opinion as universal truth, or else present substantial scientific evidence if they claim their opinion to be universal truth.<a href="#section-abstract-2" class="pilcrow">¶</a></p>
-<p id="section-abstract-3">We acknowledge several IETF participants who have contributed to this draft with their insights.
-This draft captures what <em>we</em> understand them to be saying.<a href="#section-abstract-3" class="pilcrow">¶</a></p>
+<p id="section-abstract-1">The draft presents <em>symbolic</em> and <em>computational</em> analysis of hybrid key exchange and standalone ML-KEM.
+The analysis concludes that hybrid key exchange is preferable over standalone ML-KEM.
+This draft also offers opinions of the IETF participants and some preliminary discussion to help the developers and policy makers make informed choices.
+Finally, it offers minimal implementation guidance for hybrids.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
 </section>
 <section class="note rfcEditorRemove" id="section-note.1">
       <h2 id="name-about-this-document">
@@ -1167,16 +1153,27 @@ This draft captures what <em>we</em> understand them to be saying.<a href="#sect
             <p id="section-toc.1-1.1.1"><a href="#section-1" class="auto internal xref">1</a>.  <a href="#name-introduction" class="internal xref">Introduction</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.1">
-                <p id="section-toc.1-1.1.2.1.1" class="keepWithNext"><a href="#section-1.1" class="auto internal xref">1.1</a>.  <a href="#name-objectives" class="internal xref">Objectives</a></p>
+                <p id="section-toc.1-1.1.2.1.1"><a href="#section-1.1" class="auto internal xref">1.1</a>.  <a href="#name-objectives" class="internal xref">Objectives</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.1.2.1">
+                    <p id="section-toc.1-1.1.2.1.2.1.1" class="keepWithNext"><a href="#section-1.1.1" class="auto internal xref">1.1.1</a>.  <a href="#name-summary-of-formal-methods" class="internal xref">Summary of formal methods</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.1.2.2">
+                    <p id="section-toc.1-1.1.2.1.2.2.1" class="keepWithNext"><a href="#section-1.1.2" class="auto internal xref">1.1.2</a>.  <a href="#name-capturing-the-opinions-of-i" class="internal xref">Capturing the opinions of IETF to avoid repitition</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.1.2.3">
+                    <p id="section-toc.1-1.1.2.1.2.3.1" class="keepWithNext"><a href="#section-1.1.3" class="auto internal xref">1.1.3</a>.  <a href="#name-minimal-implementation-guid" class="internal xref">Minimal Implementation Guidance for Hybrids</a></p>
+</li>
+                </ul>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.2">
-                <p id="section-toc.1-1.1.2.2.1" class="keepWithNext"><a href="#section-1.2" class="auto internal xref">1.2</a>.  <a href="#name-motivation" class="internal xref">Motivation</a></p>
+                <p id="section-toc.1-1.1.2.2.1"><a href="#section-1.2" class="auto internal xref">1.2</a>.  <a href="#name-motivation" class="internal xref">Motivation</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.3">
                 <p id="section-toc.1-1.1.2.3.1"><a href="#section-1.3" class="auto internal xref">1.3</a>.  <a href="#name-intuition" class="internal xref">Intuition</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.3.2.1">
-                    <p id="section-toc.1-1.1.2.3.2.1.1" class="keepWithNext"><a href="#section-1.3.1" class="auto internal xref">1.3.1</a>.  <a href="#name-expected-learning" class="internal xref">Expected Learning</a></p>
+                    <p id="section-toc.1-1.1.2.3.2.1.1"><a href="#section-1.3.1" class="auto internal xref">1.3.1</a>.  <a href="#name-expected-learning" class="internal xref">Expected Learning</a></p>
 </li>
                 </ul>
 </li>
@@ -1318,24 +1315,54 @@ This draft captures what <em>we</em> understand them to be saying.<a href="#sect
 <a href="#section-1" class="section-number selfRef">1. </a><a href="#name-introduction" class="section-name selfRef">Introduction</a>
       </h2>
 <p id="section-1-1">Readers are assumed to be familiar with <span>[<a href="#NistFips203" class="cite xref">NistFips203</a>]</span>, <span>[<a href="#I-D.ietf-tls-rfc8446bis" class="cite xref">I-D.ietf-tls-rfc8446bis</a>]</span>, and <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span>. Please note that the draft has currently several hyperlinks.<a href="#section-1-1" class="pilcrow">¶</a></p>
-<p id="section-1-2">The draft covers the formal methods for the security considerations of <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span>.
-This includes <em>symbolic</em> and <em>computational</em> analysis (to be interpreted as in <a href="https://eprint.iacr.org/2019/1393.pdf">SoK</a>) of <strong>integration</strong> of standalone ML-KEM in the context of TLS.<a href="#section-1-2" class="pilcrow">¶</a></p>
 <div id="objectives">
 <section id="section-1.1">
         <h3 id="name-objectives">
 <a href="#section-1.1" class="section-number selfRef">1.1. </a><a href="#name-objectives" class="section-name selfRef">Objectives</a>
         </h3>
+<p id="section-1.1-1">The draft serves three objectives:<a href="#section-1.1-1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-1.1-1.1">
-            <p id="section-1.1-1.1.1">Summary of formal methods (symbolic and computational) works for hybrid key exchange and standalone ML-KEM<a href="#section-1.1-1.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-1.1-2.1">
+            <p id="section-1.1-2.1.1">Summary of formal methods (symbolic and computational) works for hybrid key exchange and standalone ML-KEM<a href="#section-1.1-2.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-1.1-1.2">
-            <p id="section-1.1-1.2.1">Capturing the opinions of IETF to avoid repitition<a href="#section-1.1-1.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-1.1-2.2">
+            <p id="section-1.1-2.2.1">Capturing the opinions of IETF to avoid repitition<a href="#section-1.1-2.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-1.1-1.3">
-            <p id="section-1.1-1.3.1">Implementation guidance for hybrids<a href="#section-1.1-1.3.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-1.1-2.3">
+            <p id="section-1.1-2.3.1">Minimal implementation guidance for hybrids<a href="#section-1.1-2.3.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
+<div id="summary-of-formal-methods">
+<section id="section-1.1.1">
+          <h4 id="name-summary-of-formal-methods">
+<a href="#section-1.1.1" class="section-number selfRef">1.1.1. </a><a href="#name-summary-of-formal-methods" class="section-name selfRef">Summary of formal methods</a>
+          </h4>
+<p id="section-1.1.1-1">The draft covers the formal methods for the security considerations of <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span>.
+This includes <em>symbolic</em> and <em>computational</em> analysis (to be interpreted as in <a href="https://eprint.iacr.org/2019/1393.pdf">SoK</a>) of <strong>integration</strong> of standalone ML-KEM in the context of TLS.
+Specifically, it covers the <a href="https://github.com/symbolicsoft/reftls/blob/master/paper/tls-hybrid.pdf">formal analysis</a> in ProVerif on the potential issue of asymmetry.
+The analysis confirms that asymmetry is not a problem.<a href="#section-1.1.1-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="capturing-the-opinions-of-ietf-to-avoid-repitition">
+<section id="section-1.1.2">
+          <h4 id="name-capturing-the-opinions-of-i">
+<a href="#section-1.1.2" class="section-number selfRef">1.1.2. </a><a href="#name-capturing-the-opinions-of-i" class="section-name selfRef">Capturing the opinions of IETF to avoid repitition</a>
+          </h4>
+<p id="section-1.1.2-1">The draft also aims to reduce the endless repitition of arguments from both sides presented on several lists by documenting these arguments so they can simply be referred to. This draft captures what <em>we</em> understand them to be saying.
+The goal is that people can be a bit more fair and balanced to acknowledge others' opinions, rather than stating their opinion as universal truth, or else present substantial scientific evidence if they claim their opinion to be universal truth.<a href="#section-1.1.2-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="minimal-implementation-guidance-for-hybrids">
+<section id="section-1.1.3">
+          <h4 id="name-minimal-implementation-guid">
+<a href="#section-1.1.3" class="section-number selfRef">1.1.3. </a><a href="#name-minimal-implementation-guid" class="section-name selfRef">Minimal Implementation Guidance for Hybrids</a>
+          </h4>
+<p id="section-1.1.3-1">The implementation concern is not only whether ML-KEM is secure as a
+primitive, but whether a TLS deployment can show that both hybrid
+components were validated, transcript-bound, and fail-closed under the
+negotiated group.<a href="#section-1.1.3-1" class="pilcrow">¶</a></p>
+</section>
+</div>
 </section>
 </div>
 <div id="sec-mot">
@@ -1584,8 +1611,8 @@ vulnerability in the server-authenticated, one-initiator-per-session
 setting analyzed here.
 </pre><a href="#section-4.4-2" class="pilcrow">¶</a>
 </div>
-<p id="section-4.4-3">The artifacts are available <a href="https://github.com/symbolicsoft/reftls">here</a> for independent review.<a href="#section-4.4-3" class="pilcrow">¶</a></p>
-<p id="section-4.4-4">In our understanding, <a href="https://github.com/symbolicsoft/reftls/blob/master/paper/tls-hybrid.pdf">formal analysis</a> also implies the preference for hybrids under the Dolev-Yao model, in the sense that if the shared secret from ML-KEM becomes available to the adversary (for example, due to implementation bug), hybrids are still not broken. This applies only until the CRQC exists and until CRQC breaks all the bits of pre-quantum.<a href="#section-4.4-4" class="pilcrow">¶</a></p>
+<p id="section-4.4-3">In our understanding, results imply a clear preference for hybrids under the Dolev-Yao model, in the sense that if the shared secret from ML-KEM becomes available to the adversary (for example, due to implementation bug), both confidentiality and authentication are broken in standalone ML-KEM, whereas hybrids are still not broken as long as (EC)DHE is still secure. We believe this applies until a powerful CRQC exists which breaks <strong>all</strong> the bits of pre-quantum.<a href="#section-4.4-3" class="pilcrow">¶</a></p>
+<p id="section-4.4-4">The artifacts are available <a href="https://github.com/symbolicsoft/reftls">here</a> for independent review.<a href="#section-4.4-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1709,7 +1736,7 @@ with a reference.
 <p id="section-6.1-1">In our understanding, the key open question boils down to:<a href="#section-6.1-1" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-6.1-2">
 <pre>
-which of the two cryptographic mechanisms breaks first?
+Which of the two cryptographic mechanisms breaks first?
 How does that relate to the CRQC being developed?
 How many bits of pre-quantum cryptography can that CRQC actually
 break?
@@ -2020,10 +2047,11 @@ Formal methods should be used as complementary and not as subtitute of other ana
       <h2 id="name-contributors">
 <a href="#name-contributors" class="section-name selfRef">Contributors</a>
       </h2>
-<p id="appendix-A-1">Nadim Kobeissi performed a thorough formal analysis <a href="#sec-results" class="auto internal xref">Section 4.4</a> at high priority to get a confirmation.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
+<p id="appendix-A-1">Nadim Kobeissi performed a thorough formal analysis <a href="#sec-results" class="auto internal xref">Section 4.4</a> at high priority based on our call for analysis in previous versions of the draft to get a confirmation.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
 <p id="appendix-A-2">Text in <a href="#sec-impl-negative-cases" class="auto internal xref">Section 5</a> was proposed by Songbo Bu.<a href="#appendix-A-2" class="pilcrow">¶</a></p>
 <p id="appendix-A-3">Text in <a href="#sec-sec-cons" class="auto internal xref">Section 7</a> is based on the proposal by John Preuß Mattsson.<a href="#appendix-A-3" class="pilcrow">¶</a></p>
 <p id="appendix-A-4"><a href="#sec-gen-issues" class="auto internal xref">Section 6</a> is largely based on the opinions of many IETF participants.<a href="#appendix-A-4" class="pilcrow">¶</a></p>
+<p id="appendix-A-5">We gratefully thank Yaakov Stein and Ilari Liusvaara for their substantial technical guidance, valuable feedback, and contributions.<a href="#appendix-A-5" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="acknowledgments">
@@ -2031,8 +2059,8 @@ Formal methods should be used as complementary and not as subtitute of other ana
       <h2 id="name-acknowledgments">
 <a href="#name-acknowledgments" class="section-name selfRef">Acknowledgments</a>
       </h2>
-<p id="appendix-B-1">We gratefully thank Yaakov Stein and Ilari Liusvaara for their substantial technical guidance, feedback, and discussion.<a href="#appendix-B-1" class="pilcrow">¶</a></p>
-<p id="appendix-B-2">We also thank Eric Rescorla, Brian E. Carpenter, and Tibor Jager for their valuable feedback and contributions.<a href="#appendix-B-2" class="pilcrow">¶</a></p>
+<p id="appendix-B-1">We thank Eric Rescorla, Brian E. Carpenter, and Tibor Jager for their valuable feedback.<a href="#appendix-B-1" class="pilcrow">¶</a></p>
+<p id="appendix-B-2">We acknowledge several IETF participants who have contributed to this draft with their insights.<a href="#appendix-B-2" class="pilcrow">¶</a></p>
 <p id="appendix-B-3">The research work is funded by German Research Foundation ("Deutsche Forschungsgemeinschaft.")<a href="#appendix-B-3" class="pilcrow">¶</a></p>
 </section>
 </div>
