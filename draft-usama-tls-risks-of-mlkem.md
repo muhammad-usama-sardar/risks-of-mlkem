@@ -288,7 +288,7 @@ fail safely on, cases such as the following:
 
 * **malformed or missing shares**: The negotiated group is a hybrid group, but one component of the peer
   key share is missing, malformed, or associated with a different group.
-* The ECDHE and KEM values are individually well-formed, but assembled
+* **mixed transcript context**: The ECDHE and KEM values are individually well-formed, but assembled
   from different handshakes, transcript contexts, or negotiated groups.
 * A peer attempts to continue the handshake as standalone ECDHE or
   standalone ML-KEM after a hybrid group was negotiated.
