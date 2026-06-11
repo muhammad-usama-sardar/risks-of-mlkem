@@ -37,28 +37,30 @@ normative:
 
 informative:
   I-D.usama-tls-fatt-extension:
-  reftls: DOI.10.1109/SP.2017.26
-  reftls-Repo:
-     title: "Verified Models and Reference Implementations for the TLS 1.3 Standard Candidate"
-     date: 2026,
-     target: https://github.com/Inria-Prosecco/reftls
-     author:
-      - ins: K. Bhargavan
-      - ins: B. Blanchet
-      - ins: N. Kobeissi
   I-D.pwouters-crypto-current-practices:
   I-D.barnes-tls-this-could-have-been-an-email:
   rfc3552:
   I-D.ietf-tls-ecdhe-mlkem: hybrid
   I-D.ietf-tls-hybrid-design-09:
   I-D.ietf-tls-hybrid-design:
+  FATT-CHANCE:
+    target: https://eprint.iacr.org/2026/1147
+    title: "FATT Chance: On the Robustness of Standalone and Hybrid ML-KEM Key Exchange in TLS 1.3"
+    date: 2026
+    seriesinfo: "Cryptology ePrint Archive, Report 2026/1147"
+    author:
+    -
+      ins: N. Kobeissi
+      name: Nadim Kobeissi
+      org: Symbolic Software
+
 ...
 
 --- abstract
 
 The draft presents *symbolic* and *computational* analysis of hybrid key exchange and standalone ML-KEM.
-The analysis concludes that hybrid key exchange is preferable over standalone ML-KEM.
-This draft also offers opinions of the IETF participants and some preliminary discussion to help the developers and policy makers make informed choices.
+In our observation, we believe that hybrid key exchange is preferable over standalone ML-KEM until a powerful CRQC exists which breaks **all** the bits of pre-quantum.
+This draft also offers opinions of the IETF participants and some preliminary discussion to help the developers and policymakers make informed choices.
 Finally, it offers minimal implementation guidance for hybrids.
 
 --- middle
@@ -72,20 +74,21 @@ Readers are assumed to be familiar with {{NistFips203}}, {{I-D.ietf-tls-rfc8446b
 The draft serves three objectives:
 
 * Summary of formal methods (symbolic and computational) works for hybrid key exchange and standalone ML-KEM
-* Capturing the opinions of IETF to avoid repitition
+* Capturing the opinions of the IETF participants to avoid repetition
 * Minimal implementation guidance for hybrids
 
-### Summary of formal methods
+### Summary of Formal Methods Works
 
 The draft covers the formal methods for the security considerations of {{I-D.ietf-tls-mlkem}}.
-This includes *symbolic* and *computational* analysis (to be interpreted as in [SoK](https://eprint.iacr.org/2019/1393.pdf)) of **integration** of standalone ML-KEM in the context of TLS.
-Specifically, it covers the [formal analysis](https://github.com/symbolicsoft/reftls/blob/master/paper/tls-hybrid.pdf) in ProVerif on the potential issue of asymmetry.
+This includes *symbolic* and *computational* analysis (to be interpreted as in [SoK](https://eprint.iacr.org/2019/1393.pdf)) of integration of standalone ML-KEM in the context of TLS.
+Specifically, it covers the formal analysis {{FATT-CHANCE}} in ProVerif on the potential issue of asymmetry.
 The analysis confirms that asymmetry is not a problem.
 
-### Capturing the opinions of IETF to avoid repitition
+### Capturing the Opinions of IETF
 
-The draft also aims to reduce the endless repitition of arguments from both sides presented on several lists by documenting these arguments so they can simply be referred to. This draft captures what *we* understand them to be saying.
+The draft also aims to reduce the endless repetition of arguments from both sides presented on several lists by documenting these arguments so they can simply be referred to. This draft captures what *we* understand them to be saying.
 The goal is that people can be a bit more fair and balanced to acknowledge others' opinions, rather than stating their opinion as universal truth, or else present substantial scientific evidence if they claim their opinion to be universal truth.
+In our understanding, the question largely boils down to: whether the traditional or post-quantum cryptographic primitive breaks first?
 
 ### Minimal Implementation Guidance for Hybrids
 The implementation concern is not only whether ML-KEM is secure as a
@@ -127,7 +130,7 @@ equally well to standalone ML-KEM.
 
 Adversary can record all traffic and decrypt it when ML-KEM is broken.
 The opinions of WG participants here vary from "ML-KEM is secure" to "ML-KEM is probably already secrectly broken."
-Formal methods can operate under the assumption that ML-KEM is secure, and focus on the **integration** of ML-KEM in TLS under this assumption.
+Formal methods can operate under the assumption that ML-KEM is secure, and focus on the integration of ML-KEM in TLS under this assumption.
 
 * As an example, formal methods can help justify design choices, such as the preference for hybrid key exchanges.
 It can also help identify all the assumptions under which the properties hold.
@@ -182,7 +185,7 @@ This assumes hybrid constructor to be secure.
 ## Minimum Viable Modeling
 {: #sec-model-analyze }
 
-Based on the discussion on list, simply replacing ideal DHKE by ideal ML-KEM in the formal model is not very useful. We ought to focus on the more security-critical questions about **integration** of ML-KEM in TLS.
+Based on the discussion on list, simply replacing ideal DHKE by ideal ML-KEM in the formal model is not very useful. We ought to focus on the more security-critical questions about integration of ML-KEM in TLS.
 We present a few high-level observations to consider for security considerations of {{I-D.ietf-tls-mlkem}}:
 
 * The model ought to consider that any agent could have initiated the TLS, rather than assigning the agents with static roles of client and server in the model. When agents are assigned non-static roles, it would be interesting to see whether the asymmetry issue becomes visible in some property. We consider it very critical for security considerations of {{I-D.ietf-tls-mlkem}} and this is the key point of this draft.
@@ -230,8 +233,7 @@ adversary.
 ## Results
 {: #sec-results }
 
-For the FATT process {{TLS-FATT}}, the symbolic analysis was done in ProVerif by Nadim Kobeissi.
-[Formal analysis](https://github.com/symbolicsoft/reftls/blob/master/paper/tls-hybrid.pdf) concludes:
+For the FATT process {{TLS-FATT}}, the symbolic analysis {{FATT-CHANCE}} was done in ProVerif by Nadim Kobeissi, who concludes:
 
 ~~~
 The hybrid neutralizes every weakness standalone ML-KEM carries,
@@ -258,7 +260,9 @@ vulnerability in the server-authenticated, one-initiator-per-session
 setting analyzed here.
 ~~~
 
-In our understanding, results imply a clear preference for hybrids under the Dolev-Yao model, in the sense that if the shared secret from ML-KEM becomes available to the adversary (for example, due to implementation bug), both confidentiality and authentication are broken in standalone ML-KEM, whereas hybrids are still not broken as long as (EC)DHE is still secure. We believe this applies until a powerful CRQC exists which breaks **all** the bits of pre-quantum.
+Results confirm integration of KEM in TLS is secure as long as the primitive itself is secure.
+In our understanding, results also imply a clear preference for hybrids under the Dolev-Yao model, in the sense that if the shared secret from ML-KEM becomes available to the adversary (for example, due to implementation bug), both confidentiality and authentication are broken in standalone ML-KEM, whereas under same condition, both confidentiality and authentication still hold as long as (EC)DHE is still not available to the adversary.
+We believe this applies until a powerful CRQC exists which breaks **all** the bits of pre-quantum, where the condition of (EC)DHE being available to the adversary is violated.
 
 The artifacts are available [here](https://github.com/symbolicsoft/reftls) for independent review.
 
@@ -462,7 +466,7 @@ The whole document is about improving security considerations.
 Like all security proofs, formal analysis is only as strong as its assumptions and model.
 The scope is typically limited, and the model does not necessarily capture real-world deployment complexity, implementation details, operational constraints, or misuse scenarios.
 Technically, formal proof only guarantees anything if all the assumptions hold, which is unlikely in practice.
-Formal methods should be used as complementary and not as subtitute of other analysis methods.
+Formal methods should be used as complementary and not as substitute of other analysis methods.
 
 
 
@@ -525,3 +529,4 @@ The research work is funded by German Research Foundation ("Deutsche Forschungsg
 
 * Completely restructured and reframed after confirmation by formal analysis
 * Added implementation-facing negative cases and argument matrix
+* Some new arguments: implementation bugs, depth of hybrids, policy, all bits, which primitive breaks first?
