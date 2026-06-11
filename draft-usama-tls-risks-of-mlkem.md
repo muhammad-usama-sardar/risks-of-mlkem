@@ -292,7 +292,7 @@ fail safely on, cases such as the following:
   from different handshakes, transcript contexts, or negotiated groups.
 * **fallback after hybrid negotiation**: A peer attempts to continue the handshake as standalone ECDHE or
   standalone ML-KEM after a hybrid group was negotiated.
-* Application traffic secrets are derived before both hybrid components
+* **premature secret derivation**: Application traffic secrets are derived before both hybrid components
   have been validated and accepted under the negotiated group.
 * Exported state, logs, traces, or implementation APIs make a hybrid
   exchange appear as if only one component was used or accepted.
