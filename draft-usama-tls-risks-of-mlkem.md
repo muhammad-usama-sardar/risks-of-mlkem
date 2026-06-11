@@ -56,19 +56,10 @@ informative:
 
 --- abstract
 
-The draft presents an analysis of hybrid key exchange and standalone ML-KEM.
-Analysis covers both symbolic and computational.
-Specifically, it covers the [formal analysis](https://github.com/symbolicsoft/reftls/blob/master/paper/tls-hybrid.pdf) by Nadim Kobeissi on the potential issue of asymmetry.
-The analysis confirms that asymmetry is not a problem.
-Moreover, the analysis concludes that hybrid key exchange is preferable over standalone ML-KEM.
-This draft aims to propose this statement to be added in the security considerations of standalone ML-KEM.
-
-This draft offers some preliminary discussion to help the developers and policy makers make informed choices.
-Finally, the draft also aims to reduce the endless repitition of arguments from both sides presented on several lists by documenting these arguments so they can simply be referred to.
-The goal is that people can be a bit more fair and balanced to acknowledge others' opinions, rather than stating their opinion as universal truth, or else present substantial scientific evidence if they claim their opinion to be universal truth.
-
-We acknowledge several IETF participants who have contributed to this draft with their insights.
-This draft captures what *we* understand them to be saying.
+The draft presents *symbolic* and *computational* analysis of hybrid key exchange and standalone ML-KEM.
+The analysis concludes that hybrid key exchange is preferable over standalone ML-KEM.
+This draft also offers opinions of the IETF participants and some preliminary discussion to help the developers and policy makers make informed choices.
+Finally, it offers minimal implementation guidance for hybrids.
 
 --- middle
 
@@ -76,16 +67,31 @@ This draft captures what *we* understand them to be saying.
 
 Readers are assumed to be familiar with {{NistFips203}}, {{I-D.ietf-tls-rfc8446bis}}, and {{I-D.ietf-tls-mlkem}}. Please note that the draft has currently several hyperlinks.
 
-The draft covers the formal methods for the security considerations of {{I-D.ietf-tls-mlkem}}.
-This includes *symbolic* and *computational* analysis (to be interpreted as in [SoK](https://eprint.iacr.org/2019/1393.pdf)) of **integration** of standalone ML-KEM in the context of TLS.
-
-
 ## Objectives
+
+The draft serves three objectives:
 
 * Summary of formal methods (symbolic and computational) works for hybrid key exchange and standalone ML-KEM
 * Capturing the opinions of IETF to avoid repitition
-* Implementation guidance for hybrids
+* Minimal implementation guidance for hybrids
 
+### Summary of formal methods
+
+The draft covers the formal methods for the security considerations of {{I-D.ietf-tls-mlkem}}.
+This includes *symbolic* and *computational* analysis (to be interpreted as in [SoK](https://eprint.iacr.org/2019/1393.pdf)) of **integration** of standalone ML-KEM in the context of TLS.
+Specifically, it covers the [formal analysis](https://github.com/symbolicsoft/reftls/blob/master/paper/tls-hybrid.pdf) in ProVerif on the potential issue of asymmetry.
+The analysis confirms that asymmetry is not a problem.
+
+### Capturing the opinions of IETF to avoid repitition
+
+The draft also aims to reduce the endless repitition of arguments from both sides presented on several lists by documenting these arguments so they can simply be referred to. This draft captures what *we* understand them to be saying.
+The goal is that people can be a bit more fair and balanced to acknowledge others' opinions, rather than stating their opinion as universal truth, or else present substantial scientific evidence if they claim their opinion to be universal truth.
+
+### Minimal Implementation Guidance for Hybrids
+The implementation concern is not only whether ML-KEM is secure as a
+primitive, but whether a TLS deployment can show that both hybrid
+components were validated, transcript-bound, and fail-closed under the
+negotiated group.
 
 ## Motivation
 {: #sec-mot }
@@ -252,9 +258,9 @@ vulnerability in the server-authenticated, one-initiator-per-session
 setting analyzed here.
 ~~~
 
-The artifacts are available [here](https://github.com/symbolicsoft/reftls) for independent review.
+In our understanding, results imply a clear preference for hybrids under the Dolev-Yao model, in the sense that if the shared secret from ML-KEM becomes available to the adversary (for example, due to implementation bug), both confidentiality and authentication are broken in standalone ML-KEM, whereas hybrids are still not broken as long as (EC)DHE is still secure. We believe this applies until a powerful CRQC exists which breaks **all** the bits of pre-quantum.
 
-In our understanding, [formal analysis](https://github.com/symbolicsoft/reftls/blob/master/paper/tls-hybrid.pdf) also implies the preference for hybrids under the Dolev-Yao model, in the sense that if the shared secret from ML-KEM becomes available to the adversary (for example, due to implementation bug), hybrids are still not broken. This applies only until the CRQC exists and until CRQC breaks all the bits of pre-quantum.
+The artifacts are available [here](https://github.com/symbolicsoft/reftls) for independent review.
 
 # Implementation-Facing Negative Cases
 {: #sec-impl-negative-cases }
@@ -327,7 +333,7 @@ with a reference.
 In our understanding, the key open question boils down to:
 
 ~~~
-which of the two cryptographic mechanisms breaks first?
+Which of the two cryptographic mechanisms breaks first?
 How does that relate to the CRQC being developed?
 How many bits of pre-quantum cryptography can that CRQC actually
 break?
@@ -472,7 +478,7 @@ This document has no IANA actions.
 # Contributors
 {:numbered="false"}
 
-Nadim Kobeissi performed a thorough formal analysis {{sec-results}} at high priority to get a confirmation.
+Nadim Kobeissi performed a thorough formal analysis {{sec-results}} at high priority based on our call for analysis in previous versions of the draft to get a confirmation.
 
 Text in {{sec-impl-negative-cases}} was proposed by Songbo Bu.
 
@@ -480,12 +486,14 @@ Text in {{sec-sec-cons}} is based on the proposal by John Preuß Mattsson.
 
 {{sec-gen-issues}} is largely based on the opinions of many IETF participants.
 
+We gratefully thank Yaakov Stein and Ilari Liusvaara for their substantial technical guidance, valuable feedback, and contributions.
+
 # Acknowledgments
 {:numbered="false"}
 
-We gratefully thank Yaakov Stein and Ilari Liusvaara for their substantial technical guidance, feedback, and discussion.
+We thank Eric Rescorla, Brian E. Carpenter, and Tibor Jager for their valuable feedback.
 
-We also thank Eric Rescorla, Brian E. Carpenter, and Tibor Jager for their valuable feedback and contributions.
+We acknowledge several IETF participants who have contributed to this draft with their insights.
 
 The research work is funded by German Research Foundation ("Deutsche Forschungsgemeinschaft.")
 
