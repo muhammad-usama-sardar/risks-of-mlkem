@@ -277,7 +277,7 @@ The artifacts are available [here](https://github.com/symbolicsoft/reftls) for i
 # Implementation-Facing Negative Cases
 {: #sec-impl-negative-cases }
 
-The analysis above is not an implementation test suite and does not
+The formal analysis above is not an implementation test suite and does not
 replace protocol conformance testing.
 However, a short set of negative cases can help implementers check that
 the intended hybrid binding property is reflected in their APIs, transcript
