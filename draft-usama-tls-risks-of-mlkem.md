@@ -290,7 +290,7 @@ fail safely on, cases such as the following:
   key share is missing, malformed, or associated with a different group.
 * **mixed transcript context**: The ECDHE and KEM values are individually well-formed, but assembled
   from different handshakes, transcript contexts, or negotiated groups.
-* A peer attempts to continue the handshake as standalone ECDHE or
+* **fallback after hybrid negotiation**: A peer attempts to continue the handshake as standalone ECDHE or
   standalone ML-KEM after a hybrid group was negotiated.
 * Application traffic secrets are derived before both hybrid components
   have been validated and accepted under the negotiated group.
