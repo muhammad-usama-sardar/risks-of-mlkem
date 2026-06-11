@@ -14,12 +14,13 @@ Expires: 13 December 2026
 Abstract
 
    The draft presents _symbolic_ and _computational_ analysis of hybrid
-   key exchange and standalone ML-KEM.  The analysis concludes that
-   hybrid key exchange is preferable over standalone ML-KEM.  This draft
-   also offers opinions of the IETF participants and some preliminary
-   discussion to help the developers and policy makers make informed
-   choices.  Finally, it offers minimal implementation guidance for
-   hybrids.
+   key exchange and standalone ML-KEM.  In our observation, we believe
+   that hybrid key exchange is preferable over standalone ML-KEM until a
+   powerful CRQC exists which breaks *all* the bits of pre-quantum.
+   This draft also offers opinions of the IETF participants and some
+   preliminary discussion to help the developers and policymakers make
+   informed choices.  Finally, it offers minimal implementation guidance
+   for hybrids.
 
 About This Document
 
@@ -73,8 +74,8 @@ Table of Contents
 
    1.  Introduction
      1.1.  Objectives
-       1.1.1.  Summary of formal methods
-       1.1.2.  Capturing the opinions of IETF to avoid repitition
+       1.1.1.  Summary of Formal Methods Works
+       1.1.2.  Capturing the Opinions of IETF
        1.1.3.  Minimal Implementation Guidance for Hybrids
      1.2.  Motivation
      1.3.  Intuition
@@ -131,32 +132,33 @@ Table of Contents
    *  Summary of formal methods (symbolic and computational) works for
       hybrid key exchange and standalone ML-KEM
 
-   *  Capturing the opinions of IETF to avoid repitition
+   *  Capturing the opinions of the IETF participants to avoid
+      repetition
 
    *  Minimal implementation guidance for hybrids
 
-1.1.1.  Summary of formal methods
+1.1.1.  Summary of Formal Methods Works
 
    The draft covers the formal methods for the security considerations
    of [I-D.ietf-tls-mlkem].  This includes _symbolic_ and
    _computational_ analysis (to be interpreted as in SoK
-   (https://eprint.iacr.org/2019/1393.pdf)) of *integration* of
-   standalone ML-KEM in the context of TLS.  Specifically, it covers the
-   formal analysis
-   (https://github.com/symbolicsoft/reftls/blob/master/paper/tls-
-   hybrid.pdf) in ProVerif on the potential issue of asymmetry.  The
-   analysis confirms that asymmetry is not a problem.
+   (https://eprint.iacr.org/2019/1393.pdf)) of integration of standalone
+   ML-KEM in the context of TLS.  Specifically, it covers the formal
+   analysis [FATT-CHANCE] in ProVerif on the potential issue of
+   asymmetry.  The analysis confirms that asymmetry is not a problem.
 
-1.1.2.  Capturing the opinions of IETF to avoid repitition
+1.1.2.  Capturing the Opinions of IETF
 
-   The draft also aims to reduce the endless repitition of arguments
+   The draft also aims to reduce the endless repetition of arguments
    from both sides presented on several lists by documenting these
    arguments so they can simply be referred to.  This draft captures
    what _we_ understand them to be saying.  The goal is that people can
    be a bit more fair and balanced to acknowledge others' opinions,
    rather than stating their opinion as universal truth, or else present
    substantial scientific evidence if they claim their opinion to be
-   universal truth.
+   universal truth.  In our understanding, the question largely boils
+   down to: whether the traditional or post-quantum cryptographic
+   primitive breaks first?
 
 1.1.3.  Minimal Implementation Guidance for Hybrids
 
@@ -206,7 +208,7 @@ Table of Contents
    broken.  The opinions of WG participants here vary from "ML-KEM is
    secure" to "ML-KEM is probably already secrectly broken."  Formal
    methods can operate under the assumption that ML-KEM is secure, and
-   focus on the *integration* of ML-KEM in TLS under this assumption.
+   focus on the integration of ML-KEM in TLS under this assumption.
 
    *  As an example, formal methods can help justify design choices,
       such as the preference for hybrid key exchanges.  It can also help
@@ -293,7 +295,7 @@ Table of Contents
 
    Based on the discussion on list, simply replacing ideal DHKE by ideal
    ML-KEM in the formal model is not very useful.  We ought to focus on
-   the more security-critical questions about *integration* of ML-KEM in
+   the more security-critical questions about integration of ML-KEM in
    TLS.  We present a few high-level observations to consider for
    security considerations of [I-D.ietf-tls-mlkem]:
 
@@ -368,10 +370,8 @@ Table of Contents
 
 4.4.  Results
 
-   For the FATT process [TLS-FATT], the symbolic analysis was done in
-   ProVerif by Nadim Kobeissi.  Formal analysis
-   (https://github.com/symbolicsoft/reftls/blob/master/paper/tls-
-   hybrid.pdf) concludes:
+   For the FATT process [TLS-FATT], the symbolic analysis [FATT-CHANCE]
+   was done in ProVerif by Nadim Kobeissi, who concludes:
 
    The hybrid neutralizes every weakness standalone ML-KEM carries,
    both the confidentiality single point of failure and the
@@ -396,13 +396,17 @@ Table of Contents
    vulnerability in the server-authenticated, one-initiator-per-session
    setting analyzed here.
 
-   In our understanding, results imply a clear preference for hybrids
-   under the Dolev-Yao model, in the sense that if the shared secret
-   from ML-KEM becomes available to the adversary (for example, due to
-   implementation bug), both confidentiality and authentication are
-   broken in standalone ML-KEM, whereas hybrids are still not broken as
-   long as (EC)DHE is still secure.  We believe this applies until a
-   powerful CRQC exists which breaks *all* the bits of pre-quantum.
+   Results confirm integration of KEM in TLS is secure as long as the
+   primitive itself is secure.  In our understanding, results also imply
+   a clear preference for hybrids under the Dolev-Yao model, in the
+   sense that if the shared secret from ML-KEM becomes available to the
+   adversary (for example, due to implementation bug), both
+   confidentiality and authentication are broken in standalone ML-KEM,
+   whereas under same condition, both confidentiality and authentication
+   still hold as long as (EC)DHE is still not available to the
+   adversary.  We believe this applies until a powerful CRQC exists
+   which breaks *all* the bits of pre-quantum, where the condition of
+   (EC)DHE being available to the adversary is violated.
 
    The artifacts are available here (https://github.com/symbolicsoft/
    reftls) for independent review.
@@ -737,7 +741,7 @@ Table of Contents
    implementation details, operational constraints, or misuse scenarios.
    Technically, formal proof only guarantees anything if all the
    assumptions hold, which is unlikely in practice.  Formal methods
-   should be used as complementary and not as subtitute of other
+   should be used as complementary and not as substitute of other
    analysis methods.
 
 8.  IANA Considerations
@@ -782,6 +786,12 @@ Table of Contents
 
 9.2.  Informative References
 
+   [FATT-CHANCE]
+              Kobeissi, N., "FATT Chance: On the Robustness of
+              Standalone and Hybrid ML-KEM Key Exchange in TLS 1.3",
+              Cryptology ePrint Archive, Report 2026/1147 , 2026,
+              <https://eprint.iacr.org/2026/1147>.
+
    [I-D.barnes-tls-this-could-have-been-an-email]
               Barnes, R., "Stop Doing Cryptographic Algorithm Drafts
               when Email to IANA is All You Need", Work in Progress,
@@ -824,18 +834,6 @@ Table of Contents
               Progress, Internet-Draft, draft-usama-tls-fatt-extension-
               07, 2 May 2026, <https://datatracker.ietf.org/doc/html/
               draft-usama-tls-fatt-extension-07>.
-
-   [reftls]   Bhargavan, K., Blanchet, B., and N. Kobeissi, "Verified
-              Models and Reference Implementations for the TLS 1.3
-              Standard Candidate", IEEE, 2017 IEEE Symposium on Security
-              and Privacy (SP) pp. 483-502, DOI 10.1109/sp.2017.26, May
-              2017, <https://doi.org/10.1109/sp.2017.26>.
-
-   [reftls-Repo]
-              Bhargavan, K., Blanchet, B., and N. Kobeissi, "Verified
-              Models and Reference Implementations for the TLS 1.3
-              Standard Candidate",
-              <https://github.com/Inria-Prosecco/reftls>.
 
    [rfc3552]  Rescorla, E. and B. Korver, "Guidelines for Writing RFC
               Text on Security Considerations", BCP 72, RFC 3552,
@@ -907,6 +905,9 @@ History
       analysis
 
    *  Added implementation-facing negative cases and argument matrix
+
+   *  Some new arguments: implementation bugs, depth of hybrids, policy,
+      all bits, which primitive breaks first?
 
 Author's Address
 
