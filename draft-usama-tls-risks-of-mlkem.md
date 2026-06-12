@@ -102,7 +102,7 @@ Leaking out the ECDHE key from hybrid key exchange should downgrade the security
 Therefore, hybrid key exchange is *in general* more secure, unless:
 
 * ECDHE is fully broken, in which case it still falls equivalent to standalone ML-KEM,
-* in the *hypothetical* scenario that there is an implementation bug in the ECDHE part which is triggered only in composition. We have not yet seen any concrete evidence of such a scenario on the list.
+* in the *hypothetical* scenario that there is an implementation bug in the ECDHE part which is triggered only in composition. We are not aware of any concrete evidence of such a scenario.
 
 We believe that *in general*:
 
@@ -164,7 +164,7 @@ In a KEM, only one of the endpoints (client in above example) sends the public e
 ## Hybrids
 {: #sec-tech-rat }
 
-Technically, a proof of {{I-D.ietf-tls-hybrid-design-09}} is done in the computational model using CryptoVerif (cf. [ref](https://bblanche.gitlabpages.inria.fr/publications/BlanchetJacommeCSF24.pdf)). As per list discussion, it appears that the proof applies to the latest version of the spec {{I-D.ietf-tls-hybrid-design}}, as there seem to be no substantive changes from the perspective of formal proof.
+Technically, a proof of {{I-D.ietf-tls-hybrid-design-09}} is done in the computational model using CryptoVerif (cf. [ref](https://bblanche.gitlabpages.inria.fr/publications/BlanchetJacommeCSF24.pdf)). As per discussion on TLS mailing-list, it appears that the proof applies to the latest version of the spec {{I-D.ietf-tls-hybrid-design}}, as there seem to be no substantive changes from the perspective of formal proof.
 
 ## Standalone ML-KEM
 
@@ -180,12 +180,12 @@ This assumes hybrid constructor to be secure.
 ## Minimum Viable Modeling
 {: #sec-model-analyze }
 
-Based on the discussion on list, simply replacing ideal DHKE by ideal ML-KEM in the formal model is not very useful. We ought to focus on the more security-critical questions about integration of ML-KEM in TLS.
+Based on the discussion on TLS mailing-list, simply replacing ideal DHKE by ideal ML-KEM in the formal model is not very useful. We ought to focus on the more security-critical questions about integration of ML-KEM in TLS.
 We present a few high-level observations to consider for security considerations of {{I-D.ietf-tls-mlkem}}:
 
 * The model ought to consider that any agent could have initiated the TLS, rather than assigning the agents with static roles of client and server in the model. When agents are assigned non-static roles, it would be interesting to see whether the asymmetry issue becomes visible in some property. We consider it very critical for security considerations of {{I-D.ietf-tls-mlkem}} and this is the key point of this memo.
-* Different failure modes proposed on list can be modeled.
-* A large part of the problem is the careful investigation of what to model, under what threat model, under what system model, under what implementation scenarios etc. We believe some of this is important for security considerations of {{I-D.ietf-tls-mlkem}}.
+* Different failure modes can be modeled.
+* A large part of the problem is the careful investigation of what to model, under what threat model, under what system model, under what implementation scenarios etc.
 * It will be interesting to see some analysis about any subtle cases where hybrid key exchange in TLS is *not* at least as good as standalone ML-KEM in TLS, since hybrid key exchange is the de facto industry standard.
 * We believe brainstorming about some robustness (vs. security) properties would also be useful. Even if the security properties hold, does standalone ML-KEM make side-channel leakage easier? This might be a valuable consideration for the implementers.
 * Analysis may be helpful to ensure that the changes -- such as the removal of hash function (cf. Appendix C.1, bullet 3 in {{NistFips203}}) -- from Kyber to ML-KEM preserve the security proofs of Kyber.
@@ -315,7 +315,7 @@ separate operational cost analysis.
 
 Formal analysis can address some protocol-composition questions, but it does
 not settle every deployment or policy question relevant to standalone ML-KEM
-and hybrid key exchange.  We present a few such technical facets in this section.
+and hybrid key exchange. This section presents a few such technical facets.
 
 This list is not exhaustive and does not try to prioritize one facet over
 another.  If an important facet is missing, the most useful contribution is a
@@ -405,8 +405,8 @@ deployment timing.  Implementations such as OpenSSL already include standalone
 ML-KEM support, and deployments can enable available code according to their own
 policy and risk assessment.
 
-## "Cost"
-"Cost" has been presented on the list as the motivation for standalone ML-KEM in TLS but we have not seen any supporting analysis.
+## Cost
+Cost may be the motivation for standalone ML-KEM in TLS but we are not aware of any supporting analysis.
 Our observation from {{Section 4 of -hybrid}} is that -- for example -- for X25519MLKEM768, the traditional part seems negligible compared to ML-KEM part in `key_exchange`:
 
 | Bytes in field| PQ part (ML-KEM)      | Traditional part (X25519) |
@@ -434,7 +434,7 @@ CFRG is starting some efforts for detailed analysis. The extended deadline for s
 
 ## Formal Mapping of FIPS to IETF BCP14
 
-As discussed on the TLS list, we are not aware of any formal mapping of the FIPS recommendations to the IETF BCP14 terminology, such as SHOULD vs. MUST. In general, we believe re-using FIPS recommendations is ambiguous for IETF readers.
+As discussed on the TLS mailing-list, we are not aware of any formal mapping of the FIPS recommendations to the IETF BCP14 terminology, such as SHOULD vs. MUST. In general, we believe re-using FIPS recommendations is ambiguous for IETF readers.
 
 ## Outstanding NIST Comments
 One concrete position is that not all comments submitted during the open review were fully addressed.  Please see comments [here](https://csrc.nist.gov/files/pubs/fips/203/ipd/docs/fips-203-initial-public-comments-2023.pdf).
@@ -489,7 +489,7 @@ This memo has no IANA actions.
 
 Nadim Kobeissi performed a thorough formal analysis {{sec-results}} at high priority based on our call for analysis in previous versions of the memo to get a confirmation.
 
-Text in {{sec-impl-negative-cases}} was proposed by Songbo Bu.
+Text in {{sec-impl-negative-cases}} was proposed by Songbo Bu. He also proposed revisions in {{sec-gen-issues}}.
 
 Text in {{sec-sec-cons}} is based on the proposal by John Preuß Mattsson.
 
@@ -500,7 +500,7 @@ We gratefully thank Yaakov Stein and Ilari Liusvaara for their substantial techn
 # Acknowledgments
 {:numbered="false"}
 
-We thank Eric Rescorla, Brian E. Carpenter, and Tibor Jager for their valuable feedback.
+We thank Eric Rescorla, Brian E. Carpenter, Tibor Jager, and Eliot Lear for their valuable feedback.
 
 We acknowledge several IETF participants who have contributed to this memo with their insights.
 
