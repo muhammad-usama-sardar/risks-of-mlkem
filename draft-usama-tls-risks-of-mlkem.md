@@ -54,7 +54,7 @@ informative:
 --- abstract
 
 The memo presents *symbolic* and *computational* analysis of hybrid key exchange and standalone ML-KEM.
-This memo also maps out the varying technical viewpoints surrounding quantum-resistant key exchange and provides some preliminary discussion to help the developers and policymakers make informed choices.
+This memo also maps out the relevant technical facets surrounding quantum-resistant key exchange and provides some preliminary discussion to help developers and policymakers make informed choices.
 Our observation is that hybrid key exchange is preferable over standalone ML-KEM until a powerful CRQC exists which breaks **all** the bits of pre-quantum.
 Finally, it offers minimal implementation guidance for hybrid key exchange.
 This memo is not a standard nor has it been shown to have consensus of the IETF community.
@@ -80,9 +80,10 @@ This includes *symbolic* and *computational* analysis (to be interpreted as in [
 Specifically, it covers the formal analysis {{FATT-CHANCE}} in ProVerif on the potential issue of asymmetry.
 The analysis confirms that asymmetry is not a problem.
 
-### Presenting Different Facets of the Problem
+### Presenting Different Technical Facets
 
-In our understanding of the different facets of the problem, the key question largely boils down to: whether the traditional or post-quantum cryptographic primitive breaks first?
+The later sections also identify technical facets that affect deployment reasoning but are not fully resolved by the formal analysis alone.
+This explains why the memo discusses issues such as break timing, residual pre-quantum security, deployment cost, patents, and implementation behavior after presenting the formal-methods result.
 
 ### Minimal Implementation Guidance for Hybrids
 The implementation concern is not only whether ML-KEM is secure as a
@@ -122,8 +123,9 @@ We believe the Harvest Now, Decrypt Later (HNDL) attack applies
 equally well to standalone ML-KEM.
 ~~~
 
-Adversary can record all traffic and decrypt it when ML-KEM is broken.
-The opinions of the community on this matter vary from "ML-KEM is secure" to "ML-KEM is probably already secrectly broken."
+An adversary can record all traffic and decrypt it later if ML-KEM is broken.
+The relevant assumption space ranges from ML-KEM remaining secure for the deployment horizon to ML-KEM failing earlier than expected.
+This memo therefore states the assumptions under which the analysis is carried out and identifies which failures would change the deployment conclusion.
 Formal methods can operate under the assumption that ML-KEM is secure, and focus on the integration of ML-KEM in TLS under this assumption.
 
 * As an example, formal methods can help justify design choices, such as the preference for hybrid key exchanges.
