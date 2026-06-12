@@ -124,7 +124,7 @@ equally well to standalone ML-KEM.
 ~~~
 
 An adversary can record all traffic and decrypt it later if ML-KEM is broken.
-The relevant assumption space ranges from ML-KEM remaining secure for the deployment horizon to ML-KEM failing earlier than expected.
+The opinions of the community on this matter vary from "ML-KEM is secure" to "ML-KEM is probably already secrectly broken."
 This memo therefore states the assumptions under which the analysis is carried out and identifies which failures would change the deployment conclusion.
 Formal methods can operate under the assumption that ML-KEM is secure, and focus on the integration of ML-KEM in TLS under this assumption.
 
