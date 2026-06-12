@@ -309,37 +309,45 @@ decide whether a concrete implementation or deployment argument belongs
 in the formal-methods discussion, in implementation guidance, or in a
 separate operational cost analysis.
 
-# Issues That Formal Methods Probably Cannot Solve
+# Facets Outside the Scope of Formal Methods
 {: #sec-gen-issues }
 
-The answers to the following issues are largely dependent on several factors, and the opinions of the community vary largely.
+Formal analysis can address some protocol-composition questions, but it does
+not settle every deployment or policy question relevant to standalone ML-KEM
+and hybrid key exchange.  We present a few such technical facets in this section.
 
-It is necessary to mention that even several respectable cryptographers in the community are not aligned on the issue -- for example see the [long bet](https://github.com/FiloSottile/ecc-vs-lattices-long-bet). Hence, we present the different schools of thought in this section.
-
-~~~
-Disclaimer: This is not meant to be an exhaustive list.
-If somthing is missing, please simply submit a
-*precise* and *concise* PR, preferably with a reference.
-~~~
+This list is not exhaustive and does not try to prioritize one facet over
+another.  If an important facet is missing, the most useful contribution is a
+precise and concise PR with proposed text and references.
 
 ## Which breaks first: ML-KEM-768 or X25519?
-In our understanding, the key open question boils down to:
+
+A core uncertainty for any hybrid-vs-standalone comparison is:
 
 ~~~
 Which of the two cryptographic mechanisms breaks first?
 How does that relate to the CRQC being developed?
 How many bits of pre-quantum cryptography can that CRQC actually
 break?
-Since all of three can be kept secret for some time,
-the opinions of the community vary a lot on the different
-possible combinations.
 ~~~
 
+All three variables may remain uncertain for a long period of time.  This makes
+it difficult to reduce the question to one simple ordering of "secure" and
+"insecure" choices.
+
 ## Does CRQC Break All Bits of Pre-quantum?
-One school of thought believes that CRQC will break all bits of pre-quantum cryptographic, while another believes that it will break [only a few bits](https://cr.yp.to/papers/mldsa-20260601.pdf#breakable-keys).
+
+The impact of a CRQC on pre-quantum cryptography may not be uniform across all
+algorithms, security levels, and attack models.  One concrete position is that
+a CRQC may break [only a few bits](https://cr.yp.to/papers/mldsa-20260601.pdf#breakable-keys)
+rather than all effective pre-quantum security.  This matters because a hybrid
+construction depends on the residual value of the traditional component after a
+quantum advance.
 
 ## Policy/Regulations
-Some countries have a regulatory requirement for hybrid key exchange.
+Some countries have a regulatory requirement for hybrid key exchange.  This is
+a deployment and compliance constraint, not a property that formal analysis of
+the TLS key schedule can settle.
 
 ## Recommendation of Designers
 {: #sec-designers-view }
@@ -362,7 +370,8 @@ Please see a very thorough review [here](https://mailarchive.ietf.org/arch/msg/t
 
 ## 'Significantly Harder' Argument
 
-One school of thought believes in the 'significantly harder' argument, which assumes independence of breakage of ML-KEM and traditionals:
+One common hybrid-security argument assumes independence between a break of
+ML-KEM and a break of the traditional key-exchange component:
 
 ~~~
 If the probablity of one being broken over the next n years is p, and
@@ -373,7 +382,7 @@ then the probability of both being broken is pq.
 Please see [this](https://github.com/FiloSottile/ecc-vs-lattices-long-bet#2a-what-counts-as-a-break) for what "broken" may mean here modulo some [exclusions](https://github.com/FiloSottile/ecc-vs-lattices-long-bet#5-exclusions).
 
 Given the very different type of cryptographic constructions involved, independence might be a reasonable assumption.
-However, another school of thought disagrees with 'significantly harder' argument with a reasonable counter-argument that in reality, cryptography is much more complicated than that and depending on the algorithms and the composition method, the probability can clearly be q, or smaller than pq.
+However, a reasonable counter-argument is that, in reality, cryptography is much more complicated than that and depending on the algorithms and the composition method, the probability can clearly be q, or smaller than pq.
 
 In our understanding, most other counter-arguments seem to break the [exclusions](https://github.com/FiloSottile/ecc-vs-lattices-long-bet#5-exclusions).
 
@@ -382,12 +391,18 @@ Please note that this argument is based on the security of *primitives*, rather 
 ## Urgency
 
 It is unclear *whether* and if applicable *when* Cryptographically-Relevant Quantum Computer (CRQC) will eventually become practical.
-The opinions of the community vary from never because of complicated physics (see [this](https://eprint.iacr.org/2025/1237)) to be *prepared* for it as early as 2029 (see [Google 2029](https://blog.google/innovation-and-ai/technology/safety-security/cryptography-migration-timeline/) and [Cloudflare 2029](https://blog.cloudflare.com/post-quantum-roadmap/)).
+Public assessments range from skepticism based on the difficulty of the physics
+(see [this](https://eprint.iacr.org/2025/1237)) to migration targets that aim to
+be *prepared* as early as 2029 (see [Google 2029](https://blog.google/innovation-and-ai/technology/safety-security/cryptography-migration-timeline/)
+and [Cloudflare 2029](https://blog.cloudflare.com/post-quantum-roadmap/)).
 Technically, please note that Google has not even released the **quantum circuit** underlying their recent claims -- apparently the reason for this urgency. So Google's claims may not yet be justified.
 
-Moreover, in our understanding, these deadlines are for PQ-based protection in general regardless of hybrid key exchange or standalone KEMs in TLS. Since hybrid key exchange is wildly in use, these deadlines are mainly for quantum-safe authentication.
+Moreover, in our understanding, these deadlines are for PQ-based protection in general regardless of hybrid key exchange or standalone KEMs in TLS. Since hybrid key exchange is widely in use, these deadlines are mainly for quantum-safe authentication.
 
-In any case, one school of thought sees no reason to create panic for publication of {{I-D.ietf-tls-mlkem}} based on this because many implementations -- such as OpenSSL -- have already implemented standalone ML-KEM, and it is just a matter of enabling it. And frankly, nobody needs permission from the IETF to enable it.
+A separate deployment point is that publication timing does not by itself control
+deployment timing.  Implementations such as OpenSSL already include standalone
+ML-KEM support, and deployments can enable available code according to their own
+policy and risk assessment.
 
 ## "Cost"
 "Cost" has been presented on the list as the motivation for standalone ML-KEM in TLS but we have not seen any supporting analysis.
@@ -398,10 +413,13 @@ Our observation from {{Section 4 of -hybrid}} is that -- for example -- for X255
 | Client share  | 1184               | 32          |
 | Server share  | 1088               | 32          |
 
-We believe other "costs" will depend on several factors -- including but not limited to implementation details and deployment scenario -- and it is quite **subjective**.
+Other "costs" depend on several factors -- including implementation details,
+deployment scenario, latency budget, memory pressure, code complexity, and
+operational rollout cost -- and should not be treated as one scalar value.
 
 There seems to be a need for a thorough study to understand the "cost."
-We invite the research and standardization community to perform cost analysis and share the results.
+A useful analysis would separate wire bytes, CPU, memory, latency, implementation
+complexity, and operational rollout cost.
 
 ## Is Publication Necessary?
 
@@ -418,20 +436,30 @@ CFRG is starting some efforts for detailed analysis. The extended deadline for s
 As discussed on the TLS list, we are not aware of any formal mapping of the FIPS recommendations to the IETF BCP14 terminology, such as SHOULD vs. MUST. In general, we believe re-using FIPS recommendations is ambiguous for IETF readers.
 
 ## Outstanding NIST Comments
-One school of thought believes that NIST has rushed through the process and not addressed all the comments that were submitted during the open review. Please see comments [here](https://csrc.nist.gov/files/pubs/fips/203/ipd/docs/fips-203-initial-public-comments-2023.pdf).
+Some concerns have been raised that not all comments submitted during the open review were fully addressed.  Please see comments [here](https://csrc.nist.gov/files/pubs/fips/203/ipd/docs/fips-203-initial-public-comments-2023.pdf).
 
 ## Too Early
-One school of thought simply believes that publication of {{I-D.ietf-tls-mlkem}} and related discussions are just too early and unnecessary.
+
+One concern is that publication of {{I-D.ietf-tls-mlkem}} and related discussions may be too early and unnecessary.
 
 ## Patents
 
 Some concerns related to patents have been raised. See some relevant patents [here](https://datatracker.ietf.org/ipr/search/?submit=draft&id=draft-ietf-tls-mlkem).
 
 ## Implementation Bugs
-One school of thought is worried about the implementations bugs. Some use it as advocacy for the use of hybrids that if one could exploit one of the two primitives, the other one can save.
+
+Implementation bugs are a separate risk from primitive-level cryptanalysis.
+Hybrid key exchange may mitigate some single-component failures, but only if the
+implementation actually validates both components, binds them to the same
+transcript, derives traffic secrets only after both components are accepted, and
+fails closed when either component fails.
 
 ## Depth of Hybrids?
-One school of thought has questioned the ML-KEM + ECC hybrids rather than, say, Module Lattices + McEliece + hash-based three-way composites.
+
+The depth of a hybrid is itself a design question.  ML-KEM plus ECC is only one
+composition point; other designs could combine module lattices, code-based KEMs,
+or hash-based components.  That broader design space is outside the scope of the
+formal-methods results discussed above.
 
 
 # Security Considerations
@@ -464,7 +492,7 @@ Text in {{sec-impl-negative-cases}} was proposed by Songbo Bu.
 
 Text in {{sec-sec-cons}} is based on the proposal by John Preuß Mattsson.
 
-{{sec-gen-issues}} is largely based on the opinions of many IETF participants.
+{{sec-gen-issues}} is based on mailing-list discussion, referenced technical concerns, and deployment questions raised during review.
 
 We gratefully thank Yaakov Stein and Ilari Liusvaara for their substantial technical guidance, valuable feedback, and contributions.
 
