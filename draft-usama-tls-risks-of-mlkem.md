@@ -3,18 +3,13 @@ title: "Analysis of Hybrid Key Exchange and Standalone ML-KEM in TLS 1.3"
 category: info
 
 docname: draft-usama-tls-risks-of-mlkem-latest
-submissiontype: IETF  # also: "independent", "editorial", "IAB", or "IRTF"
+submissiontype: independent  # also: "independent", "editorial", "IAB", or "IRTF"
 number:
 date:
-consensus: true
+consensus: false
 v: 3
-area: "Security"
-workgroup: "Transport Layer Security"
+workgroup: "Independent Submission Stream"
 venue:
-  group: "Transport Layer Security"
-  type: "Working Group"
-  mail: "tls@ietf.org"
-  arch: "https://mailarchive.ietf.org/arch/browse/tls/"
   github: "muhammad-usama-sardar/risks-of-mlkem"
   latest: "https://muhammad-usama-sardar.github.io/risks-of-mlkem/draft-usama-tls-risks-of-mlkem.html"
 
@@ -58,41 +53,40 @@ informative:
 
 --- abstract
 
-The draft presents *symbolic* and *computational* analysis of hybrid key exchange and standalone ML-KEM.
-In our observation, we believe that hybrid key exchange is preferable over standalone ML-KEM until a powerful CRQC exists which breaks **all** the bits of pre-quantum.
-This draft also offers opinions of the IETF participants and some preliminary discussion to help the developers and policymakers make informed choices.
-Finally, it offers minimal implementation guidance for hybrids.
+The memo presents *symbolic* and *computational* analysis of hybrid key exchange and standalone ML-KEM.
+This memo also maps out the varying technical viewpoints surrounding quantum-resistant key exchange and provides some preliminary discussion to help the developers and policymakers make informed choices.
+Our observation is that hybrid key exchange is preferable over standalone ML-KEM until a powerful CRQC exists which breaks **all** the bits of pre-quantum.
+Finally, it offers minimal implementation guidance for hybrid key exchange.
+This memo is not a standard nor has it been shown to have consensus of the IETF community.
 
 --- middle
 
 # Introduction
 
-Readers are assumed to be familiar with {{NistFips203}}, {{I-D.ietf-tls-rfc8446bis}}, and {{I-D.ietf-tls-mlkem}}. Please note that the draft has currently several hyperlinks.
+Readers are assumed to be familiar with {{NistFips203}}, {{I-D.ietf-tls-rfc8446bis}}, and {{I-D.ietf-tls-mlkem}}. Please note that the memo has currently several hyperlinks.
 
 ## Objectives
 
-The draft serves three objectives:
+The memo serves three objectives:
 
 * Summary of formal methods (symbolic and computational) works for hybrid key exchange and standalone ML-KEM
-* Capturing the opinions of the IETF participants to avoid repetition
+* Identifying the underlying technical facets and common complexities of the deployment debate to provide clarity
 * Minimal implementation guidance for hybrids
 
 ### Summary of Formal Methods Works
 
-The draft covers the formal methods for the security considerations of {{I-D.ietf-tls-mlkem}}.
+The memo covers the formal methods for the security considerations of {{I-D.ietf-tls-mlkem}}.
 This includes *symbolic* and *computational* analysis (to be interpreted as in [SoK](https://eprint.iacr.org/2019/1393.pdf)) of integration of standalone ML-KEM in the context of TLS.
 Specifically, it covers the formal analysis {{FATT-CHANCE}} in ProVerif on the potential issue of asymmetry.
 The analysis confirms that asymmetry is not a problem.
 
-### Capturing the Opinions of IETF
+### Presenting Different Facets of the Problem
 
-The draft also aims to reduce the endless repetition of arguments from both sides presented on several lists by documenting these arguments so they can simply be referred to. This draft captures what *we* understand them to be saying.
-The goal is that people can be a bit more fair and balanced to acknowledge others' opinions, rather than stating their opinion as universal truth, or else present substantial scientific evidence if they claim their opinion to be universal truth.
-In our understanding, the question largely boils down to: whether the traditional or post-quantum cryptographic primitive breaks first?
+In our understanding of the different facets of the problem, the key question largely boils down to: whether the traditional or post-quantum cryptographic primitive breaks first?
 
 ### Minimal Implementation Guidance for Hybrids
 The implementation concern is not only whether ML-KEM is secure as a
-primitive, but whether a TLS deployment can show that both hybrid
+primitive, but also whether a TLS deployment can show that both hybrid
 components were validated, transcript-bound, and fail-closed under the
 negotiated group.
 
@@ -100,7 +94,7 @@ negotiated group.
 {: #sec-mot }
 
 {{rfc3552}} requires to document the risks in the security considerations.
-To support those requirements for {{I-D.ietf-tls-mlkem}}, this draft aims to formally study the security of standalone ML-KEM in TLS 1.3.
+To support those requirements for {{I-D.ietf-tls-mlkem}}, this memo aims to formally study the security of standalone ML-KEM in TLS 1.3.
 
 ## Intuition
 Leaking out the ECDHE key from hybrid key exchange should downgrade the security to the level of a standalone ML-KEM.
@@ -119,7 +113,7 @@ regression, unless CRQC exists to break all ECC keys.
 
 
 ### Expected Learning
-We believe formal methods can provide additional value for security considerations of this draft in order to maintain the high cryptographic assurance of TLS.
+We believe formal methods can provide additional value for security considerations of this memo in order to maintain the high cryptographic assurance of TLS.
 
 ~~~
 Since we have no guarantee on whether ECDHE will break before ML-KEM,
@@ -129,7 +123,7 @@ equally well to standalone ML-KEM.
 ~~~
 
 Adversary can record all traffic and decrypt it when ML-KEM is broken.
-The opinions of WG participants here vary from "ML-KEM is secure" to "ML-KEM is probably already secrectly broken."
+The opinions of the community on this matter vary from "ML-KEM is secure" to "ML-KEM is probably already secrectly broken."
 Formal methods can operate under the assumption that ML-KEM is secure, and focus on the integration of ML-KEM in TLS under this assumption.
 
 * As an example, formal methods can help justify design choices, such as the preference for hybrid key exchanges.
@@ -188,10 +182,10 @@ This assumes hybrid constructor to be secure.
 Based on the discussion on list, simply replacing ideal DHKE by ideal ML-KEM in the formal model is not very useful. We ought to focus on the more security-critical questions about integration of ML-KEM in TLS.
 We present a few high-level observations to consider for security considerations of {{I-D.ietf-tls-mlkem}}:
 
-* The model ought to consider that any agent could have initiated the TLS, rather than assigning the agents with static roles of client and server in the model. When agents are assigned non-static roles, it would be interesting to see whether the asymmetry issue becomes visible in some property. We consider it very critical for security considerations of {{I-D.ietf-tls-mlkem}} and this is the key point of this draft.
+* The model ought to consider that any agent could have initiated the TLS, rather than assigning the agents with static roles of client and server in the model. When agents are assigned non-static roles, it would be interesting to see whether the asymmetry issue becomes visible in some property. We consider it very critical for security considerations of {{I-D.ietf-tls-mlkem}} and this is the key point of this memo.
 * Different failure modes proposed on list can be modeled.
 * A large part of the problem is the careful investigation of what to model, under what threat model, under what system model, under what implementation scenarios etc. We believe some of this is important for security considerations of {{I-D.ietf-tls-mlkem}}.
-* It will be interesting to see some analysis about any subtle cases where hybrid key exchange in TLS is *not* at least as good as standalone ML-KEM in TLS. Our understanding is that some participants would like to see some statement on the comparison since hybrid key exchange is the de facto industry standard.
+* It will be interesting to see some analysis about any subtle cases where hybrid key exchange in TLS is *not* at least as good as standalone ML-KEM in TLS, since hybrid key exchange is the de facto industry standard.
 * We believe brainstorming about some robustness (vs. security) properties would also be useful. Even if the security properties hold, does standalone ML-KEM make side-channel leakage easier? This might be a valuable consideration for the implementers.
 * Analysis may be helpful to ensure that the changes -- such as the removal of hash function (cf. Appendix C.1, bullet 3 in {{NistFips203}}) -- from Kyber to ML-KEM preserve the security proofs of Kyber.
 
@@ -299,7 +293,7 @@ modes that implementations can accidentally mishandle.
 
 The discussion above can be read as an argument matrix for implementers
 and reviewers.  The point is not to resolve every policy preference in
-this document, but to make each recurring argument map to a concrete
+this memo, but to make each recurring argument map to a concrete
 review question.
 
 | Argument | Implementation-facing review question | Why it matters |
@@ -318,19 +312,14 @@ separate operational cost analysis.
 # Issues That Formal Methods Probably Cannot Solve
 {: #sec-gen-issues }
 
-The answers to the following issues are largely dependent on several factors, and the opinions vary largely.
+The answers to the following issues are largely dependent on several factors, and the opinions of the community vary largely.
 
-It is necessary to mention that even several respectable cryptographers in the community are not aligned on the issue -- for example see the [long bet](https://github.com/FiloSottile/ecc-vs-lattices-long-bet). Hence, our personal opinion is probably not that important. Probably the best we can do is to capture *our* understanding of the views of WG participants.
+It is necessary to mention that even several respectable cryptographers in the community are not aligned on the issue -- for example see the [long bet](https://github.com/FiloSottile/ecc-vs-lattices-long-bet). Hence, we present the different schools of thought in this section.
 
 ~~~
 Disclaimer: This is not meant to be an exhaustive list.
-This is also not meant to pritoritize any concerns over others.
-This is a sincere attempt to slowly capture the opinions
-to avoid endless repetitions from both sides.
-Some substantive concerns may be missing.
-If your substantive concern is missing, it is unintentional.
-Please simply submit a *precise* and *concise* PR, preferably
-with a reference.
+If somthing is missing, please simply submit a
+*precise* and *concise* PR, preferably with a reference.
 ~~~
 
 ## Which breaks first: ML-KEM-768 or X25519?
@@ -342,14 +331,15 @@ How does that relate to the CRQC being developed?
 How many bits of pre-quantum cryptography can that CRQC actually
 break?
 Since all of three can be kept secret for some time,
-the opinions vary a lot on the different possible combinations.
+the opinions of the community vary a lot on the different
+possible combinations.
 ~~~
 
 ## Does CRQC Break All Bits of Pre-quantum?
-Some participants believe that CRQC will break all bits of pre-quantum cryptographic, while some others believe that it will break [only a few bits](https://cr.yp.to/papers/mldsa-20260601.pdf#breakable-keys).
+One school of thought believes that CRQC will break all bits of pre-quantum cryptographic, while another believes that it will break [only a few bits](https://cr.yp.to/papers/mldsa-20260601.pdf#breakable-keys).
 
 ## Policy/Regulations
-Some countries have a regulatory preference for hybrid key exchange.
+Some countries have a regulatory requirement for hybrid key exchange.
 
 ## Recommendation of Designers
 {: #sec-designers-view }
@@ -366,21 +356,13 @@ with elliptic-curve Diffie-Hellman.
 [...]
 ~~~
 
-A WG participant [shares](https://mailarchive.ietf.org/arch/msg/tls/NnGrdavTY6KGTVQo46xaPbSHQzw/) that:
-
-~~~
-I recently asked one of the members of the CRYSTALS team
-whether this is still his view, and the response was:
-"Yes, of course."
-~~~
-
 ## Thorough Review
 
 Please see a very thorough review [here](https://mailarchive.ietf.org/arch/msg/tls/jlsYHENwqMv-4XPRvunqKsAL36k/), which is self-sufficient.
 
 ## 'Significantly Harder' Argument
 
-Some participants believe in the 'significantly harder' argument, which assumes independence of breakage of ML-KEM and traditionals:
+One school of thought believes in the 'significantly harder' argument, which assumes independence of breakage of ML-KEM and traditionals:
 
 ~~~
 If the probablity of one being broken over the next n years is p, and
@@ -391,12 +373,7 @@ then the probability of both being broken is pq.
 Please see [this](https://github.com/FiloSottile/ecc-vs-lattices-long-bet#2a-what-counts-as-a-break) for what "broken" may mean here modulo some [exclusions](https://github.com/FiloSottile/ecc-vs-lattices-long-bet#5-exclusions).
 
 Given the very different type of cryptographic constructions involved, independence might be a reasonable assumption.
-However, some participants disagree with 'significantly harder' argument with a reasonable counter-argument that in reality, cryptography is much more complicated than that (cf. [this](https://mailarchive.ietf.org/arch/msg/tls/AK7QUiiGX3ynsOhXeUuwn_IY7ik/)):
-
-~~~
-Depending on the algorithms and the composition method,
-the probability can clearly be q, or smaller than pq.
-~~~
+However, another school of thought disagrees with 'significantly harder' argument with a reasonable counter-argument that in reality, cryptography is much more complicated than that and depending on the algorithms and the composition method, the probability can clearly be q, or smaller than pq.
 
 In our understanding, most other counter-arguments seem to break the [exclusions](https://github.com/FiloSottile/ecc-vs-lattices-long-bet#5-exclusions).
 
@@ -405,12 +382,12 @@ Please note that this argument is based on the security of *primitives*, rather 
 ## Urgency
 
 It is unclear *whether* and if applicable *when* Cryptographically-Relevant Quantum Computer (CRQC) will eventually become practical.
-The opinions vary from never because of complicated physics (see [this](https://eprint.iacr.org/2025/1237)) to be *prepared* for it as early as 2029 (see [Google 2029](https://blog.google/innovation-and-ai/technology/safety-security/cryptography-migration-timeline/) and [Cloudflare 2029](https://blog.cloudflare.com/post-quantum-roadmap/)).
+The opinions of the community vary from never because of complicated physics (see [this](https://eprint.iacr.org/2025/1237)) to be *prepared* for it as early as 2029 (see [Google 2029](https://blog.google/innovation-and-ai/technology/safety-security/cryptography-migration-timeline/) and [Cloudflare 2029](https://blog.cloudflare.com/post-quantum-roadmap/)).
 Technically, please note that Google has not even released the **quantum circuit** underlying their recent claims -- apparently the reason for this urgency. So Google's claims may not yet be justified.
 
 Moreover, in our understanding, these deadlines are for PQ-based protection in general regardless of hybrid key exchange or standalone KEMs in TLS. Since hybrid key exchange is wildly in use, these deadlines are mainly for quantum-safe authentication.
 
-In any case, some participants see no reason to create panic for publication of {{I-D.ietf-tls-mlkem}} based on this because many implementations -- such as OpenSSL -- have already implemented standalone ML-KEM, and it is just a matter of enabling it. And frankly, nobody needs permission from the IETF to enable it.
+In any case, one school of thought sees no reason to create panic for publication of {{I-D.ietf-tls-mlkem}} based on this because many implementations -- such as OpenSSL -- have already implemented standalone ML-KEM, and it is just a matter of enabling it. And frankly, nobody needs permission from the IETF to enable it.
 
 ## "Cost"
 "Cost" has been presented on the list as the motivation for standalone ML-KEM in TLS but we have not seen any supporting analysis.
@@ -424,7 +401,7 @@ Our observation from {{Section 4 of -hybrid}} is that -- for example -- for X255
 We believe other "costs" will depend on several factors -- including but not limited to implementation details and deployment scenario -- and it is quite **subjective**.
 
 There seems to be a need for a thorough study to understand the "cost."
-We invite the WG participants to perform cost analysis and share the results with the WG.
+We invite the research and standardization community to perform cost analysis and share the results.
 
 ## Is Publication Necessary?
 
@@ -433,29 +410,28 @@ Code Points for ML-KEM have already been assigned.
 
 ## Shiny New Crypto
 
-ML-KEM is quite new in the IETF and even in the IRTF. Some WG participants have shown concern over premature publication of {{I-D.ietf-tls-mlkem}} until a detailed analysis has been done by CFRG.
-
-CFRG is starting some efforts for analysis. The extended deadline for submission is 22.06. Please see the latest [CFRG chairs email](https://mailarchive.ietf.org/arch/msg/cfrg/6K43Ycr062Ym1G0q4WHxZQ2HW8M/) for further details.
+ML-KEM is quite new in the IETF and even in the IRTF.
+CFRG is starting some efforts for detailed analysis. The extended deadline for submission is 22.06. Please see the latest [CFRG chairs email](https://mailarchive.ietf.org/arch/msg/cfrg/6K43Ycr062Ym1G0q4WHxZQ2HW8M/) for further details.
 
 ## Formal Mapping of FIPS to IETF BCP14
 
 As discussed on the TLS list, we are not aware of any formal mapping of the FIPS recommendations to the IETF BCP14 terminology, such as SHOULD vs. MUST. In general, we believe re-using FIPS recommendations is ambiguous for IETF readers.
 
 ## Outstanding NIST Comments
-Some participants believe that NIST has rushed through the process and not addressed all the comments that were submitted during the open review. Please see comments [here](https://csrc.nist.gov/files/pubs/fips/203/ipd/docs/fips-203-initial-public-comments-2023.pdf).
+One school of thought believes that NIST has rushed through the process and not addressed all the comments that were submitted during the open review. Please see comments [here](https://csrc.nist.gov/files/pubs/fips/203/ipd/docs/fips-203-initial-public-comments-2023.pdf).
 
 ## Too Early
-Some participants simply believe that publication of {{I-D.ietf-tls-mlkem}} and related discussions are just too early and unnecessary.
+One school of thought simply believes that publication of {{I-D.ietf-tls-mlkem}} and related discussions are just too early and unnecessary.
 
 ## Patents
 
-Some WG participants have raised some concerns related to patents. See some relevant patents [here](https://datatracker.ietf.org/ipr/search/?submit=draft&id=draft-ietf-tls-mlkem).
+Some concerns related to patents have been raised. See some relevant patents [here](https://datatracker.ietf.org/ipr/search/?submit=draft&id=draft-ietf-tls-mlkem).
 
 ## Implementation Bugs
-Some participants are worried about the implementations bugs. Some use it as advocacy for the use of hybrids that if one could exploit one of the two primitives, the other one can save.
+One school of thought is worried about the implementations bugs. Some use it as advocacy for the use of hybrids that if one could exploit one of the two primitives, the other one can save.
 
 ## Depth of Hybrids?
-Some participants have questioned the ML-KEM + ECC hybrids rather than, say, Module Lattices + McEliece + hash-based three-way composites.
+One school of thought has questioned the ML-KEM + ECC hybrids rather than, say, Module Lattices + McEliece + hash-based three-way composites.
 
 
 # Security Considerations
@@ -472,7 +448,7 @@ Formal methods should be used as complementary and not as substitute of other an
 
 # IANA Considerations
 
-This document has no IANA actions.
+This memo has no IANA actions.
 
 
 --- back
@@ -482,7 +458,7 @@ This document has no IANA actions.
 # Contributors
 {:numbered="false"}
 
-Nadim Kobeissi performed a thorough formal analysis {{sec-results}} at high priority based on our call for analysis in previous versions of the draft to get a confirmation.
+Nadim Kobeissi performed a thorough formal analysis {{sec-results}} at high priority based on our call for analysis in previous versions of the memo to get a confirmation.
 
 Text in {{sec-impl-negative-cases}} was proposed by Songbo Bu.
 
@@ -497,7 +473,7 @@ We gratefully thank Yaakov Stein and Ilari Liusvaara for their substantial techn
 
 We thank Eric Rescorla, Brian E. Carpenter, and Tibor Jager for their valuable feedback.
 
-We acknowledge several IETF participants who have contributed to this draft with their insights.
+We acknowledge several IETF participants who have contributed to this memo with their insights.
 
 The research work is funded by German Research Foundation ("Deutsche Forschungsgemeinschaft.")
 
@@ -530,3 +506,8 @@ The research work is funded by German Research Foundation ("Deutsche Forschungsg
 * Completely restructured and reframed after confirmation by formal analysis
 * Added implementation-facing negative cases and argument matrix
 * Some new arguments: implementation bugs, depth of hybrids, policy, all bits, which primitive breaks first?
+
+-04
+
+* Remove links to opinion of IETF participants
+* Inform the reader of the facets of problem
