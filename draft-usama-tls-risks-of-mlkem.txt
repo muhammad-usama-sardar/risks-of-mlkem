@@ -94,7 +94,7 @@ Table of Contents
      6.5.  Thorough Review
      6.6.  'Significantly Harder' Argument
      6.7.  Urgency
-     6.8.  "Cost"
+     6.8.  Cost
      6.9.  Is Publication Necessary?
      6.10. Shiny New Crypto
      6.11. Formal Mapping of FIPS to IETF BCP14
@@ -174,8 +174,8 @@ Table of Contents
       standalone ML-KEM,
 
    *  in the _hypothetical_ scenario that there is an implementation bug
-      in the ECDHE part which is triggered only in composition.  We have
-      not yet seen any concrete evidence of such a scenario on the list.
+      in the ECDHE part which is triggered only in composition.  We are
+      not aware of any concrete evidence of such a scenario.
 
    We believe that _in general_:
 
@@ -261,8 +261,8 @@ Table of Contents
    Technically, a proof of [I-D.ietf-tls-hybrid-design-09] is done in
    the computational model using CryptoVerif (cf. ref
    (https://bblanche.gitlabpages.inria.fr/publications/
-   BlanchetJacommeCSF24.pdf)).  As per list discussion, it appears that
-   the proof applies to the latest version of the spec
+   BlanchetJacommeCSF24.pdf)).  As per discussion on TLS mailing-list,
+   it appears that the proof applies to the latest version of the spec
    [I-D.ietf-tls-hybrid-design], as there seem to be no substantive
    changes from the perspective of formal proof.
 
@@ -284,11 +284,12 @@ Table of Contents
 
 4.1.  Minimum Viable Modeling
 
-   Based on the discussion on list, simply replacing ideal DHKE by ideal
-   ML-KEM in the formal model is not very useful.  We ought to focus on
-   the more security-critical questions about integration of ML-KEM in
-   TLS.  We present a few high-level observations to consider for
-   security considerations of [I-D.ietf-tls-mlkem]:
+   Based on the discussion on TLS mailing-list, simply replacing ideal
+   DHKE by ideal ML-KEM in the formal model is not very useful.  We
+   ought to focus on the more security-critical questions about
+   integration of ML-KEM in TLS.  We present a few high-level
+   observations to consider for security considerations of
+   [I-D.ietf-tls-mlkem]:
 
    *  The model ought to consider that any agent could have initiated
       the TLS, rather than assigning the agents with static roles of
@@ -298,12 +299,11 @@ Table of Contents
       critical for security considerations of [I-D.ietf-tls-mlkem] and
       this is the key point of this memo.
 
-   *  Different failure modes proposed on list can be modeled.
+   *  Different failure modes can be modeled.
 
    *  A large part of the problem is the careful investigation of what
       to model, under what threat model, under what system model, under
-      what implementation scenarios etc.  We believe some of this is
-      important for security considerations of [I-D.ietf-tls-mlkem].
+      what implementation scenarios etc.
 
    *  It will be interesting to see some analysis about any subtle cases
       where hybrid key exchange in TLS is _not_ at least as good as
@@ -513,8 +513,8 @@ Table of Contents
 
    Formal analysis can address some protocol-composition questions, but
    it does not settle every deployment or policy question relevant to
-   standalone ML-KEM and hybrid key exchange.  We present a few such
-   technical facets in this section.
+   standalone ML-KEM and hybrid key exchange.  This section presents a
+   few such technical facets.
 
    This list is not exhaustive and does not try to prioritize one facet
    over another.  If an important facet is missing, the most useful
@@ -623,12 +623,11 @@ Table of Contents
    already include standalone ML-KEM support, and deployments can enable
    available code according to their own policy and risk assessment.
 
-6.8.  "Cost"
+6.8.  Cost
 
-   "Cost" has been presented on the list as the motivation for
-   standalone ML-KEM in TLS but we have not seen any supporting
-   analysis.  Our observation from Section 4 of
-   [I-D.ietf-tls-ecdhe-mlkem] is that -- for example -- for
+   Cost may be the motivation for standalone ML-KEM in TLS but we are
+   not aware of any supporting analysis.  Our observation from Section 4
+   of [I-D.ietf-tls-ecdhe-mlkem] is that -- for example -- for
    X25519MLKEM768, the traditional part seems negligible compared to ML-
    KEM part in key_exchange:
 
@@ -669,9 +668,9 @@ Table of Contents
 
 6.11.  Formal Mapping of FIPS to IETF BCP14
 
-   As discussed on the TLS list, we are not aware of any formal mapping
-   of the FIPS recommendations to the IETF BCP14 terminology, such as
-   SHOULD vs. MUST.  In general, we believe re-using FIPS
+   As discussed on the TLS mailing-list, we are not aware of any formal
+   mapping of the FIPS recommendations to the IETF BCP14 terminology,
+   such as SHOULD vs. MUST.  In general, we believe re-using FIPS
    recommendations is ambiguous for IETF readers.
 
 6.12.  Outstanding NIST Comments
@@ -824,7 +823,8 @@ Contributors
    high priority based on our call for analysis in previous versions of
    the memo to get a confirmation.
 
-   Text in Section 5 was proposed by Songbo Bu.
+   Text in Section 5 was proposed by Songbo Bu.  He also proposed
+   revisions in Section 6.
 
    Text in Section 7 is based on the proposal by John Preuß Mattsson.
 
@@ -836,8 +836,8 @@ Contributors
 
 Acknowledgments
 
-   We thank Eric Rescorla, Brian E.  Carpenter, and Tibor Jager for
-   their valuable feedback.
+   We thank Eric Rescorla, Brian E.  Carpenter, Tibor Jager, and Eliot
+   Lear for their valuable feedback.
 
    We acknowledge several IETF participants who have contributed to this
    memo with their insights.
