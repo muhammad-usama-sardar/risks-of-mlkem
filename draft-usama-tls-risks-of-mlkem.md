@@ -86,7 +86,7 @@ The later sections also identify technical facets that affect deployment reasoni
 This explains why the memo discusses issues such as break timing, residual pre-quantum security, deployment cost, patents, and implementation behavior after presenting the formal-methods result.
 
 ### Minimal Implementation Guidance for Hybrids
-The implementation concern is not only whether ML-KEM is secure as a
+The implementation consideration is not only whether ML-KEM is secure as a
 primitive, but also whether a TLS deployment can show that both hybrid
 components were validated, transcript-bound, and fail-closed under the
 negotiated group.
@@ -437,11 +437,11 @@ CFRG is starting some efforts for detailed analysis. The extended deadline for s
 As discussed on the TLS list, we are not aware of any formal mapping of the FIPS recommendations to the IETF BCP14 terminology, such as SHOULD vs. MUST. In general, we believe re-using FIPS recommendations is ambiguous for IETF readers.
 
 ## Outstanding NIST Comments
-Some concerns have been raised that not all comments submitted during the open review were fully addressed.  Please see comments [here](https://csrc.nist.gov/files/pubs/fips/203/ipd/docs/fips-203-initial-public-comments-2023.pdf).
+One concrete position is that not all comments submitted during the open review were fully addressed.  Please see comments [here](https://csrc.nist.gov/files/pubs/fips/203/ipd/docs/fips-203-initial-public-comments-2023.pdf).
 
 ## Too Early
 
-One concern is that publication of {{I-D.ietf-tls-mlkem}} and related discussions may be too early and unnecessary.
+One school of thought simply believes that discussions on standalone ML-KEM may be too early and unnecessary.
 
 ## Patents
 
@@ -493,7 +493,7 @@ Text in {{sec-impl-negative-cases}} was proposed by Songbo Bu.
 
 Text in {{sec-sec-cons}} is based on the proposal by John Preuß Mattsson.
 
-{{sec-gen-issues}} is based on mailing-list discussion, referenced technical concerns, and deployment questions raised during review.
+{{sec-gen-issues}} is based on mailing-list discussion, referenced technical facets, and deployment questions raised during review.
 
 We gratefully thank Yaakov Stein and Ilari Liusvaara for their substantial technical guidance, valuable feedback, and contributions.
 
@@ -539,4 +539,4 @@ The research work is funded by German Research Foundation ("Deutsche Forschungsg
 -04
 
 * Remove links to opinion of IETF participants
-* Inform the reader of the facets of problem
+* Inform the reader of the technical facets
