@@ -53,9 +53,9 @@ informative:
 
 --- abstract
 
-The memo presents *symbolic* and *computational* analysis of hybrid key exchange and standalone ML-KEM.
+The memo presents formal analysis of hybrid key exchange and standalone ML-KEM.
 This memo also maps out the relevant technical facets surrounding quantum-resistant key exchange and provides some preliminary discussion to help developers and policymakers make informed choices.
-Our observation is that hybrid key exchange is preferable over standalone ML-KEM until a powerful CRQC exists which breaks **all** the bits of pre-quantum.
+Our observation is that hybrid key exchange is preferable over standalone ML-KEM until a powerful CRQC exists which breaks most bits of pre-quantum.
 Finally, it offers minimal implementation guidance for hybrid key exchange.
 This memo is not a standard nor has it been shown to have consensus of the IETF community.
 
@@ -69,13 +69,14 @@ Readers are assumed to be familiar with {{NistFips203}}, {{I-D.ietf-tls-rfc8446b
 
 The memo serves three objectives:
 
-* Summary of formal methods (symbolic and computational) works for hybrid key exchange and standalone ML-KEM
+* Summary of formal methods works for hybrid key exchange and standalone ML-KEM in an accessible and intuitive way
 * Identifying the underlying technical facets and common complexities of the deployment debate to provide clarity
 * Minimal implementation guidance for hybrids
 
 ### Summary of Formal Methods Works
 
-The memo covers the formal methods for the security considerations of {{I-D.ietf-tls-mlkem}}.
+The memo covers the formal methods for hybrid key exchange and standalone ML-KEM in TLS.
+Formal methods can provide additional value in order to maintain the high cryptographic assurance of TLS.
 This includes *symbolic* and *computational* analysis (to be interpreted as in [SoK](https://eprint.iacr.org/2019/1393.pdf)) of integration of standalone ML-KEM in the context of TLS.
 Specifically, it covers the formal analysis {{FATT-CHANCE}} in ProVerif on the potential issue of asymmetry.
 The analysis confirms that asymmetry is not a problem.
@@ -94,28 +95,6 @@ negotiated group.
 ## Motivation
 {: #sec-mot }
 
-{{rfc3552}} requires to document the risks in the security considerations.
-To support those requirements for {{I-D.ietf-tls-mlkem}}, this memo aims to formally study the security of standalone ML-KEM in TLS 1.3.
-
-## Intuition
-Leaking out the ECDHE key from hybrid key exchange should downgrade the security to the level of a standalone ML-KEM.
-Therefore, hybrid key exchange is *in general* more secure, unless:
-
-* ECDHE is fully broken, in which case it still falls equivalent to standalone ML-KEM,
-* in the *hypothetical* scenario that there is an implementation bug in the ECDHE part which is triggered only in composition. We are not aware of any concrete evidence of such a scenario.
-
-We believe that *in general*:
-
-~~~
-1. Migration from ECDHE to hybrid key exchange is security improvement.
-2. Migration from hybrid key exchange to standalone ML-KEM is security
-regression, unless CRQC exists to break all ECC keys.
-~~~
-
-
-### Expected Learning
-We believe formal methods can provide additional value for security considerations of this memo in order to maintain the high cryptographic assurance of TLS.
-
 ~~~
 Since we have no guarantee on whether ECDHE will break before ML-KEM,
 it seems appropriate to do thorough cryptographic analysis.
@@ -129,14 +108,28 @@ Formal methods can operate under the assumption that ML-KEM is secure, and focus
 
 * As an example, formal methods can help justify design choices, such as the preference for hybrid key exchanges.
 It can also help identify all the assumptions under which the properties hold.
-* As a relevant data point in the context of standardization, LAKE WG has done formal analysis for EDHOC-PSK with KEM ([ref](https://mailarchive.ietf.org/arch/msg/lake/2XGOI9OCwylJUfSCasvvwM2FXmw/)).
-* *Computational* analysis (cf. [SoK](https://eprint.iacr.org/2019/1393.pdf)) -- using tools such as CryptoVerif -- seems like a reasonable approach to ensure security of ML-KEM in TLS, such as binding shared secret `ss` to the TLS transcript hash.
+* *Computational* analysis -- using tools such as CryptoVerif -- seems like a reasonable approach to ensure security of ML-KEM in TLS, such as binding shared secret `ss` to the TLS transcript hash.
 
 ~~~
 We believe that the focus of symbolic analysis ought to be on the
 *integration* details (transcript binding, key schedule, agreement)
 for standalone ML-KEM in the context of TLS, rather than the
 *primitive* itself.
+~~~
+
+## Intuition
+Leaking out the ECDHE key from hybrid key exchange should downgrade the security to the level of a standalone ML-KEM.
+Therefore, hybrid key exchange is *in general* more secure, unless:
+
+* ECDHE is fully broken, in which case it still falls equivalent to standalone ML-KEM,
+* in the *hypothetical* scenario that there is an implementation bug in the ECDHE part which is triggered only in composition. We are not aware of any concrete evidence of such a scenario.
+
+We believe that *in general*:
+
+~~~
+1. Migration from ECDHE to hybrid key exchange is security improvement.
+2. Migration from hybrid key exchange to standalone ML-KEM is security
+regression, unless CRQC exists to break most ECC keys.
 ~~~
 
 # Conventions and Definitions
@@ -168,9 +161,8 @@ Technically, a proof of {{I-D.ietf-tls-hybrid-design-09}} is done in the computa
 
 ## Standalone ML-KEM
 
-Some existing computational analysis for standalone ML-KEM in TLS include [this](https://eprint.iacr.org/2021/844) and [this](https://eprint.iacr.org/2024/1360).
-Both are based on pen-and-paper (computational) proofs.
-At the symbolic level, some analysis -- such as [this](https://eprint.iacr.org/2022/1111.pdf) for KEMTLS in Tamarin -- exists. In our understanding, both client and server encapsulate, which may bring the symmetry.
+Some existing computational analysis for standalone ML-KEM in TLS include [this](https://eprint.iacr.org/2021/844), [this](https://eprint.iacr.org/2024/1360), and [this](https://www.mdpi.com/1099-4300/27/12/1242).
+All of these are based on pen-and-paper (computational) proofs.
 
 
 # Symbolic Analysis
@@ -218,7 +210,8 @@ In particular, even if ML-KEM is completely broken, i.e., `ss` is available to t
 
 ## Standalone ML-KEM
 
-On the other hand, the formal property standalone ML-KEM provides is:
+At the symbolic level, some analysis -- such as [this](https://eprint.iacr.org/2022/1111.pdf) for KEMTLS in Tamarin -- exists. In our understanding, both client and server encapsulate, which may bring the symmetry.
+The formal property standalone ML-KEM provides is:
 
 ~~~
 Security properties of TLS hold unless `ss` is available to the
@@ -256,7 +249,7 @@ setting analyzed here.
 ~~~
 
 Results confirm integration of KEM in TLS is secure as long as the primitive itself is secure.
-In our understanding, results also imply a clear preference for hybrids under the Dolev-Yao model, in the sense that if the shared secret from ML-KEM becomes available to the adversary (for example, due to implementation bug), both confidentiality and authentication are broken in standalone ML-KEM, whereas under same condition, both confidentiality and authentication still hold as long as (EC)DHE is still not available to the adversary.
+In our understanding, results also imply a clear preference for hybrids under the Dolev-Yao model, in the sense that if the shared secret from ML-KEM becomes available to the adversary (for example, due to implementation bug), both confidentiality and authentication are broken for standalone ML-KEM in TLS, whereas under the same condition, both confidentiality and authentication still hold as long as (EC)DHE is still not available to the adversary.
 We believe this applies until a powerful CRQC exists which breaks **all** the bits of pre-quantum, where the condition of (EC)DHE being available to the adversary is violated.
 
 The artifacts are available [here](https://github.com/symbolicsoft/reftls) for independent review.
