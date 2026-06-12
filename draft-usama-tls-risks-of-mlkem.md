@@ -103,7 +103,7 @@ equally well to standalone ML-KEM.
 ~~~
 
 An adversary can record all traffic and decrypt it later if ML-KEM is broken.
-The opinions of the community on this matter vary from "ML-KEM is secure" to "ML-KEM is probably already secrectly broken."
+The opinions of the community on this matter vary from "ML-KEM is secure" to "ML-KEM is probably already secretly broken."
 Formal methods can operate under the assumption that ML-KEM is secure, and focus on the integration of ML-KEM in TLS under this assumption.
 
 * As an example, formal methods can help justify design choices, such as the preference for hybrid key exchanges.
@@ -164,10 +164,17 @@ Technically, a proof of {{I-D.ietf-tls-hybrid-design-09}} is done in the computa
 Some existing computational analysis for standalone ML-KEM in TLS include [this](https://eprint.iacr.org/2021/844), [this](https://eprint.iacr.org/2024/1360), and [this](https://www.mdpi.com/1099-4300/27/12/1242).
 All of these are based on pen-and-paper (computational) proofs.
 
+For implementers, the practical reading of these analyses is a key-schedule and transcript-binding check.
+The question is whether the KEM shared secret is introduced into TLS in a way that preserves the claimed security property.
+Wrong ciphertexts, decapsulation failures, wrong transcript context, or wrong group selection must not lead to a usable traffic secret.
+
 
 # Symbolic Analysis
 For brevity, we omit other assumptions in the properties below and focus on the difference.
-This assumes hybrid constructor to be secure.
+This assumes the hybrid construction to be secure.
+
+For implementers, the symbolic view can be read as a component-failure exercise.
+Instead of asking how hard ML-KEM or ECDHE is to break, the model asks what TLS still guarantees if one component secret is already available to the adversary.
 
 ## Minimum Viable Modeling
 {: #sec-model-analyze }
@@ -248,9 +255,18 @@ vulnerability in the server-authenticated, one-initiator-per-session
 setting analyzed here.
 ~~~
 
-Results confirm integration of KEM in TLS is secure as long as the primitive itself is secure.
-In our understanding, results also imply a clear preference for hybrids under the Dolev-Yao model, in the sense that if the shared secret from ML-KEM becomes available to the adversary (for example, due to implementation bug), both confidentiality and authentication are broken for standalone ML-KEM in TLS, whereas under the same condition, both confidentiality and authentication still hold as long as (EC)DHE is still not available to the adversary.
+Under the stated model assumptions, the results confirm that integrating a KEM into TLS is secure as long as the primitive itself is secure.
+In our understanding, the results also imply a clear preference for hybrids under the Dolev-Yao model: if the shared secret from ML-KEM becomes available to the adversary (for example, due to an implementation bug), standalone ML-KEM loses both confidentiality and the modeled key-confirmation / matching-session authentication property.
+This should not be read as saying that the signature algorithm or CertificateVerify mechanism is itself broken.
+Rather, once the only key-exchange secret is available to the adversary, the Finished-key agreement property captured by the model no longer holds.
+Under the same condition, hybrid key exchange still preserves these modeled properties as long as the (EC)DHE secret is not available to the adversary.
 We believe this applies until a powerful CRQC exists which breaks **all** the bits of pre-quantum, where the condition of (EC)DHE being available to the adversary is violated.
+
+A practical reading of the result is:
+
+* Standalone ML-KEM has no second key-exchange component if `ss` is exposed or mishandled.
+* Hybrid key exchange retains a surviving ECDHE component if `ss` is exposed but `gxy` remains secret.
+* Implementation tests should therefore verify not only that the handshake succeeds, but that both hybrid components were present, validated, transcript-bound, and fail-closed before traffic secrets are derived.
 
 The artifacts are available [here](https://github.com/symbolicsoft/reftls) for independent review.
 
@@ -368,7 +384,7 @@ One common hybrid-security argument assumes independence between a break of
 ML-KEM and a break of the traditional key-exchange component:
 
 ~~~
-If the probablity of one being broken over the next n years is p, and
+If the probability of one being broken over the next n years is p, and
 the probability of the other being broken over the next n years is q,
 then the probability of both being broken is pq.
 ~~~
@@ -389,7 +405,7 @@ Public assessments range from skepticism based on the difficulty of the physics
 (see [this](https://eprint.iacr.org/2025/1237)) to migration targets that aim to
 be *prepared* as early as 2029 (see [Google 2029](https://blog.google/innovation-and-ai/technology/safety-security/cryptography-migration-timeline/)
 and [Cloudflare 2029](https://blog.cloudflare.com/post-quantum-roadmap/)).
-Technically, please note that Google has not even released the **quantum circuit** underlying their recent claims -- apparently the reason for this urgency. So Google's claims may not yet be justified.
+The technical details behind some public timeline claims may not yet be fully public. These claims are therefore best treated as deployment-planning inputs rather than as proof of a specific CRQC arrival date.
 
 Moreover, in our understanding, these deadlines are for PQ-based protection in general regardless of hybrid key exchange or standalone KEMs in TLS. Since hybrid key exchange is widely in use, these deadlines are mainly for quantum-safe authentication.
 
@@ -423,7 +439,7 @@ Code Points for ML-KEM have already been assigned.
 ## Shiny New Crypto
 
 ML-KEM is quite new in the IETF and even in the IRTF.
-CFRG is starting some efforts for detailed analysis. The extended deadline for submission is 22.06. Please see the latest [CFRG chairs email](https://mailarchive.ietf.org/arch/msg/cfrg/6K43Ycr062Ym1G0q4WHxZQ2HW8M/) for further details.
+CFRG is starting some efforts for detailed analysis. The extended deadline for submission is 22 June 2026. Please see the latest [CFRG chairs email](https://mailarchive.ietf.org/arch/msg/cfrg/6K43Ycr062Ym1G0q4WHxZQ2HW8M/) for further details.
 
 ## Formal Mapping of FIPS to IETF BCP14
 
@@ -465,6 +481,10 @@ Like all security proofs, formal analysis is only as strong as its assumptions a
 The scope is typically limited, and the model does not necessarily capture real-world deployment complexity, implementation details, operational constraints, or misuse scenarios.
 Technically, formal proof only guarantees anything if all the assumptions hold, which is unlikely in practice.
 Formal methods should be used as complementary and not as substitute of other analysis methods.
+
+For implementations, this means that formal-methods results should be paired
+with negative testing and review evidence for malformed shares, transcript
+mismatches, silent fallback, premature secret derivation, and failure handling.
 
 
 
