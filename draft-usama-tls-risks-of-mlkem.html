@@ -1218,7 +1218,7 @@ This memo is not a standard nor has it been shown to have consensus of the IETF 
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6">
-            <p id="section-toc.1-1.6.1"><a href="#section-6" class="auto internal xref">6</a>.  <a href="#name-issues-that-formal-methods-" class="internal xref">Issues That Formal Methods Probably Cannot Solve</a></p>
+            <p id="section-toc.1-1.6.1"><a href="#section-6" class="auto internal xref">6</a>.  <a href="#name-facets-outside-the-scope-of" class="internal xref">Facets Outside the Scope of Formal Methods</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.1">
                 <p id="section-toc.1-1.6.2.1.1"><a href="#section-6.1" class="auto internal xref">6.1</a>.  <a href="#name-which-breaks-first-ml-kem-7" class="internal xref">Which breaks first: ML-KEM-768 or X25519?</a></p>
@@ -1706,35 +1706,32 @@ separate operational cost analysis.<a href="#section-5.1-3" class="pilcrow">¶</
 </div>
 <div id="sec-gen-issues">
 <section id="section-6">
-      <h2 id="name-issues-that-formal-methods-">
-<a href="#section-6" class="section-number selfRef">6. </a><a href="#name-issues-that-formal-methods-" class="section-name selfRef">Issues That Formal Methods Probably Cannot Solve</a>
+      <h2 id="name-facets-outside-the-scope-of">
+<a href="#section-6" class="section-number selfRef">6. </a><a href="#name-facets-outside-the-scope-of" class="section-name selfRef">Facets Outside the Scope of Formal Methods</a>
       </h2>
-<p id="section-6-1">The answers to the following issues are largely dependent on several factors, and the opinions of the community vary largely.<a href="#section-6-1" class="pilcrow">¶</a></p>
-<p id="section-6-2">It is necessary to mention that even several respectable cryptographers in the community are not aligned on the issue -- for example see the <a href="https://github.com/FiloSottile/ecc-vs-lattices-long-bet">long bet</a>. Hence, we present the different schools of thought in this section.<a href="#section-6-2" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-6-3">
-<pre>
-Disclaimer: This is not meant to be an exhaustive list.
-If somthing is missing, please simply submit a
-*precise* and *concise* PR, preferably with a reference.
-</pre><a href="#section-6-3" class="pilcrow">¶</a>
-</div>
+<p id="section-6-1">Formal analysis can address some protocol-composition questions, but it does
+not settle every deployment or policy question relevant to standalone ML-KEM
+and hybrid key exchange.  We present a few such technical facets in this section.<a href="#section-6-1" class="pilcrow">¶</a></p>
+<p id="section-6-2">This list is not exhaustive and does not try to prioritize one facet over
+another.  If an important facet is missing, the most useful contribution is a
+precise and concise PR with proposed text and references.<a href="#section-6-2" class="pilcrow">¶</a></p>
 <div id="which-breaks-first-ml-kem-768-or-x25519">
 <section id="section-6.1">
         <h3 id="name-which-breaks-first-ml-kem-7">
 <a href="#section-6.1" class="section-number selfRef">6.1. </a><a href="#name-which-breaks-first-ml-kem-7" class="section-name selfRef">Which breaks first: ML-KEM-768 or X25519?</a>
         </h3>
-<p id="section-6.1-1">In our understanding, the key open question boils down to:<a href="#section-6.1-1" class="pilcrow">¶</a></p>
+<p id="section-6.1-1">A core uncertainty for any hybrid-vs-standalone comparison is:<a href="#section-6.1-1" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-6.1-2">
 <pre>
 Which of the two cryptographic mechanisms breaks first?
 How does that relate to the CRQC being developed?
 How many bits of pre-quantum cryptography can that CRQC actually
 break?
-Since all of three can be kept secret for some time,
-the opinions of the community vary a lot on the different
-possible combinations.
 </pre><a href="#section-6.1-2" class="pilcrow">¶</a>
 </div>
+<p id="section-6.1-3">All three variables may remain uncertain for a long period of time.  This makes
+it difficult to reduce the question to one simple ordering of "secure" and
+"insecure" choices.<a href="#section-6.1-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="does-crqc-break-all-bits-of-pre-quantum">
@@ -1742,7 +1739,12 @@ possible combinations.
         <h3 id="name-does-crqc-break-all-bits-of">
 <a href="#section-6.2" class="section-number selfRef">6.2. </a><a href="#name-does-crqc-break-all-bits-of" class="section-name selfRef">Does CRQC Break All Bits of Pre-quantum?</a>
         </h3>
-<p id="section-6.2-1">One school of thought believes that CRQC will break all bits of pre-quantum cryptographic, while another believes that it will break <a href="https://cr.yp.to/papers/mldsa-20260601.pdf#breakable-keys">only a few bits</a>.<a href="#section-6.2-1" class="pilcrow">¶</a></p>
+<p id="section-6.2-1">The impact of a CRQC on pre-quantum cryptography may not be uniform across all
+algorithms, security levels, and attack models.  One concrete position is that
+a CRQC may break <a href="https://cr.yp.to/papers/mldsa-20260601.pdf#breakable-keys">only a few bits</a>
+rather than all effective pre-quantum security.  This matters because a hybrid
+construction depends on the residual value of the traditional component after a
+quantum advance.<a href="#section-6.2-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="policyregulations">
@@ -1750,7 +1752,9 @@ possible combinations.
         <h3 id="name-policy-regulations">
 <a href="#section-6.3" class="section-number selfRef">6.3. </a><a href="#name-policy-regulations" class="section-name selfRef">Policy/Regulations</a>
         </h3>
-<p id="section-6.3-1">Some countries have a regulatory requirement for hybrid key exchange.<a href="#section-6.3-1" class="pilcrow">¶</a></p>
+<p id="section-6.3-1">Some countries have a regulatory requirement for hybrid key exchange.  This is
+a deployment and compliance constraint, not a property that formal analysis of
+the TLS key schedule can settle.<a href="#section-6.3-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sec-designers-view">
@@ -1785,7 +1789,8 @@ with elliptic-curve Diffie-Hellman.
         <h3 id="name-significantly-harder-argume">
 <a href="#section-6.6" class="section-number selfRef">6.6. </a><a href="#name-significantly-harder-argume" class="section-name selfRef">'Significantly Harder' Argument</a>
         </h3>
-<p id="section-6.6-1">One school of thought believes in the 'significantly harder' argument, which assumes independence of breakage of ML-KEM and traditionals:<a href="#section-6.6-1" class="pilcrow">¶</a></p>
+<p id="section-6.6-1">One common hybrid-security argument assumes independence between a break of
+ML-KEM and a break of the traditional key-exchange component:<a href="#section-6.6-1" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-6.6-2">
 <pre>
 If the probablity of one being broken over the next n years is p, and
@@ -1795,7 +1800,7 @@ then the probability of both being broken is pq.
 </div>
 <p id="section-6.6-3">Please see <a href="https://github.com/FiloSottile/ecc-vs-lattices-long-bet#2a-what-counts-as-a-break">this</a> for what "broken" may mean here modulo some <a href="https://github.com/FiloSottile/ecc-vs-lattices-long-bet#5-exclusions">exclusions</a>.<a href="#section-6.6-3" class="pilcrow">¶</a></p>
 <p id="section-6.6-4">Given the very different type of cryptographic constructions involved, independence might be a reasonable assumption.
-However, another school of thought disagrees with 'significantly harder' argument with a reasonable counter-argument that in reality, cryptography is much more complicated than that and depending on the algorithms and the composition method, the probability can clearly be q, or smaller than pq.<a href="#section-6.6-4" class="pilcrow">¶</a></p>
+However, a reasonable counter-argument is that, in reality, cryptography is much more complicated than that and depending on the algorithms and the composition method, the probability can clearly be q, or smaller than pq.<a href="#section-6.6-4" class="pilcrow">¶</a></p>
 <p id="section-6.6-5">In our understanding, most other counter-arguments seem to break the <a href="https://github.com/FiloSottile/ecc-vs-lattices-long-bet#5-exclusions">exclusions</a>.<a href="#section-6.6-5" class="pilcrow">¶</a></p>
 <p id="section-6.6-6">Please note that this argument is based on the security of <em>primitives</em>, rather than the <em>composition</em> of primitives in protocols. Hence, formal methods probably have nothing to help here.<a href="#section-6.6-6" class="pilcrow">¶</a></p>
 </section>
@@ -1806,10 +1811,16 @@ However, another school of thought disagrees with 'significantly harder' argumen
 <a href="#section-6.7" class="section-number selfRef">6.7. </a><a href="#name-urgency" class="section-name selfRef">Urgency</a>
         </h3>
 <p id="section-6.7-1">It is unclear <em>whether</em> and if applicable <em>when</em> Cryptographically-Relevant Quantum Computer (CRQC) will eventually become practical.
-The opinions of the community vary from never because of complicated physics (see <a href="https://eprint.iacr.org/2025/1237">this</a>) to be <em>prepared</em> for it as early as 2029 (see <a href="https://blog.google/innovation-and-ai/technology/safety-security/cryptography-migration-timeline/">Google 2029</a> and <a href="https://blog.cloudflare.com/post-quantum-roadmap/">Cloudflare 2029</a>).
+Public assessments range from skepticism based on the difficulty of the physics
+(see <a href="https://eprint.iacr.org/2025/1237">this</a>) to migration targets that aim to
+be <em>prepared</em> as early as 2029 (see <a href="https://blog.google/innovation-and-ai/technology/safety-security/cryptography-migration-timeline/">Google 2029</a>
+and <a href="https://blog.cloudflare.com/post-quantum-roadmap/">Cloudflare 2029</a>).
 Technically, please note that Google has not even released the <strong>quantum circuit</strong> underlying their recent claims -- apparently the reason for this urgency. So Google's claims may not yet be justified.<a href="#section-6.7-1" class="pilcrow">¶</a></p>
-<p id="section-6.7-2">Moreover, in our understanding, these deadlines are for PQ-based protection in general regardless of hybrid key exchange or standalone KEMs in TLS. Since hybrid key exchange is wildly in use, these deadlines are mainly for quantum-safe authentication.<a href="#section-6.7-2" class="pilcrow">¶</a></p>
-<p id="section-6.7-3">In any case, one school of thought sees no reason to create panic for publication of <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span> based on this because many implementations -- such as OpenSSL -- have already implemented standalone ML-KEM, and it is just a matter of enabling it. And frankly, nobody needs permission from the IETF to enable it.<a href="#section-6.7-3" class="pilcrow">¶</a></p>
+<p id="section-6.7-2">Moreover, in our understanding, these deadlines are for PQ-based protection in general regardless of hybrid key exchange or standalone KEMs in TLS. Since hybrid key exchange is widely in use, these deadlines are mainly for quantum-safe authentication.<a href="#section-6.7-2" class="pilcrow">¶</a></p>
+<p id="section-6.7-3">A separate deployment point is that publication timing does not by itself control
+deployment timing.  Implementations such as OpenSSL already include standalone
+ML-KEM support, and deployments can enable available code according to their own
+policy and risk assessment.<a href="#section-6.7-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="cost">
@@ -1841,9 +1852,12 @@ Our observation from <span><a href="https://datatracker.ietf.org/doc/html/draft-
             </tr>
           </tbody>
         </table>
-<p id="section-6.8-3">We believe other "costs" will depend on several factors -- including but not limited to implementation details and deployment scenario -- and it is quite <strong>subjective</strong>.<a href="#section-6.8-3" class="pilcrow">¶</a></p>
+<p id="section-6.8-3">Other "costs" depend on several factors -- including implementation details,
+deployment scenario, latency budget, memory pressure, code complexity, and
+operational rollout cost -- and should not be treated as one scalar value.<a href="#section-6.8-3" class="pilcrow">¶</a></p>
 <p id="section-6.8-4">There seems to be a need for a thorough study to understand the "cost."
-We invite the research and standardization community to perform cost analysis and share the results.<a href="#section-6.8-4" class="pilcrow">¶</a></p>
+A useful analysis would separate wire bytes, CPU, memory, latency, implementation
+complexity, and operational rollout cost.<a href="#section-6.8-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="is-publication-necessary">
@@ -1877,7 +1891,7 @@ CFRG is starting some efforts for detailed analysis. The extended deadline for s
         <h3 id="name-outstanding-nist-comments">
 <a href="#section-6.12" class="section-number selfRef">6.12. </a><a href="#name-outstanding-nist-comments" class="section-name selfRef">Outstanding NIST Comments</a>
         </h3>
-<p id="section-6.12-1">One school of thought believes that NIST has rushed through the process and not addressed all the comments that were submitted during the open review. Please see comments <a href="https://csrc.nist.gov/files/pubs/fips/203/ipd/docs/fips-203-initial-public-comments-2023.pdf">here</a>.<a href="#section-6.12-1" class="pilcrow">¶</a></p>
+<p id="section-6.12-1">Some concerns have been raised that not all comments submitted during the open review were fully addressed.  Please see comments <a href="https://csrc.nist.gov/files/pubs/fips/203/ipd/docs/fips-203-initial-public-comments-2023.pdf">here</a>.<a href="#section-6.12-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="too-early">
@@ -1885,7 +1899,7 @@ CFRG is starting some efforts for detailed analysis. The extended deadline for s
         <h3 id="name-too-early">
 <a href="#section-6.13" class="section-number selfRef">6.13. </a><a href="#name-too-early" class="section-name selfRef">Too Early</a>
         </h3>
-<p id="section-6.13-1">One school of thought simply believes that publication of <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span> and related discussions are just too early and unnecessary.<a href="#section-6.13-1" class="pilcrow">¶</a></p>
+<p id="section-6.13-1">One concern is that publication of <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span> and related discussions may be too early and unnecessary.<a href="#section-6.13-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="patents">
@@ -1901,7 +1915,11 @@ CFRG is starting some efforts for detailed analysis. The extended deadline for s
         <h3 id="name-implementation-bugs">
 <a href="#section-6.15" class="section-number selfRef">6.15. </a><a href="#name-implementation-bugs" class="section-name selfRef">Implementation Bugs</a>
         </h3>
-<p id="section-6.15-1">One school of thought is worried about the implementations bugs. Some use it as advocacy for the use of hybrids that if one could exploit one of the two primitives, the other one can save.<a href="#section-6.15-1" class="pilcrow">¶</a></p>
+<p id="section-6.15-1">Implementation bugs are a separate risk from primitive-level cryptanalysis.
+Hybrid key exchange may mitigate some single-component failures, but only if the
+implementation actually validates both components, binds them to the same
+transcript, derives traffic secrets only after both components are accepted, and
+fails closed when either component fails.<a href="#section-6.15-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="depth-of-hybrids">
@@ -1909,7 +1927,10 @@ CFRG is starting some efforts for detailed analysis. The extended deadline for s
         <h3 id="name-depth-of-hybrids">
 <a href="#section-6.16" class="section-number selfRef">6.16. </a><a href="#name-depth-of-hybrids" class="section-name selfRef">Depth of Hybrids?</a>
         </h3>
-<p id="section-6.16-1">One school of thought has questioned the ML-KEM + ECC hybrids rather than, say, Module Lattices + McEliece + hash-based three-way composites.<a href="#section-6.16-1" class="pilcrow">¶</a></p>
+<p id="section-6.16-1">The depth of a hybrid is itself a design question.  ML-KEM plus ECC is only one
+composition point; other designs could combine module lattices, code-based KEMs,
+or hash-based components.  That broader design space is outside the scope of the
+formal-methods results discussed above.<a href="#section-6.16-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -2023,7 +2044,7 @@ Formal methods should be used as complementary and not as substitute of other an
 <p id="appendix-A-1">Nadim Kobeissi performed a thorough formal analysis <a href="#sec-results" class="auto internal xref">Section 4.4</a> at high priority based on our call for analysis in previous versions of the memo to get a confirmation.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
 <p id="appendix-A-2">Text in <a href="#sec-impl-negative-cases" class="auto internal xref">Section 5</a> was proposed by Songbo Bu.<a href="#appendix-A-2" class="pilcrow">¶</a></p>
 <p id="appendix-A-3">Text in <a href="#sec-sec-cons" class="auto internal xref">Section 7</a> is based on the proposal by John Preuß Mattsson.<a href="#appendix-A-3" class="pilcrow">¶</a></p>
-<p id="appendix-A-4"><a href="#sec-gen-issues" class="auto internal xref">Section 6</a> is largely based on the opinions of many IETF participants.<a href="#appendix-A-4" class="pilcrow">¶</a></p>
+<p id="appendix-A-4"><a href="#sec-gen-issues" class="auto internal xref">Section 6</a> is based on mailing-list discussion, referenced technical concerns, and deployment questions raised during review.<a href="#appendix-A-4" class="pilcrow">¶</a></p>
 <p id="appendix-A-5">We gratefully thank Yaakov Stein and Ilari Liusvaara for their substantial technical guidance, valuable feedback, and contributions.<a href="#appendix-A-5" class="pilcrow">¶</a></p>
 </section>
 </div>
