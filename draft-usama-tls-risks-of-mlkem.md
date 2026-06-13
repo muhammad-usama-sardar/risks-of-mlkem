@@ -174,7 +174,7 @@ For brevity, we omit other assumptions in the properties below and focus on the 
 This assumes the hybrid construction to be secure.
 
 For implementers, the symbolic view can be read as a component-failure exercise.
-Instead of asking how hard ML-KEM or ECDHE is to break, the model asks what TLS still guarantees if one component secret is already available to the adversary.
+Instead of asking how hard ML-KEM or ECDHE is to break, the analysis may ask whether security properties still hold under Dolev-Yao attacker if one component secret is already available to the adversary.
 
 ## Minimum Viable Modeling
 {: #sec-model-analyze }
