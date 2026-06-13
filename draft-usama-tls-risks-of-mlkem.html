@@ -1050,7 +1050,7 @@ svg {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Sardar</td>
-<td class="center">Expires 14 December 2026</td>
+<td class="center">Expires 15 December 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1063,12 +1063,12 @@ svg {
 <dd class="internet-draft">draft-usama-tls-risks-of-mlkem-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-06-12" class="published">12 June 2026</time>
+<time datetime="2026-06-13" class="published">13 June 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Informational</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-12-14">14 December 2026</time></dd>
+<dd class="expires"><time datetime="2026-12-15">15 December 2026</time></dd>
 <dt class="label-authors">Author:</dt>
 <dd class="authors">
 <div class="author">
@@ -1117,7 +1117,7 @@ This memo is not a standard nor has it been shown to have consensus of the IETF 
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 14 December 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 15 December 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1369,7 +1369,7 @@ equally well to standalone ML-KEM.
 </pre><a href="#section-1.2-1" class="pilcrow">¶</a>
 </div>
 <p id="section-1.2-2">An adversary can record all traffic and decrypt it later if ML-KEM is broken.
-The opinions of the community on this matter vary from "ML-KEM is secure" to "ML-KEM is probably already secrectly broken."
+The opinions of the community on this matter vary from "ML-KEM is secure" to "ML-KEM is probably already secretly broken."
 Formal methods can operate under the assumption that ML-KEM is secure, and focus on the integration of ML-KEM in TLS under this assumption.<a href="#section-1.2-2" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-1.2-3.1">
@@ -1473,6 +1473,8 @@ In a KEM, only one of the endpoints (client in above example) sends the public e
         </h3>
 <p id="section-3.2-1">Some existing computational analysis for standalone ML-KEM in TLS include <a href="https://eprint.iacr.org/2021/844">this</a>, <a href="https://eprint.iacr.org/2024/1360">this</a>, and <a href="https://www.mdpi.com/1099-4300/27/12/1242">this</a>.
 All of these are based on pen-and-paper (computational) proofs.<a href="#section-3.2-1" class="pilcrow">¶</a></p>
+<p id="section-3.2-2">For implementers, the practical reading of these analyses is a key-schedule and transcript-binding check.
+The question is whether the KEM shared secret is introduced into TLS in a way that preserves the claimed security property.<a href="#section-3.2-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1483,7 +1485,9 @@ All of these are based on pen-and-paper (computational) proofs.<a href="#section
 <a href="#section-4" class="section-number selfRef">4. </a><a href="#name-symbolic-analysis" class="section-name selfRef">Symbolic Analysis</a>
       </h2>
 <p id="section-4-1">For brevity, we omit other assumptions in the properties below and focus on the difference.
-This assumes hybrid constructor to be secure.<a href="#section-4-1" class="pilcrow">¶</a></p>
+This assumes the hybrid construction to be secure.<a href="#section-4-1" class="pilcrow">¶</a></p>
+<p id="section-4-2">For implementers, the symbolic view can be read as a component-failure exercise.
+Instead of asking how hard ML-KEM or ECDHE is to break, the analysis may ask whether security properties still hold under Dolev-Yao attacker if one component secret is already available to the adversary.<a href="#section-4-2" class="pilcrow">¶</a></p>
 <div id="sec-model-analyze">
 <section id="section-4.1">
         <h3 id="name-minimum-viable-modeling">
@@ -1587,10 +1591,25 @@ vulnerability in the server-authenticated, one-initiator-per-session
 setting analyzed here.
 </pre><a href="#section-4.4-2" class="pilcrow">¶</a>
 </div>
-<p id="section-4.4-3">Results confirm integration of KEM in TLS is secure as long as the primitive itself is secure.
-In our understanding, results also imply a clear preference for hybrids under the Dolev-Yao model, in the sense that if the shared secret from ML-KEM becomes available to the adversary (for example, due to implementation bug), both confidentiality and authentication are broken for standalone ML-KEM in TLS, whereas under the same condition, both confidentiality and authentication still hold as long as (EC)DHE is still not available to the adversary.
+<p id="section-4.4-3">Under the stated model assumptions, the results confirm that integrating a KEM into TLS is secure as long as the primitive itself is secure.
+In our understanding, the results also imply a clear preference for hybrids under the Dolev-Yao model: if the shared secret from ML-KEM becomes available to the adversary (for example, due to an implementation bug), standalone ML-KEM loses both confidentiality and the modeled key-confirmation / matching-session authentication property.
+This should not be read as saying that the signature algorithm or CertificateVerify mechanism is itself broken.
+Rather, once the only key-exchange secret is available to the adversary, the Finished-key agreement property captured by the model no longer holds.
+Under the same condition, hybrid key exchange still preserves these modeled properties as long as the (EC)DHE secret is not available to the adversary.
 We believe this applies until a powerful CRQC exists which breaks <strong>all</strong> the bits of pre-quantum, where the condition of (EC)DHE being available to the adversary is violated.<a href="#section-4.4-3" class="pilcrow">¶</a></p>
-<p id="section-4.4-4">The artifacts are available <a href="https://github.com/symbolicsoft/reftls">here</a> for independent review.<a href="#section-4.4-4" class="pilcrow">¶</a></p>
+<p id="section-4.4-4">A practical reading of the result is:<a href="#section-4.4-4" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4.4-5.1">
+            <p id="section-4.4-5.1.1">Standalone ML-KEM has no second key-exchange component if <code>ss</code> is exposed or mishandled.<a href="#section-4.4-5.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.4-5.2">
+            <p id="section-4.4-5.2.1">Hybrid key exchange retains a surviving ECDHE component if <code>ss</code> is exposed but <code>gxy</code> remains secret.<a href="#section-4.4-5.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.4-5.3">
+            <p id="section-4.4-5.3.1">Implementation tests should therefore verify not only that the handshake succeeds, but that both hybrid components were present, validated, transcript-bound, and fail-closed before traffic secrets are derived.<a href="#section-4.4-5.3.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-4.4-6">The artifacts are available <a href="https://github.com/symbolicsoft/reftls">here</a> for independent review.<a href="#section-4.4-6" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1776,7 +1795,7 @@ with elliptic-curve Diffie-Hellman.
 ML-KEM and a break of the traditional key-exchange component:<a href="#section-6.6-1" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-6.6-2">
 <pre>
-If the probablity of one being broken over the next n years is p, and
+If the probability of one being broken over the next n years is p, and
 the probability of the other being broken over the next n years is q,
 then the probability of both being broken is pq.
 </pre><a href="#section-6.6-2" class="pilcrow">¶</a>
@@ -1798,7 +1817,8 @@ Public assessments range from skepticism based on the difficulty of the physics
 (see <a href="https://eprint.iacr.org/2025/1237">this</a>) to migration targets that aim to
 be <em>prepared</em> as early as 2029 (see <a href="https://blog.google/innovation-and-ai/technology/safety-security/cryptography-migration-timeline/">Google 2029</a>
 and <a href="https://blog.cloudflare.com/post-quantum-roadmap/">Cloudflare 2029</a>).
-Technically, please note that Google has not even released the <strong>quantum circuit</strong> underlying their recent claims -- apparently the reason for this urgency. So Google's claims may not yet be justified.<a href="#section-6.7-1" class="pilcrow">¶</a></p>
+The technical details behind some public timeline claims are not yet fully public. In particular, Google has not even released the <strong>quantum circuit</strong> underlying their recent claims -- apparently the reason for this urgency.
+These claims are therefore best treated as deployment-planning inputs rather than as proof of a specific CRQC arrival date.<a href="#section-6.7-1" class="pilcrow">¶</a></p>
 <p id="section-6.7-2">Moreover, in our understanding, these deadlines are for PQ-based protection in general regardless of hybrid key exchange or standalone KEMs in TLS. Since hybrid key exchange is widely in use, these deadlines are mainly for quantum-safe authentication.<a href="#section-6.7-2" class="pilcrow">¶</a></p>
 <p id="section-6.7-3">A separate deployment point is that publication timing does not by itself control
 deployment timing.  Implementations such as OpenSSL already include standalone
@@ -1858,7 +1878,7 @@ complexity, and operational rollout cost.<a href="#section-6.8-4" class="pilcrow
 <a href="#section-6.10" class="section-number selfRef">6.10. </a><a href="#name-shiny-new-crypto" class="section-name selfRef">Shiny New Crypto</a>
         </h3>
 <p id="section-6.10-1">ML-KEM is quite new in the IETF and even in the IRTF.
-CFRG is starting some efforts for detailed analysis. The extended deadline for submission is 22.06. Please see the latest <a href="https://mailarchive.ietf.org/arch/msg/cfrg/6K43Ycr062Ym1G0q4WHxZQ2HW8M/">CFRG chairs email</a> for further details.<a href="#section-6.10-1" class="pilcrow">¶</a></p>
+CFRG is starting some efforts for detailed analysis. The extended deadline for submission is 22 June 2026. Please see the latest <a href="https://mailarchive.ietf.org/arch/msg/cfrg/6K43Ycr062Ym1G0q4WHxZQ2HW8M/">CFRG chairs email</a> for further details.<a href="#section-6.10-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="formal-mapping-of-fips-to-ietf-bcp14">
@@ -1928,6 +1948,9 @@ formal-methods results discussed above.<a href="#section-6.16-1" class="pilcrow"
 The scope is typically limited, and the model does not necessarily capture real-world deployment complexity, implementation details, operational constraints, or misuse scenarios.
 Technically, formal proof only guarantees anything if all the assumptions hold, which is unlikely in practice.
 Formal methods should be used as complementary and not as substitute of other analysis methods.<a href="#section-7-2" class="pilcrow">¶</a></p>
+<p id="section-7-3">For implementations, this means that formal-methods results should be paired
+with negative testing and review evidence for malformed shares, transcript
+mismatches, silent fallback, premature secret derivation, and failure handling.<a href="#section-7-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="iana-considerations">
