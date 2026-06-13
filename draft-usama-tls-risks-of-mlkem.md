@@ -53,7 +53,7 @@ informative:
 
 --- abstract
 
-The memo presents formal analysis of hybrid key exchange and standalone ML-KEM.
+The memo presents formal analysis of hybrid key exchange and standalone ML-KEM in TLS 1.3.
 This memo also maps out the relevant technical facets surrounding quantum-resistant key exchange and provides some preliminary discussion to help developers and policymakers make informed choices.
 Our observation is that hybrid key exchange is preferable over standalone ML-KEM until a powerful CRQC exists which breaks most bits of pre-quantum.
 Finally, it offers minimal implementation guidance for hybrid key exchange.
@@ -372,10 +372,6 @@ established "pre-quantum" security; for example in combination
 with elliptic-curve Diffie-Hellman.
 [...]
 ~~~
-
-## Thorough Review
-
-Please see a very thorough review [here](https://mailarchive.ietf.org/arch/msg/tls/jlsYHENwqMv-4XPRvunqKsAL36k/), which is self-sufficient.
 
 ## 'Significantly Harder' Argument
 
