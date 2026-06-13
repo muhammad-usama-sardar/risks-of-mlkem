@@ -404,7 +404,8 @@ Public assessments range from skepticism based on the difficulty of the physics
 (see [this](https://eprint.iacr.org/2025/1237)) to migration targets that aim to
 be *prepared* as early as 2029 (see [Google 2029](https://blog.google/innovation-and-ai/technology/safety-security/cryptography-migration-timeline/)
 and [Cloudflare 2029](https://blog.cloudflare.com/post-quantum-roadmap/)).
-The technical details behind some public timeline claims may not yet be fully public. These claims are therefore best treated as deployment-planning inputs rather than as proof of a specific CRQC arrival date.
+The technical details behind some public timeline claims are not yet fully public. In particular, Google has not even released the **quantum circuit** underlying their recent claims -- apparently the reason for this urgency.
+These claims are therefore best treated as deployment-planning inputs rather than as proof of a specific CRQC arrival date.
 
 Moreover, in our understanding, these deadlines are for PQ-based protection in general regardless of hybrid key exchange or standalone KEMs in TLS. Since hybrid key exchange is widely in use, these deadlines are mainly for quantum-safe authentication.
 
