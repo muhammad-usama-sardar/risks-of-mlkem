@@ -7,7 +7,7 @@
 <title>Analysis of Hybrid Key Exchange and Standalone ML-KEM in TLS 1.3</title>
 <meta content="Muhammad Usama Sardar" name="author">
 <meta content="
-       The memo presents formal analysis of hybrid key exchange and standalone ML-KEM.
+       The memo presents formal analysis of hybrid key exchange and standalone ML-KEM in TLS 1.3.
 This memo also maps out the relevant technical facets surrounding quantum-resistant key exchange and provides some preliminary discussion to help developers and policymakers make informed choices.
 Our observation is that hybrid key exchange is preferable over standalone ML-KEM until a powerful CRQC exists which breaks most bits of pre-quantum.
 Finally, it offers minimal implementation guidance for hybrid key exchange.
@@ -1081,7 +1081,7 @@ svg {
 <h1 id="title">Analysis of Hybrid Key Exchange and Standalone ML-KEM in TLS 1.3</h1>
 <section id="section-abstract">
       <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
-<p id="section-abstract-1">The memo presents formal analysis of hybrid key exchange and standalone ML-KEM.
+<p id="section-abstract-1">The memo presents formal analysis of hybrid key exchange and standalone ML-KEM in TLS 1.3.
 This memo also maps out the relevant technical facets surrounding quantum-resistant key exchange and provides some preliminary discussion to help developers and policymakers make informed choices.
 Our observation is that hybrid key exchange is preferable over standalone ML-KEM until a powerful CRQC exists which breaks most bits of pre-quantum.
 Finally, it offers minimal implementation guidance for hybrid key exchange.
@@ -1228,40 +1228,37 @@ This memo is not a standard nor has it been shown to have consensus of the IETF 
                 <p id="section-toc.1-1.6.2.4.1"><a href="#section-6.4" class="auto internal xref">6.4</a>.  <a href="#name-recommendation-of-designers" class="internal xref">Recommendation of Designers</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.5">
-                <p id="section-toc.1-1.6.2.5.1"><a href="#section-6.5" class="auto internal xref">6.5</a>.  <a href="#name-thorough-review" class="internal xref">Thorough Review</a></p>
+                <p id="section-toc.1-1.6.2.5.1"><a href="#section-6.5" class="auto internal xref">6.5</a>.  <a href="#name-significantly-harder-argume" class="internal xref">'Significantly Harder' Argument</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.6">
-                <p id="section-toc.1-1.6.2.6.1"><a href="#section-6.6" class="auto internal xref">6.6</a>.  <a href="#name-significantly-harder-argume" class="internal xref">'Significantly Harder' Argument</a></p>
+                <p id="section-toc.1-1.6.2.6.1"><a href="#section-6.6" class="auto internal xref">6.6</a>.  <a href="#name-urgency" class="internal xref">Urgency</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.7">
-                <p id="section-toc.1-1.6.2.7.1"><a href="#section-6.7" class="auto internal xref">6.7</a>.  <a href="#name-urgency" class="internal xref">Urgency</a></p>
+                <p id="section-toc.1-1.6.2.7.1"><a href="#section-6.7" class="auto internal xref">6.7</a>.  <a href="#name-cost" class="internal xref">Cost</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.8">
-                <p id="section-toc.1-1.6.2.8.1"><a href="#section-6.8" class="auto internal xref">6.8</a>.  <a href="#name-cost" class="internal xref">Cost</a></p>
+                <p id="section-toc.1-1.6.2.8.1"><a href="#section-6.8" class="auto internal xref">6.8</a>.  <a href="#name-is-publication-necessary" class="internal xref">Is Publication Necessary?</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.9">
-                <p id="section-toc.1-1.6.2.9.1"><a href="#section-6.9" class="auto internal xref">6.9</a>.  <a href="#name-is-publication-necessary" class="internal xref">Is Publication Necessary?</a></p>
+                <p id="section-toc.1-1.6.2.9.1"><a href="#section-6.9" class="auto internal xref">6.9</a>.  <a href="#name-shiny-new-crypto" class="internal xref">Shiny New Crypto</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.10">
-                <p id="section-toc.1-1.6.2.10.1"><a href="#section-6.10" class="auto internal xref">6.10</a>. <a href="#name-shiny-new-crypto" class="internal xref">Shiny New Crypto</a></p>
+                <p id="section-toc.1-1.6.2.10.1"><a href="#section-6.10" class="auto internal xref">6.10</a>. <a href="#name-formal-mapping-of-fips-to-i" class="internal xref">Formal Mapping of FIPS to IETF BCP14</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.11">
-                <p id="section-toc.1-1.6.2.11.1"><a href="#section-6.11" class="auto internal xref">6.11</a>. <a href="#name-formal-mapping-of-fips-to-i" class="internal xref">Formal Mapping of FIPS to IETF BCP14</a></p>
+                <p id="section-toc.1-1.6.2.11.1"><a href="#section-6.11" class="auto internal xref">6.11</a>. <a href="#name-outstanding-nist-comments" class="internal xref">Outstanding NIST Comments</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.12">
-                <p id="section-toc.1-1.6.2.12.1"><a href="#section-6.12" class="auto internal xref">6.12</a>. <a href="#name-outstanding-nist-comments" class="internal xref">Outstanding NIST Comments</a></p>
+                <p id="section-toc.1-1.6.2.12.1"><a href="#section-6.12" class="auto internal xref">6.12</a>. <a href="#name-too-early" class="internal xref">Too Early</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.13">
-                <p id="section-toc.1-1.6.2.13.1"><a href="#section-6.13" class="auto internal xref">6.13</a>. <a href="#name-too-early" class="internal xref">Too Early</a></p>
+                <p id="section-toc.1-1.6.2.13.1"><a href="#section-6.13" class="auto internal xref">6.13</a>. <a href="#name-patents" class="internal xref">Patents</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.14">
-                <p id="section-toc.1-1.6.2.14.1"><a href="#section-6.14" class="auto internal xref">6.14</a>. <a href="#name-patents" class="internal xref">Patents</a></p>
+                <p id="section-toc.1-1.6.2.14.1"><a href="#section-6.14" class="auto internal xref">6.14</a>. <a href="#name-implementation-bugs" class="internal xref">Implementation Bugs</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.15">
-                <p id="section-toc.1-1.6.2.15.1"><a href="#section-6.15" class="auto internal xref">6.15</a>. <a href="#name-implementation-bugs" class="internal xref">Implementation Bugs</a></p>
-</li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.16">
-                <p id="section-toc.1-1.6.2.16.1"><a href="#section-6.16" class="auto internal xref">6.16</a>. <a href="#name-depth-of-hybrids" class="internal xref">Depth of Hybrids?</a></p>
+                <p id="section-toc.1-1.6.2.15.1"><a href="#section-6.15" class="auto internal xref">6.15</a>. <a href="#name-depth-of-hybrids" class="internal xref">Depth of Hybrids?</a></p>
 </li>
             </ul>
 </li>
@@ -1778,61 +1775,53 @@ with elliptic-curve Diffie-Hellman.
 </div>
 </section>
 </div>
-<div id="thorough-review">
-<section id="section-6.5">
-        <h3 id="name-thorough-review">
-<a href="#section-6.5" class="section-number selfRef">6.5. </a><a href="#name-thorough-review" class="section-name selfRef">Thorough Review</a>
-        </h3>
-<p id="section-6.5-1">Please see a very thorough review <a href="https://mailarchive.ietf.org/arch/msg/tls/jlsYHENwqMv-4XPRvunqKsAL36k/">here</a>, which is self-sufficient.<a href="#section-6.5-1" class="pilcrow">¶</a></p>
-</section>
-</div>
 <div id="significantly-harder-argument">
-<section id="section-6.6">
+<section id="section-6.5">
         <h3 id="name-significantly-harder-argume">
-<a href="#section-6.6" class="section-number selfRef">6.6. </a><a href="#name-significantly-harder-argume" class="section-name selfRef">'Significantly Harder' Argument</a>
+<a href="#section-6.5" class="section-number selfRef">6.5. </a><a href="#name-significantly-harder-argume" class="section-name selfRef">'Significantly Harder' Argument</a>
         </h3>
-<p id="section-6.6-1">One common hybrid-security argument assumes independence between a break of
-ML-KEM and a break of the traditional key-exchange component:<a href="#section-6.6-1" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-6.6-2">
+<p id="section-6.5-1">One common hybrid-security argument assumes independence between a break of
+ML-KEM and a break of the traditional key-exchange component:<a href="#section-6.5-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-6.5-2">
 <pre>
 If the probability of one being broken over the next n years is p, and
 the probability of the other being broken over the next n years is q,
 then the probability of both being broken is pq.
-</pre><a href="#section-6.6-2" class="pilcrow">¶</a>
+</pre><a href="#section-6.5-2" class="pilcrow">¶</a>
 </div>
-<p id="section-6.6-3">Please see <a href="https://github.com/FiloSottile/ecc-vs-lattices-long-bet#2a-what-counts-as-a-break">this</a> for what "broken" may mean here modulo some <a href="https://github.com/FiloSottile/ecc-vs-lattices-long-bet#5-exclusions">exclusions</a>.<a href="#section-6.6-3" class="pilcrow">¶</a></p>
-<p id="section-6.6-4">Given the very different type of cryptographic constructions involved, independence might be a reasonable assumption.
-However, a reasonable counter-argument is that, in reality, cryptography is much more complicated than that and depending on the algorithms and the composition method, the probability can clearly be q, or smaller than pq.<a href="#section-6.6-4" class="pilcrow">¶</a></p>
-<p id="section-6.6-5">In our understanding, most other counter-arguments seem to break the <a href="https://github.com/FiloSottile/ecc-vs-lattices-long-bet#5-exclusions">exclusions</a>.<a href="#section-6.6-5" class="pilcrow">¶</a></p>
-<p id="section-6.6-6">Please note that this argument is based on the security of <em>primitives</em>, rather than the <em>composition</em> of primitives in protocols. Hence, formal methods probably have nothing to help here.<a href="#section-6.6-6" class="pilcrow">¶</a></p>
+<p id="section-6.5-3">Please see <a href="https://github.com/FiloSottile/ecc-vs-lattices-long-bet#2a-what-counts-as-a-break">this</a> for what "broken" may mean here modulo some <a href="https://github.com/FiloSottile/ecc-vs-lattices-long-bet#5-exclusions">exclusions</a>.<a href="#section-6.5-3" class="pilcrow">¶</a></p>
+<p id="section-6.5-4">Given the very different type of cryptographic constructions involved, independence might be a reasonable assumption.
+However, a reasonable counter-argument is that, in reality, cryptography is much more complicated than that and depending on the algorithms and the composition method, the probability can clearly be q, or smaller than pq.<a href="#section-6.5-4" class="pilcrow">¶</a></p>
+<p id="section-6.5-5">In our understanding, most other counter-arguments seem to break the <a href="https://github.com/FiloSottile/ecc-vs-lattices-long-bet#5-exclusions">exclusions</a>.<a href="#section-6.5-5" class="pilcrow">¶</a></p>
+<p id="section-6.5-6">Please note that this argument is based on the security of <em>primitives</em>, rather than the <em>composition</em> of primitives in protocols. Hence, formal methods probably have nothing to help here.<a href="#section-6.5-6" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="urgency">
-<section id="section-6.7">
+<section id="section-6.6">
         <h3 id="name-urgency">
-<a href="#section-6.7" class="section-number selfRef">6.7. </a><a href="#name-urgency" class="section-name selfRef">Urgency</a>
+<a href="#section-6.6" class="section-number selfRef">6.6. </a><a href="#name-urgency" class="section-name selfRef">Urgency</a>
         </h3>
-<p id="section-6.7-1">It is unclear <em>whether</em> and if applicable <em>when</em> Cryptographically-Relevant Quantum Computer (CRQC) will eventually become practical.
+<p id="section-6.6-1">It is unclear <em>whether</em> and if applicable <em>when</em> Cryptographically-Relevant Quantum Computer (CRQC) will eventually become practical.
 Public assessments range from skepticism based on the difficulty of the physics
 (see <a href="https://eprint.iacr.org/2025/1237">this</a>) to migration targets that aim to
 be <em>prepared</em> as early as 2029 (see <a href="https://blog.google/innovation-and-ai/technology/safety-security/cryptography-migration-timeline/">Google 2029</a>
 and <a href="https://blog.cloudflare.com/post-quantum-roadmap/">Cloudflare 2029</a>).
 The technical details behind some public timeline claims are not yet fully public. In particular, Google has not even released the <strong>quantum circuit</strong> underlying their recent claims -- apparently the reason for this urgency.
-These claims are therefore best treated as deployment-planning inputs rather than as proof of a specific CRQC arrival date.<a href="#section-6.7-1" class="pilcrow">¶</a></p>
-<p id="section-6.7-2">Moreover, in our understanding, these deadlines are for PQ-based protection in general regardless of hybrid key exchange or standalone KEMs in TLS. Since hybrid key exchange is widely in use, these deadlines are mainly for quantum-safe authentication.<a href="#section-6.7-2" class="pilcrow">¶</a></p>
-<p id="section-6.7-3">A separate deployment point is that publication timing does not by itself control
+These claims are therefore best treated as deployment-planning inputs rather than as proof of a specific CRQC arrival date.<a href="#section-6.6-1" class="pilcrow">¶</a></p>
+<p id="section-6.6-2">Moreover, in our understanding, these deadlines are for PQ-based protection in general regardless of hybrid key exchange or standalone KEMs in TLS. Since hybrid key exchange is widely in use, these deadlines are mainly for quantum-safe authentication.<a href="#section-6.6-2" class="pilcrow">¶</a></p>
+<p id="section-6.6-3">A separate deployment point is that publication timing does not by itself control
 deployment timing.  Implementations such as OpenSSL already include standalone
 ML-KEM support, and deployments can enable available code according to their own
-policy and risk assessment.<a href="#section-6.7-3" class="pilcrow">¶</a></p>
+policy and risk assessment.<a href="#section-6.6-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="cost">
-<section id="section-6.8">
+<section id="section-6.7">
         <h3 id="name-cost">
-<a href="#section-6.8" class="section-number selfRef">6.8. </a><a href="#name-cost" class="section-name selfRef">Cost</a>
+<a href="#section-6.7" class="section-number selfRef">6.7. </a><a href="#name-cost" class="section-name selfRef">Cost</a>
         </h3>
-<p id="section-6.8-1">Cost may be the motivation for standalone ML-KEM in TLS but we are not aware of any supporting analysis.
-Our observation from <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-ecdhe-mlkem-05#section-4" class="relref">Section 4</a> of [<a href="#I-D.ietf-tls-ecdhe-mlkem" class="cite xref">I-D.ietf-tls-ecdhe-mlkem</a>]</span> is that -- for example -- for X25519MLKEM768, the traditional part seems negligible compared to ML-KEM part in <code>key_exchange</code>:<a href="#section-6.8-1" class="pilcrow">¶</a></p>
+<p id="section-6.7-1">Cost may be the motivation for standalone ML-KEM in TLS but we are not aware of any supporting analysis.
+Our observation from <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-ecdhe-mlkem-05#section-4" class="relref">Section 4</a> of [<a href="#I-D.ietf-tls-ecdhe-mlkem" class="cite xref">I-D.ietf-tls-ecdhe-mlkem</a>]</span> is that -- for example -- for X25519MLKEM768, the traditional part seems negligible compared to ML-KEM part in <code>key_exchange</code>:<a href="#section-6.7-1" class="pilcrow">¶</a></p>
 <table class="center" id="table-2">
           <caption><a href="#table-2" class="selfRef">Table 2</a></caption>
 <thead>
@@ -1855,85 +1844,85 @@ Our observation from <span><a href="https://datatracker.ietf.org/doc/html/draft-
             </tr>
           </tbody>
         </table>
-<p id="section-6.8-3">Other "costs" depend on several factors -- including implementation details,
+<p id="section-6.7-3">Other "costs" depend on several factors -- including implementation details,
 deployment scenario, latency budget, memory pressure, code complexity, and
-operational rollout cost -- and should not be treated as one scalar value.<a href="#section-6.8-3" class="pilcrow">¶</a></p>
-<p id="section-6.8-4">There seems to be a need for a thorough study to understand the "cost."
+operational rollout cost -- and should not be treated as one scalar value.<a href="#section-6.7-3" class="pilcrow">¶</a></p>
+<p id="section-6.7-4">There seems to be a need for a thorough study to understand the "cost."
 A useful analysis would separate wire bytes, CPU, memory, latency, implementation
-complexity, and operational rollout cost.<a href="#section-6.8-4" class="pilcrow">¶</a></p>
+complexity, and operational rollout cost.<a href="#section-6.7-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="is-publication-necessary">
-<section id="section-6.9">
+<section id="section-6.8">
         <h3 id="name-is-publication-necessary">
-<a href="#section-6.9" class="section-number selfRef">6.9. </a><a href="#name-is-publication-necessary" class="section-name selfRef">Is Publication Necessary?</a>
+<a href="#section-6.8" class="section-number selfRef">6.8. </a><a href="#name-is-publication-necessary" class="section-name selfRef">Is Publication Necessary?</a>
         </h3>
-<p id="section-6.9-1">Code Points for ML-KEM have already been assigned.
-<span>[<a href="#I-D.barnes-tls-this-could-have-been-an-email" class="cite xref">I-D.barnes-tls-this-could-have-been-an-email</a>]</span> provides detailed rationale as to why publication of such documents and the debates around that may be unnecessary. In our understanding, <span>[<a href="#I-D.pwouters-crypto-current-practices" class="cite xref">I-D.pwouters-crypto-current-practices</a>]</span> makes similar arguments.<a href="#section-6.9-1" class="pilcrow">¶</a></p>
+<p id="section-6.8-1">Code Points for ML-KEM have already been assigned.
+<span>[<a href="#I-D.barnes-tls-this-could-have-been-an-email" class="cite xref">I-D.barnes-tls-this-could-have-been-an-email</a>]</span> provides detailed rationale as to why publication of such documents and the debates around that may be unnecessary. In our understanding, <span>[<a href="#I-D.pwouters-crypto-current-practices" class="cite xref">I-D.pwouters-crypto-current-practices</a>]</span> makes similar arguments.<a href="#section-6.8-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="shiny-new-crypto">
-<section id="section-6.10">
+<section id="section-6.9">
         <h3 id="name-shiny-new-crypto">
-<a href="#section-6.10" class="section-number selfRef">6.10. </a><a href="#name-shiny-new-crypto" class="section-name selfRef">Shiny New Crypto</a>
+<a href="#section-6.9" class="section-number selfRef">6.9. </a><a href="#name-shiny-new-crypto" class="section-name selfRef">Shiny New Crypto</a>
         </h3>
-<p id="section-6.10-1">ML-KEM is quite new in the IETF and even in the IRTF.
-CFRG is starting some efforts for detailed analysis. The extended deadline for submission is 22 June 2026. Please see the latest <a href="https://mailarchive.ietf.org/arch/msg/cfrg/6K43Ycr062Ym1G0q4WHxZQ2HW8M/">CFRG chairs email</a> for further details.<a href="#section-6.10-1" class="pilcrow">¶</a></p>
+<p id="section-6.9-1">ML-KEM is quite new in the IETF and even in the IRTF.
+CFRG is starting some efforts for detailed analysis. The extended deadline for submission is 22 June 2026. Please see the latest <a href="https://mailarchive.ietf.org/arch/msg/cfrg/6K43Ycr062Ym1G0q4WHxZQ2HW8M/">CFRG chairs email</a> for further details.<a href="#section-6.9-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="formal-mapping-of-fips-to-ietf-bcp14">
-<section id="section-6.11">
+<section id="section-6.10">
         <h3 id="name-formal-mapping-of-fips-to-i">
-<a href="#section-6.11" class="section-number selfRef">6.11. </a><a href="#name-formal-mapping-of-fips-to-i" class="section-name selfRef">Formal Mapping of FIPS to IETF BCP14</a>
+<a href="#section-6.10" class="section-number selfRef">6.10. </a><a href="#name-formal-mapping-of-fips-to-i" class="section-name selfRef">Formal Mapping of FIPS to IETF BCP14</a>
         </h3>
-<p id="section-6.11-1">As discussed on the TLS mailing-list, we are not aware of any formal mapping of the FIPS recommendations to the IETF BCP14 terminology, such as <span class="bcp14">SHOULD</span> vs. <span class="bcp14">MUST</span>. In general, we believe re-using FIPS recommendations is ambiguous for IETF readers.<a href="#section-6.11-1" class="pilcrow">¶</a></p>
+<p id="section-6.10-1">As discussed on the TLS mailing-list, we are not aware of any formal mapping of the FIPS recommendations to the IETF BCP14 terminology, such as <span class="bcp14">SHOULD</span> vs. <span class="bcp14">MUST</span>. In general, we believe re-using FIPS recommendations is ambiguous for IETF readers.<a href="#section-6.10-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="outstanding-nist-comments">
-<section id="section-6.12">
+<section id="section-6.11">
         <h3 id="name-outstanding-nist-comments">
-<a href="#section-6.12" class="section-number selfRef">6.12. </a><a href="#name-outstanding-nist-comments" class="section-name selfRef">Outstanding NIST Comments</a>
+<a href="#section-6.11" class="section-number selfRef">6.11. </a><a href="#name-outstanding-nist-comments" class="section-name selfRef">Outstanding NIST Comments</a>
         </h3>
-<p id="section-6.12-1">One concrete position is that not all comments submitted during the open review were fully addressed.  Please see comments <a href="https://csrc.nist.gov/files/pubs/fips/203/ipd/docs/fips-203-initial-public-comments-2023.pdf">here</a>.<a href="#section-6.12-1" class="pilcrow">¶</a></p>
+<p id="section-6.11-1">One concrete position is that not all comments submitted during the open review were fully addressed.  Please see comments <a href="https://csrc.nist.gov/files/pubs/fips/203/ipd/docs/fips-203-initial-public-comments-2023.pdf">here</a>.<a href="#section-6.11-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="too-early">
-<section id="section-6.13">
+<section id="section-6.12">
         <h3 id="name-too-early">
-<a href="#section-6.13" class="section-number selfRef">6.13. </a><a href="#name-too-early" class="section-name selfRef">Too Early</a>
+<a href="#section-6.12" class="section-number selfRef">6.12. </a><a href="#name-too-early" class="section-name selfRef">Too Early</a>
         </h3>
-<p id="section-6.13-1">One school of thought simply believes that discussions on standalone ML-KEM may be too early and unnecessary.<a href="#section-6.13-1" class="pilcrow">¶</a></p>
+<p id="section-6.12-1">One school of thought simply believes that discussions on standalone ML-KEM may be too early and unnecessary.<a href="#section-6.12-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="patents">
-<section id="section-6.14">
+<section id="section-6.13">
         <h3 id="name-patents">
-<a href="#section-6.14" class="section-number selfRef">6.14. </a><a href="#name-patents" class="section-name selfRef">Patents</a>
+<a href="#section-6.13" class="section-number selfRef">6.13. </a><a href="#name-patents" class="section-name selfRef">Patents</a>
         </h3>
-<p id="section-6.14-1">Some concerns related to patents have been raised. See some relevant patents <a href="https://datatracker.ietf.org/ipr/search/?submit=draft&amp;id=draft-ietf-tls-mlkem">here</a>.<a href="#section-6.14-1" class="pilcrow">¶</a></p>
+<p id="section-6.13-1">Some concerns related to patents have been raised. See some relevant patents <a href="https://datatracker.ietf.org/ipr/search/?submit=draft&amp;id=draft-ietf-tls-mlkem">here</a>.<a href="#section-6.13-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="implementation-bugs">
-<section id="section-6.15">
+<section id="section-6.14">
         <h3 id="name-implementation-bugs">
-<a href="#section-6.15" class="section-number selfRef">6.15. </a><a href="#name-implementation-bugs" class="section-name selfRef">Implementation Bugs</a>
+<a href="#section-6.14" class="section-number selfRef">6.14. </a><a href="#name-implementation-bugs" class="section-name selfRef">Implementation Bugs</a>
         </h3>
-<p id="section-6.15-1">Implementation bugs are a separate risk from primitive-level cryptanalysis.
+<p id="section-6.14-1">Implementation bugs are a separate risk from primitive-level cryptanalysis.
 Hybrid key exchange may mitigate some single-component failures, but only if the
 implementation actually validates both components, binds them to the same
 transcript, derives traffic secrets only after both components are accepted, and
-fails closed when either component fails.<a href="#section-6.15-1" class="pilcrow">¶</a></p>
+fails closed when either component fails.<a href="#section-6.14-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="depth-of-hybrids">
-<section id="section-6.16">
+<section id="section-6.15">
         <h3 id="name-depth-of-hybrids">
-<a href="#section-6.16" class="section-number selfRef">6.16. </a><a href="#name-depth-of-hybrids" class="section-name selfRef">Depth of Hybrids?</a>
+<a href="#section-6.15" class="section-number selfRef">6.15. </a><a href="#name-depth-of-hybrids" class="section-name selfRef">Depth of Hybrids?</a>
         </h3>
-<p id="section-6.16-1">The depth of a hybrid is itself a design question.  ML-KEM plus ECC is only one
+<p id="section-6.15-1">The depth of a hybrid is itself a design question.  ML-KEM plus ECC is only one
 composition point; other designs could combine module lattices, code-based KEMs,
 or hash-based components.  That broader design space is outside the scope of the
-formal-methods results discussed above.<a href="#section-6.16-1" class="pilcrow">¶</a></p>
+formal-methods results discussed above.<a href="#section-6.15-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>

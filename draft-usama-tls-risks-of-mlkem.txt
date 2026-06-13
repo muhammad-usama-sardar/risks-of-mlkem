@@ -14,15 +14,15 @@ Expires: 15 December 2026
 Abstract
 
    The memo presents formal analysis of hybrid key exchange and
-   standalone ML-KEM.  This memo also maps out the relevant technical
-   facets surrounding quantum-resistant key exchange and provides some
-   preliminary discussion to help developers and policymakers make
-   informed choices.  Our observation is that hybrid key exchange is
-   preferable over standalone ML-KEM until a powerful CRQC exists which
-   breaks most bits of pre-quantum.  Finally, it offers minimal
-   implementation guidance for hybrid key exchange.  This memo is not a
-   standard nor has it been shown to have consensus of the IETF
-   community.
+   standalone ML-KEM in TLS 1.3.  This memo also maps out the relevant
+   technical facets surrounding quantum-resistant key exchange and
+   provides some preliminary discussion to help developers and
+   policymakers make informed choices.  Our observation is that hybrid
+   key exchange is preferable over standalone ML-KEM until a powerful
+   CRQC exists which breaks most bits of pre-quantum.  Finally, it
+   offers minimal implementation guidance for hybrid key exchange.  This
+   memo is not a standard nor has it been shown to have consensus of the
+   IETF community.
 
 About This Document
 
@@ -90,18 +90,17 @@ Table of Contents
      6.2.  Does CRQC Break All Bits of Pre-quantum?
      6.3.  Policy/Regulations
      6.4.  Recommendation of Designers
-     6.5.  Thorough Review
-     6.6.  'Significantly Harder' Argument
-     6.7.  Urgency
-     6.8.  Cost
-     6.9.  Is Publication Necessary?
-     6.10. Shiny New Crypto
-     6.11. Formal Mapping of FIPS to IETF BCP14
-     6.12. Outstanding NIST Comments
-     6.13. Too Early
-     6.14. Patents
-     6.15. Implementation Bugs
-     6.16. Depth of Hybrids?
+     6.5.  'Significantly Harder' Argument
+     6.6.  Urgency
+     6.7.  Cost
+     6.8.  Is Publication Necessary?
+     6.9.  Shiny New Crypto
+     6.10. Formal Mapping of FIPS to IETF BCP14
+     6.11. Outstanding NIST Comments
+     6.12. Too Early
+     6.13. Patents
+     6.14. Implementation Bugs
+     6.15. Depth of Hybrids?
    7.  Security Considerations
    8.  IANA Considerations
    9.  References
@@ -578,13 +577,7 @@ Table of Contents
    with elliptic-curve Diffie-Hellman.
    [...]
 
-6.5.  Thorough Review
-
-   Please see a very thorough review here
-   (https://mailarchive.ietf.org/arch/msg/tls/jlsYHENwqMv-
-   4XPRvunqKsAL36k/), which is self-sufficient.
-
-6.6.  'Significantly Harder' Argument
+6.5.  'Significantly Harder' Argument
 
    One common hybrid-security argument assumes independence between a
    break of ML-KEM and a break of the traditional key-exchange
@@ -614,7 +607,7 @@ Table of Contents
    _primitives_, rather than the _composition_ of primitives in
    protocols.  Hence, formal methods probably have nothing to help here.
 
-6.7.  Urgency
+6.6.  Urgency
 
    It is unclear _whether_ and if applicable _when_ Cryptographically-
    Relevant Quantum Computer (CRQC) will eventually become practical.
@@ -640,7 +633,7 @@ Table of Contents
    already include standalone ML-KEM support, and deployments can enable
    available code according to their own policy and risk assessment.
 
-6.8.  Cost
+6.7.  Cost
 
    Cost may be the motivation for standalone ML-KEM in TLS but we are
    not aware of any supporting analysis.  Our observation from Section 4
@@ -667,7 +660,7 @@ Table of Contents
    "cost."  A useful analysis would separate wire bytes, CPU, memory,
    latency, implementation complexity, and operational rollout cost.
 
-6.9.  Is Publication Necessary?
+6.8.  Is Publication Necessary?
 
    Code Points for ML-KEM have already been assigned.
    [I-D.barnes-tls-this-could-have-been-an-email] provides detailed
@@ -675,7 +668,7 @@ Table of Contents
    around that may be unnecessary.  In our understanding,
    [I-D.pwouters-crypto-current-practices] makes similar arguments.
 
-6.10.  Shiny New Crypto
+6.9.  Shiny New Crypto
 
    ML-KEM is quite new in the IETF and even in the IRTF.  CFRG is
    starting some efforts for detailed analysis.  The extended deadline
@@ -683,32 +676,32 @@ Table of Contents
    email (https://mailarchive.ietf.org/arch/msg/
    cfrg/6K43Ycr062Ym1G0q4WHxZQ2HW8M/) for further details.
 
-6.11.  Formal Mapping of FIPS to IETF BCP14
+6.10.  Formal Mapping of FIPS to IETF BCP14
 
    As discussed on the TLS mailing-list, we are not aware of any formal
    mapping of the FIPS recommendations to the IETF BCP14 terminology,
    such as SHOULD vs. MUST.  In general, we believe re-using FIPS
    recommendations is ambiguous for IETF readers.
 
-6.12.  Outstanding NIST Comments
+6.11.  Outstanding NIST Comments
 
    One concrete position is that not all comments submitted during the
    open review were fully addressed.  Please see comments here
    (https://csrc.nist.gov/files/pubs/fips/203/ipd/docs/fips-203-initial-
    public-comments-2023.pdf).
 
-6.13.  Too Early
+6.12.  Too Early
 
    One school of thought simply believes that discussions on standalone
    ML-KEM may be too early and unnecessary.
 
-6.14.  Patents
+6.13.  Patents
 
    Some concerns related to patents have been raised.  See some relevant
    patents here (https://datatracker.ietf.org/ipr/
    search/?submit=draft&id=draft-ietf-tls-mlkem).
 
-6.15.  Implementation Bugs
+6.14.  Implementation Bugs
 
    Implementation bugs are a separate risk from primitive-level
    cryptanalysis.  Hybrid key exchange may mitigate some single-
@@ -717,7 +710,7 @@ Table of Contents
    secrets only after both components are accepted, and fails closed
    when either component fails.
 
-6.16.  Depth of Hybrids?
+6.15.  Depth of Hybrids?
 
    The depth of a hybrid is itself a design question.  ML-KEM plus ECC
    is only one composition point; other designs could combine module
