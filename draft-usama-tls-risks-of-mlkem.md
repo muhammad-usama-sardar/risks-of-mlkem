@@ -166,7 +166,6 @@ All of these are based on pen-and-paper (computational) proofs.
 
 For implementers, the practical reading of these analyses is a key-schedule and transcript-binding check.
 The question is whether the KEM shared secret is introduced into TLS in a way that preserves the claimed security property.
-Wrong ciphertexts, decapsulation failures, wrong transcript context, or wrong group selection must not lead to a usable traffic secret.
 
 
 # Symbolic Analysis
