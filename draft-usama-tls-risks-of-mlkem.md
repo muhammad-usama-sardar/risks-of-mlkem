@@ -53,8 +53,11 @@ informative:
 
 --- abstract
 
-The memo presents formal analysis of hybrid key establishment and standalone ML-KEM in TLS 1.3.
-This memo also maps out the relevant technical facets surrounding quantum-resistant key exchange and provides some preliminary discussion to help developers and policymakers make informed choices.
+This memo maps out technical facets surrounding quantum-resistant key
+establishment in TLS 1.3 and provides preliminary discussion to help developers
+and policymakers make informed choices.
+It also summarizes formal-analysis work on hybrid key establishment and
+standalone ML-KEM as one input to that broader discussion.
 Our observation is that hybrid key establishment is preferable over standalone ML-KEM until a powerful CRQC exists which breaks most bits of pre-quantum.
 Finally, it offers minimal implementation guidance for hybrid key establishment.
 This memo is not a standard nor has it been shown to have consensus of the IETF community.
@@ -75,8 +78,10 @@ The memo serves three objectives:
 
 ### Presenting Different Technical Facets
 
-The later sections also identify technical facets that affect deployment reasoning but are not fully resolved by the formal analysis alone.
-This explains why the memo discusses issues such as break timing, residual pre-quantum security, deployment cost, patents, and implementation behavior after presenting the formal-methods result.
+The memo identifies technical facets that affect deployment reasoning and are
+not fully resolved by formal analysis alone.
+This explains why the memo discusses issues such as break timing, residual
+pre-quantum security, deployment cost, patents, and implementation behavior.
 
 ### Minimal Implementation Guidance for Hybrids
 The implementation consideration is not only whether ML-KEM is secure as a
@@ -84,7 +89,7 @@ primitive, but also whether a TLS deployment can show that both hybrid
 components were validated, transcript-bound, and fail-closed under the
 negotiated group.
 
-### Summary of Formal Methods Works
+### Formal Methods as One Input
 
 The memo covers the formal methods for hybrid key establishment and standalone ML-KEM in TLS.
 Formal methods can provide additional value in order to maintain the high cryptographic assurance of TLS.
@@ -107,8 +112,11 @@ equally well to standalone ML-KEM.
 ~~~
 
 An adversary can record all traffic and decrypt it later if ML-KEM is broken.
-The opinions of the community on this matter vary from "ML-KEM is secure" to "ML-KEM is probably already secretly broken."
-Formal methods can operate under the assumption that ML-KEM is secure, and focus on the integration of ML-KEM in TLS under this assumption.
+The deployment question is therefore broader than whether any one analysis
+model succeeds. It includes primitive-level assumptions, protocol integration,
+implementation behavior, and operational risk.
+Formal methods can operate under the assumption that ML-KEM is secure, and
+focus on the integration of ML-KEM in TLS under this assumption.
 
 * As an example, formal methods can help justify design choices, such as the preference for hybrid key establishments.
 It can also help identify all the assumptions under which the properties hold.
