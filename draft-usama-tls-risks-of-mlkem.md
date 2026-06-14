@@ -53,10 +53,11 @@ informative:
 
 --- abstract
 
-The memo presents formal analysis of hybrid key establishment and standalone ML-KEM in TLS 1.3.
-This memo also maps out the relevant technical facets surrounding quantum-resistant key exchange and provides some preliminary discussion to help developers and policymakers make informed choices.
+This memo maps out the relevant technical facets surrounding quantum-resistant key establishment in TLS 1.3 and provides some preliminary discussion to help developers and policymakers make informed choices.
+In particular, it presents hybrid key establishment and standalone ML-KEM in TLS 1.3.
+Moreover, it offers minimal implementation guidance for hybrid key establishment.
+The memo finally presents technical insights into hybrid key establishment and standalone ML-KEM in TLS 1.3.
 Our observation is that hybrid key establishment is preferable over standalone ML-KEM until a powerful CRQC exists which breaks most bits of pre-quantum.
-Finally, it offers minimal implementation guidance for hybrid key establishment.
 This memo is not a standard nor has it been shown to have consensus of the IETF community.
 
 --- middle
@@ -75,18 +76,20 @@ The memo serves three objectives:
 
 ### Presenting Different Technical Facets
 
-The later sections also identify technical facets that affect deployment reasoning but are not fully resolved by the formal analysis alone.
-This explains why the memo discusses issues such as break timing, residual pre-quantum security, deployment cost, patents, and implementation behavior after presenting the formal-methods result.
+The memo identifies technical facets that affect deployment reasoning.
+Facets are categorized as **primitive-level** and **protocol-level**.
+Examples include break timing, residual pre-quantum security, deployment cost, patents, and implementation behavior.
 
 ### Minimal Implementation Guidance for Hybrids
-The implementation consideration is not only whether ML-KEM is secure as a
+The minimal implementation consideration for hybrid key establishment is not only whether ML-KEM is secure as a
 primitive, but also whether a TLS deployment can show that both hybrid
 components were validated, transcript-bound, and fail-closed under the
 negotiated group.
 
-### Summary of Formal Methods Works
+### Technical Insights
 
 The memo covers the formal methods for hybrid key establishment and standalone ML-KEM in TLS.
+Formal methods mostly operate at the protocol-level.
 Formal methods can provide additional value in order to maintain the high cryptographic assurance of TLS.
 This includes *symbolic* and *computational* analysis (to be interpreted as in [SoK](https://eprint.iacr.org/2019/1393.pdf)) of integration of standalone ML-KEM in the context of TLS.
 Specifically, it covers the formal analysis {{FATT-CHANCE}} in ProVerif on the potential issue of asymmetry.
@@ -147,7 +150,7 @@ regression, unless CRQC exists to break most ECC keys.
 
 We believe that symbolic and computational models are complementary and not a substitute of each other.
 
-## Key Exchange and Key Encapsulation
+## Key Establishment and Key Encapsulation
 {: #sec-proof-break }
 
 In traditional key exchange (DHKE), both endpoints send their public key shares g<sup>x</sup> and g<sup>y</sup> to derive a shared secret g<sup>xy</sup>.
@@ -352,14 +355,16 @@ in the formal-methods discussion, in implementation guidance, or in a
 separate operational cost analysis.
 
 
-# Symbolic Analysis
+# Technical Analysis
+
+## Symbolic Analysis
 For brevity, we omit other assumptions in the properties below and focus on the difference.
 This assumes the hybrid construction to be secure.
 
 For implementers, the symbolic view can be read as a component-failure exercise.
 Instead of asking how hard ML-KEM or ECDHE is to break, the analysis may ask whether security properties still hold under Dolev-Yao attacker if one component secret is already available to the adversary.
 
-## Minimum Viable Modeling
+### Minimum Viable Modeling
 {: #sec-model-analyze }
 
 Based on the discussion on TLS mailing-list, simply replacing ideal DHKE by ideal ML-KEM in the formal model is not very useful. We ought to focus on the more security-critical questions about integration of ML-KEM in TLS.
@@ -374,7 +379,7 @@ We present a few high-level observations to consider for security considerations
 
 Any analysis on these or related security and robustness matters is very welcome.
 
-## Hybrid Key Establishment
+### Hybrid Key Establishment
 
 Hybrid key establishment still maintains the DHKE part. From formal (symbolic) analysis perspective, g<sup>x</sup> and  g<sup>y</sup> are still sent in hybrid key establishment,  g<sup>xy</sup> is still computed and we believe the commutativity property is applicable for that part as-is. From formal (symbolic) analysis perspective, ML-KEM is complementary to that.
 
@@ -398,7 +403,7 @@ As presented in {{sec-tech-rat}}, hybrid key establishment preserves ECDHE compo
 So as long as *at least* one of these two secrets is not available to the adversary, all security properties should hold.
 In particular, even if ML-KEM is completely broken, i.e., `ss` is available to the adversary, the protocol retains the security level of ECDHE.
 
-## Standalone ML-KEM
+### Standalone ML-KEM
 
 At the symbolic level, some analysis -- such as [this](https://eprint.iacr.org/2022/1111.pdf) for KEMTLS in Tamarin -- exists. In our understanding, both client and server encapsulate, which may bring the symmetry.
 The formal property standalone ML-KEM provides is:
@@ -408,7 +413,7 @@ Security properties of TLS hold unless `ss` is available to the
 adversary.
 ~~~
 
-## Results
+### Results
 {: #sec-results }
 
 For the FATT process {{TLS-FATT}}, the symbolic analysis {{FATT-CHANCE}} was done in ProVerif by Nadim Kobeissi, who concludes:
@@ -454,14 +459,14 @@ A practical reading of the result is:
 The artifacts are available [here](https://github.com/symbolicsoft/reftls) for independent review.
 
 
-# Computational Analysis
+## Computational Analysis
 
-## Hybrids
+### Hybrids
 {: #sec-tech-rat }
 
 Technically, a proof of {{I-D.ietf-tls-hybrid-design-09}} is done in the computational model using CryptoVerif (cf. [ref](https://bblanche.gitlabpages.inria.fr/publications/BlanchetJacommeCSF24.pdf)). As per discussion on TLS mailing-list, it appears that the proof applies to the latest version of the spec {{I-D.ietf-tls-hybrid-design}}, as there seem to be no substantive changes from the perspective of formal proof.
 
-## Standalone ML-KEM
+### Standalone ML-KEM
 
 Some existing computational analysis for standalone ML-KEM in TLS include [this](https://eprint.iacr.org/2021/844), [this](https://eprint.iacr.org/2024/1360), and [this](https://www.mdpi.com/1099-4300/27/12/1242).
 All of these are based on pen-and-paper (computational) proofs.
