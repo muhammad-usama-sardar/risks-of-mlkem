@@ -7,10 +7,11 @@
 <title>Analysis of Hybrid Key Establishment and Standalone ML-KEM in TLS 1.3</title>
 <meta content="Muhammad Usama Sardar" name="author">
 <meta content="
-       The memo presents formal analysis of hybrid key establishment and standalone ML-KEM in TLS 1.3.
-This memo also maps out the relevant technical facets surrounding quantum-resistant key exchange and provides some preliminary discussion to help developers and policymakers make informed choices.
+       This memo maps out the relevant technical facets surrounding quantum-resistant key establishment in TLS 1.3 and provides some preliminary discussion to help developers and policymakers make informed choices.
+In particular, it presents hybrid key establishment and standalone ML-KEM in TLS 1.3.
+Moreover, it offers minimal implementation guidance for hybrid key establishment.
+The memo finally presents technical insights into hybrid key establishment and standalone ML-KEM in TLS 1.3.
 Our observation is that hybrid key establishment is preferable over standalone ML-KEM until a powerful CRQC exists which breaks most bits of pre-quantum.
-Finally, it offers minimal implementation guidance for hybrid key establishment.
 This memo is not a standard nor has it been shown to have consensus of the IETF community. 
     " name="description">
 <meta content="xml2rfc 3.33.0" name="generator">
@@ -1081,10 +1082,11 @@ svg {
 <h1 id="title">Analysis of Hybrid Key Establishment and Standalone ML-KEM in TLS 1.3</h1>
 <section id="section-abstract">
       <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
-<p id="section-abstract-1">The memo presents formal analysis of hybrid key establishment and standalone ML-KEM in TLS 1.3.
-This memo also maps out the relevant technical facets surrounding quantum-resistant key exchange and provides some preliminary discussion to help developers and policymakers make informed choices.
+<p id="section-abstract-1">This memo maps out the relevant technical facets surrounding quantum-resistant key establishment in TLS 1.3 and provides some preliminary discussion to help developers and policymakers make informed choices.
+In particular, it presents hybrid key establishment and standalone ML-KEM in TLS 1.3.
+Moreover, it offers minimal implementation guidance for hybrid key establishment.
+The memo finally presents technical insights into hybrid key establishment and standalone ML-KEM in TLS 1.3.
 Our observation is that hybrid key establishment is preferable over standalone ML-KEM until a powerful CRQC exists which breaks most bits of pre-quantum.
-Finally, it offers minimal implementation guidance for hybrid key establishment.
 This memo is not a standard nor has it been shown to have consensus of the IETF community.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
 </section>
 <section class="note rfcEditorRemove" id="section-note.1">
@@ -1156,7 +1158,7 @@ This memo is not a standard nor has it been shown to have consensus of the IETF 
                     <p id="section-toc.1-1.1.2.1.2.2.1" class="keepWithNext"><a href="#section-1.1.2" class="auto internal xref">1.1.2</a>.  <a href="#name-minimal-implementation-guid" class="internal xref">Minimal Implementation Guidance for Hybrids</a></p>
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.1.2.3">
-                    <p id="section-toc.1-1.1.2.1.2.3.1" class="keepWithNext"><a href="#section-1.1.3" class="auto internal xref">1.1.3</a>.  <a href="#name-summary-of-formal-methods-w" class="internal xref">Summary of Formal Methods Works</a></p>
+                    <p id="section-toc.1-1.1.2.1.2.3.1" class="keepWithNext"><a href="#section-1.1.3" class="auto internal xref">1.1.3</a>.  <a href="#name-technical-insights" class="internal xref">Technical Insights</a></p>
 </li>
                 </ul>
 </li>
@@ -1172,7 +1174,7 @@ This memo is not a standard nor has it been shown to have consensus of the IETF 
             <p id="section-toc.1-1.2.1"><a href="#section-2" class="auto internal xref">2</a>.  <a href="#name-conventions-and-definitions" class="internal xref">Conventions and Definitions</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.1">
-                <p id="section-toc.1-1.2.2.1.1"><a href="#section-2.1" class="auto internal xref">2.1</a>.  <a href="#name-key-exchange-and-key-encaps" class="internal xref">Key Exchange and Key Encapsulation</a></p>
+                <p id="section-toc.1-1.2.2.1.1"><a href="#section-2.1" class="auto internal xref">2.1</a>.  <a href="#name-key-establishment-and-key-e" class="internal xref">Key Establishment and Key Encapsulation</a></p>
 </li>
             </ul>
 </li>
@@ -1242,61 +1244,66 @@ This memo is not a standard nor has it been shown to have consensus of the IETF 
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5">
-            <p id="section-toc.1-1.5.1"><a href="#section-5" class="auto internal xref">5</a>.  <a href="#name-symbolic-analysis" class="internal xref">Symbolic Analysis</a></p>
+            <p id="section-toc.1-1.5.1"><a href="#section-5" class="auto internal xref">5</a>.  <a href="#name-technical-analysis" class="internal xref">Technical Analysis</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.1">
-                <p id="section-toc.1-1.5.2.1.1"><a href="#section-5.1" class="auto internal xref">5.1</a>.  <a href="#name-minimum-viable-modeling" class="internal xref">Minimum Viable Modeling</a></p>
+                <p id="section-toc.1-1.5.2.1.1"><a href="#section-5.1" class="auto internal xref">5.1</a>.  <a href="#name-symbolic-analysis" class="internal xref">Symbolic Analysis</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.1.2.1">
+                    <p id="section-toc.1-1.5.2.1.2.1.1"><a href="#section-5.1.1" class="auto internal xref">5.1.1</a>.  <a href="#name-minimum-viable-modeling" class="internal xref">Minimum Viable Modeling</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.1.2.2">
+                    <p id="section-toc.1-1.5.2.1.2.2.1"><a href="#section-5.1.2" class="auto internal xref">5.1.2</a>.  <a href="#name-hybrid-key-establishment" class="internal xref">Hybrid Key Establishment</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.1.2.3">
+                    <p id="section-toc.1-1.5.2.1.2.3.1"><a href="#section-5.1.3" class="auto internal xref">5.1.3</a>.  <a href="#name-standalone-ml-kem" class="internal xref">Standalone ML-KEM</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.1.2.4">
+                    <p id="section-toc.1-1.5.2.1.2.4.1"><a href="#section-5.1.4" class="auto internal xref">5.1.4</a>.  <a href="#name-results" class="internal xref">Results</a></p>
+</li>
+                </ul>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.2">
-                <p id="section-toc.1-1.5.2.2.1"><a href="#section-5.2" class="auto internal xref">5.2</a>.  <a href="#name-hybrid-key-establishment" class="internal xref">Hybrid Key Establishment</a></p>
+                <p id="section-toc.1-1.5.2.2.1"><a href="#section-5.2" class="auto internal xref">5.2</a>.  <a href="#name-computational-analysis" class="internal xref">Computational Analysis</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.2.2.1">
+                    <p id="section-toc.1-1.5.2.2.2.1.1"><a href="#section-5.2.1" class="auto internal xref">5.2.1</a>.  <a href="#name-hybrids" class="internal xref">Hybrids</a></p>
 </li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.3">
-                <p id="section-toc.1-1.5.2.3.1"><a href="#section-5.3" class="auto internal xref">5.3</a>.  <a href="#name-standalone-ml-kem" class="internal xref">Standalone ML-KEM</a></p>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.2.2.2">
+                    <p id="section-toc.1-1.5.2.2.2.2.1"><a href="#section-5.2.2" class="auto internal xref">5.2.2</a>.  <a href="#name-standalone-ml-kem-2" class="internal xref">Standalone ML-KEM</a></p>
 </li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.4">
-                <p id="section-toc.1-1.5.2.4.1"><a href="#section-5.4" class="auto internal xref">5.4</a>.  <a href="#name-results" class="internal xref">Results</a></p>
+                </ul>
 </li>
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6">
-            <p id="section-toc.1-1.6.1"><a href="#section-6" class="auto internal xref">6</a>.  <a href="#name-computational-analysis" class="internal xref">Computational Analysis</a></p>
-<ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.1">
-                <p id="section-toc.1-1.6.2.1.1"><a href="#section-6.1" class="auto internal xref">6.1</a>.  <a href="#name-hybrids" class="internal xref">Hybrids</a></p>
-</li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.2">
-                <p id="section-toc.1-1.6.2.2.1"><a href="#section-6.2" class="auto internal xref">6.2</a>.  <a href="#name-standalone-ml-kem-2" class="internal xref">Standalone ML-KEM</a></p>
-</li>
-            </ul>
+            <p id="section-toc.1-1.6.1"><a href="#section-6" class="auto internal xref">6</a>.  <a href="#name-security-considerations" class="internal xref">Security Considerations</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7">
-            <p id="section-toc.1-1.7.1"><a href="#section-7" class="auto internal xref">7</a>.  <a href="#name-security-considerations" class="internal xref">Security Considerations</a></p>
+            <p id="section-toc.1-1.7.1"><a href="#section-7" class="auto internal xref">7</a>.  <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8">
-            <p id="section-toc.1-1.8.1"><a href="#section-8" class="auto internal xref">8</a>.  <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
-</li>
-          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9">
-            <p id="section-toc.1-1.9.1"><a href="#section-9" class="auto internal xref">9</a>.  <a href="#name-references" class="internal xref">References</a></p>
+            <p id="section-toc.1-1.8.1"><a href="#section-8" class="auto internal xref">8</a>.  <a href="#name-references" class="internal xref">References</a></p>
 <ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.1">
-                <p id="section-toc.1-1.9.2.1.1"><a href="#section-9.1" class="auto internal xref">9.1</a>.  <a href="#name-normative-references" class="internal xref">Normative References</a></p>
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.1">
+                <p id="section-toc.1-1.8.2.1.1"><a href="#section-8.1" class="auto internal xref">8.1</a>.  <a href="#name-normative-references" class="internal xref">Normative References</a></p>
 </li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.2">
-                <p id="section-toc.1-1.9.2.2.1"><a href="#section-9.2" class="auto internal xref">9.2</a>.  <a href="#name-informative-references" class="internal xref">Informative References</a></p>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.2">
+                <p id="section-toc.1-1.8.2.2.1"><a href="#section-8.2" class="auto internal xref">8.2</a>.  <a href="#name-informative-references" class="internal xref">Informative References</a></p>
 </li>
             </ul>
 </li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9">
+            <p id="section-toc.1-1.9.1"><a href="#appendix-A" class="auto internal xref"></a><a href="#name-contributors" class="internal xref">Contributors</a></p>
+</li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10">
-            <p id="section-toc.1-1.10.1"><a href="#appendix-A" class="auto internal xref"></a><a href="#name-contributors" class="internal xref">Contributors</a></p>
+            <p id="section-toc.1-1.10.1"><a href="#appendix-B" class="auto internal xref"></a><a href="#name-acknowledgments" class="internal xref">Acknowledgments</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11">
-            <p id="section-toc.1-1.11.1"><a href="#appendix-B" class="auto internal xref"></a><a href="#name-acknowledgments" class="internal xref">Acknowledgments</a></p>
+            <p id="section-toc.1-1.11.1"><a href="#appendix-C" class="auto internal xref"></a><a href="#name-history" class="internal xref">History</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12">
-            <p id="section-toc.1-1.12.1"><a href="#appendix-C" class="auto internal xref"></a><a href="#name-history" class="internal xref">History</a></p>
-</li>
-          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13">
-            <p id="section-toc.1-1.13.1"><a href="#appendix-D" class="auto internal xref"></a><a href="#name-authors-address" class="internal xref">Author's Address</a></p>
+            <p id="section-toc.1-1.12.1"><a href="#appendix-D" class="auto internal xref"></a><a href="#name-authors-address" class="internal xref">Author's Address</a></p>
 </li>
         </ul>
 </nav>
@@ -1330,8 +1337,9 @@ This memo is not a standard nor has it been shown to have consensus of the IETF 
           <h4 id="name-presenting-different-techni">
 <a href="#section-1.1.1" class="section-number selfRef">1.1.1. </a><a href="#name-presenting-different-techni" class="section-name selfRef">Presenting Different Technical Facets</a>
           </h4>
-<p id="section-1.1.1-1">The later sections also identify technical facets that affect deployment reasoning but are not fully resolved by the formal analysis alone.
-This explains why the memo discusses issues such as break timing, residual pre-quantum security, deployment cost, patents, and implementation behavior after presenting the formal-methods result.<a href="#section-1.1.1-1" class="pilcrow">¶</a></p>
+<p id="section-1.1.1-1">The memo identifies technical facets that affect deployment reasoning.
+Facets are categorized as <strong>primitive-level</strong> and <strong>protocol-level</strong>.
+Examples include break timing, residual pre-quantum security, deployment cost, patents, and implementation behavior.<a href="#section-1.1.1-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="minimal-implementation-guidance-for-hybrids">
@@ -1339,18 +1347,19 @@ This explains why the memo discusses issues such as break timing, residual pre-q
           <h4 id="name-minimal-implementation-guid">
 <a href="#section-1.1.2" class="section-number selfRef">1.1.2. </a><a href="#name-minimal-implementation-guid" class="section-name selfRef">Minimal Implementation Guidance for Hybrids</a>
           </h4>
-<p id="section-1.1.2-1">The implementation consideration is not only whether ML-KEM is secure as a
+<p id="section-1.1.2-1">The minimal implementation consideration for hybrid key establishment is not only whether ML-KEM is secure as a
 primitive, but also whether a TLS deployment can show that both hybrid
 components were validated, transcript-bound, and fail-closed under the
 negotiated group.<a href="#section-1.1.2-1" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="summary-of-formal-methods-works">
+<div id="technical-insights">
 <section id="section-1.1.3">
-          <h4 id="name-summary-of-formal-methods-w">
-<a href="#section-1.1.3" class="section-number selfRef">1.1.3. </a><a href="#name-summary-of-formal-methods-w" class="section-name selfRef">Summary of Formal Methods Works</a>
+          <h4 id="name-technical-insights">
+<a href="#section-1.1.3" class="section-number selfRef">1.1.3. </a><a href="#name-technical-insights" class="section-name selfRef">Technical Insights</a>
           </h4>
 <p id="section-1.1.3-1">The memo covers the formal methods for hybrid key establishment and standalone ML-KEM in TLS.
+Formal methods mostly operate at the protocol-level.
 Formal methods can provide additional value in order to maintain the high cryptographic assurance of TLS.
 This includes <em>symbolic</em> and <em>computational</em> analysis (to be interpreted as in <a href="https://eprint.iacr.org/2019/1393.pdf">SoK</a>) of integration of standalone ML-KEM in the context of TLS.
 Specifically, it covers the formal analysis <span>[<a href="#FATT-CHANCE" class="cite xref">FATT-CHANCE</a>]</span> in ProVerif on the potential issue of asymmetry.
@@ -1450,8 +1459,8 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
 <p id="section-2-3">We believe that symbolic and computational models are complementary and not a substitute of each other.<a href="#section-2-3" class="pilcrow">¶</a></p>
 <div id="sec-proof-break">
 <section id="section-2.1">
-        <h3 id="name-key-exchange-and-key-encaps">
-<a href="#section-2.1" class="section-number selfRef">2.1. </a><a href="#name-key-exchange-and-key-encaps" class="section-name selfRef">Key Exchange and Key Encapsulation</a>
+        <h3 id="name-key-establishment-and-key-e">
+<a href="#section-2.1" class="section-number selfRef">2.1. </a><a href="#name-key-establishment-and-key-e" class="section-name selfRef">Key Establishment and Key Encapsulation</a>
         </h3>
 <p id="section-2.1-1">In traditional key exchange (DHKE), both endpoints send their public key shares g<sup>x</sup> and g<sup>y</sup> to derive a shared secret g<sup>xy</sup>.<a href="#section-2.1-1" class="pilcrow">¶</a></p>
 <p id="section-2.1-2">In key encapsulation, there is essentially only one endpoint (say client) which generates the key pair <code>(dk,ek)</code> where <code>dk</code> represents the <em>secret decapsulation key</em> and <code>ek</code> represents the <em>public encapsulation key</em>.
@@ -1779,93 +1788,98 @@ separate operational cost analysis.<a href="#section-4.1-3" class="pilcrow">¶</
 </div>
 </section>
 </div>
-<div id="symbolic-analysis">
+<div id="technical-analysis">
 <section id="section-5">
-      <h2 id="name-symbolic-analysis">
-<a href="#section-5" class="section-number selfRef">5. </a><a href="#name-symbolic-analysis" class="section-name selfRef">Symbolic Analysis</a>
+      <h2 id="name-technical-analysis">
+<a href="#section-5" class="section-number selfRef">5. </a><a href="#name-technical-analysis" class="section-name selfRef">Technical Analysis</a>
       </h2>
-<p id="section-5-1">For brevity, we omit other assumptions in the properties below and focus on the difference.
-This assumes the hybrid construction to be secure.<a href="#section-5-1" class="pilcrow">¶</a></p>
-<p id="section-5-2">For implementers, the symbolic view can be read as a component-failure exercise.
-Instead of asking how hard ML-KEM or ECDHE is to break, the analysis may ask whether security properties still hold under Dolev-Yao attacker if one component secret is already available to the adversary.<a href="#section-5-2" class="pilcrow">¶</a></p>
-<div id="sec-model-analyze">
+<div id="symbolic-analysis">
 <section id="section-5.1">
-        <h3 id="name-minimum-viable-modeling">
-<a href="#section-5.1" class="section-number selfRef">5.1. </a><a href="#name-minimum-viable-modeling" class="section-name selfRef">Minimum Viable Modeling</a>
+        <h3 id="name-symbolic-analysis">
+<a href="#section-5.1" class="section-number selfRef">5.1. </a><a href="#name-symbolic-analysis" class="section-name selfRef">Symbolic Analysis</a>
         </h3>
-<p id="section-5.1-1">Based on the discussion on TLS mailing-list, simply replacing ideal DHKE by ideal ML-KEM in the formal model is not very useful. We ought to focus on the more security-critical questions about integration of ML-KEM in TLS.
-We present a few high-level observations to consider for security considerations of <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span>:<a href="#section-5.1-1" class="pilcrow">¶</a></p>
+<p id="section-5.1-1">For brevity, we omit other assumptions in the properties below and focus on the difference.
+This assumes the hybrid construction to be secure.<a href="#section-5.1-1" class="pilcrow">¶</a></p>
+<p id="section-5.1-2">For implementers, the symbolic view can be read as a component-failure exercise.
+Instead of asking how hard ML-KEM or ECDHE is to break, the analysis may ask whether security properties still hold under Dolev-Yao attacker if one component secret is already available to the adversary.<a href="#section-5.1-2" class="pilcrow">¶</a></p>
+<div id="sec-model-analyze">
+<section id="section-5.1.1">
+          <h4 id="name-minimum-viable-modeling">
+<a href="#section-5.1.1" class="section-number selfRef">5.1.1. </a><a href="#name-minimum-viable-modeling" class="section-name selfRef">Minimum Viable Modeling</a>
+          </h4>
+<p id="section-5.1.1-1">Based on the discussion on TLS mailing-list, simply replacing ideal DHKE by ideal ML-KEM in the formal model is not very useful. We ought to focus on the more security-critical questions about integration of ML-KEM in TLS.
+We present a few high-level observations to consider for security considerations of <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span>:<a href="#section-5.1.1-1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-5.1-2.1">
-            <p id="section-5.1-2.1.1">The model ought to consider that any agent could have initiated the TLS, rather than assigning the agents with static roles of client and server in the model. When agents are assigned non-static roles, it would be interesting to see whether the asymmetry issue becomes visible in some property. We consider it very critical for security considerations of <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span> and this is the key point of this memo.<a href="#section-5.1-2.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-5.1.1-2.1">
+              <p id="section-5.1.1-2.1.1">The model ought to consider that any agent could have initiated the TLS, rather than assigning the agents with static roles of client and server in the model. When agents are assigned non-static roles, it would be interesting to see whether the asymmetry issue becomes visible in some property. We consider it very critical for security considerations of <span>[<a href="#I-D.ietf-tls-mlkem" class="cite xref">I-D.ietf-tls-mlkem</a>]</span> and this is the key point of this memo.<a href="#section-5.1.1-2.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-5.1-2.2">
-            <p id="section-5.1-2.2.1">Different failure modes can be modeled.<a href="#section-5.1-2.2.1" class="pilcrow">¶</a></p>
+            <li class="normal" id="section-5.1.1-2.2">
+              <p id="section-5.1.1-2.2.1">Different failure modes can be modeled.<a href="#section-5.1.1-2.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-5.1-2.3">
-            <p id="section-5.1-2.3.1">A large part of the problem is the careful investigation of what to model, under what threat model, under what system model, under what implementation scenarios etc.<a href="#section-5.1-2.3.1" class="pilcrow">¶</a></p>
+            <li class="normal" id="section-5.1.1-2.3">
+              <p id="section-5.1.1-2.3.1">A large part of the problem is the careful investigation of what to model, under what threat model, under what system model, under what implementation scenarios etc.<a href="#section-5.1.1-2.3.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-5.1-2.4">
-            <p id="section-5.1-2.4.1">It will be interesting to see some analysis about any subtle cases where hybrid key establishment in TLS is <em>not</em> at least as good as standalone ML-KEM in TLS, since hybrid key establishment is the de facto industry standard.<a href="#section-5.1-2.4.1" class="pilcrow">¶</a></p>
+            <li class="normal" id="section-5.1.1-2.4">
+              <p id="section-5.1.1-2.4.1">It will be interesting to see some analysis about any subtle cases where hybrid key establishment in TLS is <em>not</em> at least as good as standalone ML-KEM in TLS, since hybrid key establishment is the de facto industry standard.<a href="#section-5.1.1-2.4.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-5.1-2.5">
-            <p id="section-5.1-2.5.1">We believe brainstorming about some robustness (vs. security) properties would also be useful. Even if the security properties hold, does standalone ML-KEM make side-channel leakage easier? This might be a valuable consideration for the implementers.<a href="#section-5.1-2.5.1" class="pilcrow">¶</a></p>
+            <li class="normal" id="section-5.1.1-2.5">
+              <p id="section-5.1.1-2.5.1">We believe brainstorming about some robustness (vs. security) properties would also be useful. Even if the security properties hold, does standalone ML-KEM make side-channel leakage easier? This might be a valuable consideration for the implementers.<a href="#section-5.1.1-2.5.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-5.1-2.6">
-            <p id="section-5.1-2.6.1">Analysis may be helpful to ensure that the changes -- such as the removal of hash function (cf. Appendix C.1, bullet 3 in <span>[<a href="#NistFips203" class="cite xref">NistFips203</a>]</span>) -- from Kyber to ML-KEM preserve the security proofs of Kyber.<a href="#section-5.1-2.6.1" class="pilcrow">¶</a></p>
+            <li class="normal" id="section-5.1.1-2.6">
+              <p id="section-5.1.1-2.6.1">Analysis may be helpful to ensure that the changes -- such as the removal of hash function (cf. Appendix C.1, bullet 3 in <span>[<a href="#NistFips203" class="cite xref">NistFips203</a>]</span>) -- from Kyber to ML-KEM preserve the security proofs of Kyber.<a href="#section-5.1.1-2.6.1" class="pilcrow">¶</a></p>
 </li>
-        </ul>
-<p id="section-5.1-3">Any analysis on these or related security and robustness matters is very welcome.<a href="#section-5.1-3" class="pilcrow">¶</a></p>
+          </ul>
+<p id="section-5.1.1-3">Any analysis on these or related security and robustness matters is very welcome.<a href="#section-5.1.1-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="hybrid-key-establishment">
-<section id="section-5.2">
-        <h3 id="name-hybrid-key-establishment">
-<a href="#section-5.2" class="section-number selfRef">5.2. </a><a href="#name-hybrid-key-establishment" class="section-name selfRef">Hybrid Key Establishment</a>
-        </h3>
-<p id="section-5.2-1">Hybrid key establishment still maintains the DHKE part. From formal (symbolic) analysis perspective, g<sup>x</sup> and  g<sup>y</sup> are still sent in hybrid key establishment,  g<sup>xy</sup> is still computed and we believe the commutativity property is applicable for that part as-is. From formal (symbolic) analysis perspective, ML-KEM is complementary to that.<a href="#section-5.2-1" class="pilcrow">¶</a></p>
-<p id="section-5.2-2">Specifically, from <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-ecdhe-mlkem-05#section-4" class="relref">Section 4</a> of [<a href="#I-D.ietf-tls-ecdhe-mlkem" class="cite xref">I-D.ietf-tls-ecdhe-mlkem</a>]</span>, for the symbolic analysis, X25519MLKEM768 in TLS may be viewed as:<a href="#section-5.2-2" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-5.2-3">
+<section id="section-5.1.2">
+          <h4 id="name-hybrid-key-establishment">
+<a href="#section-5.1.2" class="section-number selfRef">5.1.2. </a><a href="#name-hybrid-key-establishment" class="section-name selfRef">Hybrid Key Establishment</a>
+          </h4>
+<p id="section-5.1.2-1">Hybrid key establishment still maintains the DHKE part. From formal (symbolic) analysis perspective, g<sup>x</sup> and  g<sup>y</sup> are still sent in hybrid key establishment,  g<sup>xy</sup> is still computed and we believe the commutativity property is applicable for that part as-is. From formal (symbolic) analysis perspective, ML-KEM is complementary to that.<a href="#section-5.1.2-1" class="pilcrow">¶</a></p>
+<p id="section-5.1.2-2">Specifically, from <span><a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-ecdhe-mlkem-05#section-4" class="relref">Section 4</a> of [<a href="#I-D.ietf-tls-ecdhe-mlkem" class="cite xref">I-D.ietf-tls-ecdhe-mlkem</a>]</span>, for the symbolic analysis, X25519MLKEM768 in TLS may be viewed as:<a href="#section-5.1.2-2" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5.1.2-3">
 <pre>
 client's key_exchange value = ek || gx
 server's key_exchange value = ct || gy
 shared secret = ss || gxy
-</pre><a href="#section-5.2-3" class="pilcrow">¶</a>
+</pre><a href="#section-5.1.2-3" class="pilcrow">¶</a>
 </div>
-<p id="section-5.2-4">Formally, the property hybrid key establishment provides is:<a href="#section-5.2-4" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-5.2-5">
+<p id="section-5.1.2-4">Formally, the property hybrid key establishment provides is:<a href="#section-5.1.2-4" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5.1.2-5">
 <pre>
 Security properties of TLS hold unless *both* `gxy` and `ss` are
 available to the adversary.
-</pre><a href="#section-5.2-5" class="pilcrow">¶</a>
+</pre><a href="#section-5.1.2-5" class="pilcrow">¶</a>
 </div>
-<p id="section-5.2-6">As presented in <a href="#sec-tech-rat" class="auto internal xref">Section 6.1</a>, hybrid key establishment preserves ECDHE component <code>gxy</code>, and concatenates ML-KEM component <code>ss</code> as an additional factor.
+<p id="section-5.1.2-6">As presented in <a href="#sec-tech-rat" class="auto internal xref">Section 5.2.1</a>, hybrid key establishment preserves ECDHE component <code>gxy</code>, and concatenates ML-KEM component <code>ss</code> as an additional factor.
 So as long as <em>at least</em> one of these two secrets is not available to the adversary, all security properties should hold.
-In particular, even if ML-KEM is completely broken, i.e., <code>ss</code> is available to the adversary, the protocol retains the security level of ECDHE.<a href="#section-5.2-6" class="pilcrow">¶</a></p>
+In particular, even if ML-KEM is completely broken, i.e., <code>ss</code> is available to the adversary, the protocol retains the security level of ECDHE.<a href="#section-5.1.2-6" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="standalone-ml-kem">
-<section id="section-5.3">
-        <h3 id="name-standalone-ml-kem">
-<a href="#section-5.3" class="section-number selfRef">5.3. </a><a href="#name-standalone-ml-kem" class="section-name selfRef">Standalone ML-KEM</a>
-        </h3>
-<p id="section-5.3-1">At the symbolic level, some analysis -- such as <a href="https://eprint.iacr.org/2022/1111.pdf">this</a> for KEMTLS in Tamarin -- exists. In our understanding, both client and server encapsulate, which may bring the symmetry.
-The formal property standalone ML-KEM provides is:<a href="#section-5.3-1" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-5.3-2">
+<section id="section-5.1.3">
+          <h4 id="name-standalone-ml-kem">
+<a href="#section-5.1.3" class="section-number selfRef">5.1.3. </a><a href="#name-standalone-ml-kem" class="section-name selfRef">Standalone ML-KEM</a>
+          </h4>
+<p id="section-5.1.3-1">At the symbolic level, some analysis -- such as <a href="https://eprint.iacr.org/2022/1111.pdf">this</a> for KEMTLS in Tamarin -- exists. In our understanding, both client and server encapsulate, which may bring the symmetry.
+The formal property standalone ML-KEM provides is:<a href="#section-5.1.3-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5.1.3-2">
 <pre>
 Security properties of TLS hold unless `ss` is available to the
 adversary.
-</pre><a href="#section-5.3-2" class="pilcrow">¶</a>
+</pre><a href="#section-5.1.3-2" class="pilcrow">¶</a>
 </div>
 </section>
 </div>
 <div id="sec-results">
-<section id="section-5.4">
-        <h3 id="name-results">
-<a href="#section-5.4" class="section-number selfRef">5.4. </a><a href="#name-results" class="section-name selfRef">Results</a>
-        </h3>
-<p id="section-5.4-1">For the FATT process <span>[<a href="#TLS-FATT" class="cite xref">TLS-FATT</a>]</span>, the symbolic analysis <span>[<a href="#FATT-CHANCE" class="cite xref">FATT-CHANCE</a>]</span> was done in ProVerif by Nadim Kobeissi, who concludes:<a href="#section-5.4-1" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-5.4-2">
+<section id="section-5.1.4">
+          <h4 id="name-results">
+<a href="#section-5.1.4" class="section-number selfRef">5.1.4. </a><a href="#name-results" class="section-name selfRef">Results</a>
+          </h4>
+<p id="section-5.1.4-1">For the FATT process <span>[<a href="#TLS-FATT" class="cite xref">TLS-FATT</a>]</span>, the symbolic analysis <span>[<a href="#FATT-CHANCE" class="cite xref">FATT-CHANCE</a>]</span> was done in ProVerif by Nadim Kobeissi, who concludes:<a href="#section-5.1.4-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-5.1.4-2">
 <pre>
 The hybrid neutralizes every weakness standalone ML-KEM carries,
 both the confidentiality single point of failure and the
@@ -1889,89 +1903,91 @@ than a catastrophe, and the role-asymmetry worry, while genuinely
 the draft’s headline concern, did not surface as a distinct
 vulnerability in the server-authenticated, one-initiator-per-session
 setting analyzed here.
-</pre><a href="#section-5.4-2" class="pilcrow">¶</a>
+</pre><a href="#section-5.1.4-2" class="pilcrow">¶</a>
 </div>
-<p id="section-5.4-3">Under the stated model assumptions, the results confirm that integrating a KEM into TLS is secure as long as the primitive itself is secure.
+<p id="section-5.1.4-3">Under the stated model assumptions, the results confirm that integrating a KEM into TLS is secure as long as the primitive itself is secure.
 In our understanding, the results also imply a clear preference for hybrids under the Dolev-Yao model: if the shared secret from ML-KEM becomes available to the adversary (for example, due to an implementation bug), standalone ML-KEM loses both confidentiality and the modeled key-confirmation / matching-session authentication property.
 This should not be read as saying that the signature algorithm or CertificateVerify mechanism is itself broken.
 Rather, once the only key-exchange secret is available to the adversary, the Finished-key agreement property captured by the model no longer holds.
 Under the same condition, hybrid key establishment still preserves these modeled properties as long as the (EC)DHE secret is not available to the adversary.
-We believe this applies until a powerful CRQC exists which breaks <strong>all</strong> the bits of pre-quantum, where the condition of (EC)DHE being available to the adversary is violated.<a href="#section-5.4-3" class="pilcrow">¶</a></p>
-<p id="section-5.4-4">A practical reading of the result is:<a href="#section-5.4-4" class="pilcrow">¶</a></p>
+We believe this applies until a powerful CRQC exists which breaks <strong>all</strong> the bits of pre-quantum, where the condition of (EC)DHE being available to the adversary is violated.<a href="#section-5.1.4-3" class="pilcrow">¶</a></p>
+<p id="section-5.1.4-4">A practical reading of the result is:<a href="#section-5.1.4-4" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-5.4-5.1">
-            <p id="section-5.4-5.1.1">Standalone ML-KEM has no second key-exchange component if <code>ss</code> is exposed or mishandled.<a href="#section-5.4-5.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-5.1.4-5.1">
+              <p id="section-5.1.4-5.1.1">Standalone ML-KEM has no second key-exchange component if <code>ss</code> is exposed or mishandled.<a href="#section-5.1.4-5.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-5.4-5.2">
-            <p id="section-5.4-5.2.1">Hybrid key establishment retains a surviving ECDHE component if <code>ss</code> is exposed but <code>gxy</code> remains secret.<a href="#section-5.4-5.2.1" class="pilcrow">¶</a></p>
+            <li class="normal" id="section-5.1.4-5.2">
+              <p id="section-5.1.4-5.2.1">Hybrid key establishment retains a surviving ECDHE component if <code>ss</code> is exposed but <code>gxy</code> remains secret.<a href="#section-5.1.4-5.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-5.4-5.3">
-            <p id="section-5.4-5.3.1">Implementation tests should therefore verify not only that the handshake succeeds, but that both hybrid components were present, validated, transcript-bound, and fail-closed before traffic secrets are derived.<a href="#section-5.4-5.3.1" class="pilcrow">¶</a></p>
+            <li class="normal" id="section-5.1.4-5.3">
+              <p id="section-5.1.4-5.3.1">Implementation tests should therefore verify not only that the handshake succeeds, but that both hybrid components were present, validated, transcript-bound, and fail-closed before traffic secrets are derived.<a href="#section-5.1.4-5.3.1" class="pilcrow">¶</a></p>
 </li>
-        </ul>
-<p id="section-5.4-6">The artifacts are available <a href="https://github.com/symbolicsoft/reftls">here</a> for independent review.<a href="#section-5.4-6" class="pilcrow">¶</a></p>
+          </ul>
+<p id="section-5.1.4-6">The artifacts are available <a href="https://github.com/symbolicsoft/reftls">here</a> for independent review.<a href="#section-5.1.4-6" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
 </div>
 <div id="computational-analysis">
-<section id="section-6">
-      <h2 id="name-computational-analysis">
-<a href="#section-6" class="section-number selfRef">6. </a><a href="#name-computational-analysis" class="section-name selfRef">Computational Analysis</a>
-      </h2>
-<div id="sec-tech-rat">
-<section id="section-6.1">
-        <h3 id="name-hybrids">
-<a href="#section-6.1" class="section-number selfRef">6.1. </a><a href="#name-hybrids" class="section-name selfRef">Hybrids</a>
+<section id="section-5.2">
+        <h3 id="name-computational-analysis">
+<a href="#section-5.2" class="section-number selfRef">5.2. </a><a href="#name-computational-analysis" class="section-name selfRef">Computational Analysis</a>
         </h3>
-<p id="section-6.1-1">Technically, a proof of <span>[<a href="#I-D.ietf-tls-hybrid-design-09" class="cite xref">I-D.ietf-tls-hybrid-design-09</a>]</span> is done in the computational model using CryptoVerif (cf. <a href="https://bblanche.gitlabpages.inria.fr/publications/BlanchetJacommeCSF24.pdf">ref</a>). As per discussion on TLS mailing-list, it appears that the proof applies to the latest version of the spec <span>[<a href="#I-D.ietf-tls-hybrid-design" class="cite xref">I-D.ietf-tls-hybrid-design</a>]</span>, as there seem to be no substantive changes from the perspective of formal proof.<a href="#section-6.1-1" class="pilcrow">¶</a></p>
+<div id="sec-tech-rat">
+<section id="section-5.2.1">
+          <h4 id="name-hybrids">
+<a href="#section-5.2.1" class="section-number selfRef">5.2.1. </a><a href="#name-hybrids" class="section-name selfRef">Hybrids</a>
+          </h4>
+<p id="section-5.2.1-1">Technically, a proof of <span>[<a href="#I-D.ietf-tls-hybrid-design-09" class="cite xref">I-D.ietf-tls-hybrid-design-09</a>]</span> is done in the computational model using CryptoVerif (cf. <a href="https://bblanche.gitlabpages.inria.fr/publications/BlanchetJacommeCSF24.pdf">ref</a>). As per discussion on TLS mailing-list, it appears that the proof applies to the latest version of the spec <span>[<a href="#I-D.ietf-tls-hybrid-design" class="cite xref">I-D.ietf-tls-hybrid-design</a>]</span>, as there seem to be no substantive changes from the perspective of formal proof.<a href="#section-5.2.1-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="standalone-ml-kem-1">
-<section id="section-6.2">
-        <h3 id="name-standalone-ml-kem-2">
-<a href="#section-6.2" class="section-number selfRef">6.2. </a><a href="#name-standalone-ml-kem-2" class="section-name selfRef">Standalone ML-KEM</a>
-        </h3>
-<p id="section-6.2-1">Some existing computational analysis for standalone ML-KEM in TLS include <a href="https://eprint.iacr.org/2021/844">this</a>, <a href="https://eprint.iacr.org/2024/1360">this</a>, and <a href="https://www.mdpi.com/1099-4300/27/12/1242">this</a>.
-All of these are based on pen-and-paper (computational) proofs.<a href="#section-6.2-1" class="pilcrow">¶</a></p>
-<p id="section-6.2-2">For implementers, the practical reading of these analyses is a key-schedule and transcript-binding check.
-The question is whether the KEM shared secret is introduced into TLS in a way that preserves the claimed security property.<a href="#section-6.2-2" class="pilcrow">¶</a></p>
+<section id="section-5.2.2">
+          <h4 id="name-standalone-ml-kem-2">
+<a href="#section-5.2.2" class="section-number selfRef">5.2.2. </a><a href="#name-standalone-ml-kem-2" class="section-name selfRef">Standalone ML-KEM</a>
+          </h4>
+<p id="section-5.2.2-1">Some existing computational analysis for standalone ML-KEM in TLS include <a href="https://eprint.iacr.org/2021/844">this</a>, <a href="https://eprint.iacr.org/2024/1360">this</a>, and <a href="https://www.mdpi.com/1099-4300/27/12/1242">this</a>.
+All of these are based on pen-and-paper (computational) proofs.<a href="#section-5.2.2-1" class="pilcrow">¶</a></p>
+<p id="section-5.2.2-2">For implementers, the practical reading of these analyses is a key-schedule and transcript-binding check.
+The question is whether the KEM shared secret is introduced into TLS in a way that preserves the claimed security property.<a href="#section-5.2.2-2" class="pilcrow">¶</a></p>
+</section>
+</div>
 </section>
 </div>
 </section>
 </div>
 <div id="sec-sec-cons">
-<section id="section-7">
+<section id="section-6">
       <h2 id="name-security-considerations">
-<a href="#section-7" class="section-number selfRef">7. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
+<a href="#section-6" class="section-number selfRef">6. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
       </h2>
-<p id="section-7-1">The whole document is about improving security considerations.<a href="#section-7-1" class="pilcrow">¶</a></p>
-<p id="section-7-2">Like all security proofs, formal analysis is only as strong as its assumptions and model.
+<p id="section-6-1">The whole document is about improving security considerations.<a href="#section-6-1" class="pilcrow">¶</a></p>
+<p id="section-6-2">Like all security proofs, formal analysis is only as strong as its assumptions and model.
 The scope is typically limited, and the model does not necessarily capture real-world deployment complexity, implementation details, operational constraints, or misuse scenarios.
 Technically, formal proof only guarantees anything if all the assumptions hold, which is unlikely in practice.
-Formal methods should be used as complementary and not as substitute of other analysis methods.<a href="#section-7-2" class="pilcrow">¶</a></p>
-<p id="section-7-3">For implementations, this means that formal-methods results should be paired
+Formal methods should be used as complementary and not as substitute of other analysis methods.<a href="#section-6-2" class="pilcrow">¶</a></p>
+<p id="section-6-3">For implementations, this means that formal-methods results should be paired
 with negative testing and review evidence for malformed shares, transcript
-mismatches, silent fallback, premature secret derivation, and failure handling.<a href="#section-7-3" class="pilcrow">¶</a></p>
+mismatches, silent fallback, premature secret derivation, and failure handling.<a href="#section-6-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="iana-considerations">
-<section id="section-8">
+<section id="section-7">
       <h2 id="name-iana-considerations">
-<a href="#section-8" class="section-number selfRef">8. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
+<a href="#section-7" class="section-number selfRef">7. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
       </h2>
-<p id="section-8-1">This memo has no IANA actions.<a href="#section-8-1" class="pilcrow">¶</a></p>
+<p id="section-7-1">This memo has no IANA actions.<a href="#section-7-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sec-combined-references">
-<section id="section-9">
+<section id="section-8">
       <h2 id="name-references">
-<a href="#section-9" class="section-number selfRef">9. </a><a href="#name-references" class="section-name selfRef">References</a>
+<a href="#section-8" class="section-number selfRef">8. </a><a href="#name-references" class="section-name selfRef">References</a>
       </h2>
 <div id="sec-normative-references">
-<section id="section-9.1">
+<section id="section-8.1">
         <h3 id="name-normative-references">
-<a href="#section-9.1" class="section-number selfRef">9.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
+<a href="#section-8.1" class="section-number selfRef">8.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
         </h3>
 <dl class="references">
 <dt id="I-D.ietf-tls-mlkem">[I-D.ietf-tls-mlkem]</dt>
@@ -2002,9 +2018,9 @@ mismatches, silent fallback, premature secret derivation, and failure handling.<
 </section>
 </div>
 <div id="sec-informative-references">
-<section id="section-9.2">
+<section id="section-8.2">
         <h3 id="name-informative-references">
-<a href="#section-9.2" class="section-number selfRef">9.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
+<a href="#section-8.2" class="section-number selfRef">8.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
         </h3>
 <dl class="references">
 <dt id="FATT-CHANCE">[FATT-CHANCE]</dt>
@@ -2049,9 +2065,9 @@ mismatches, silent fallback, premature secret derivation, and failure handling.<
       <h2 id="name-contributors">
 <a href="#name-contributors" class="section-name selfRef">Contributors</a>
       </h2>
-<p id="appendix-A-1">Nadim Kobeissi performed a thorough formal analysis <a href="#sec-results" class="auto internal xref">Section 5.4</a> at high priority based on our call for analysis in previous versions of the memo to get a confirmation.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
+<p id="appendix-A-1">Nadim Kobeissi performed a thorough formal analysis <a href="#sec-results" class="auto internal xref">Section 5.1.4</a> at high priority based on our call for analysis in previous versions of the memo to get a confirmation.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
 <p id="appendix-A-2">Text in <a href="#sec-impl-negative-cases" class="auto internal xref">Section 4</a> was proposed by Songbo Bu. He also proposed revisions in <a href="#sec-gen-issues" class="auto internal xref">Section 3</a>.<a href="#appendix-A-2" class="pilcrow">¶</a></p>
-<p id="appendix-A-3">Text in <a href="#sec-sec-cons" class="auto internal xref">Section 7</a> is based on the proposal by John Preuß Mattsson.<a href="#appendix-A-3" class="pilcrow">¶</a></p>
+<p id="appendix-A-3">Text in <a href="#sec-sec-cons" class="auto internal xref">Section 6</a> is based on the proposal by John Preuß Mattsson.<a href="#appendix-A-3" class="pilcrow">¶</a></p>
 <p id="appendix-A-4"><a href="#sec-gen-issues" class="auto internal xref">Section 3</a> is based on mailing-list discussion, referenced technical facets, and deployment questions raised during review.<a href="#appendix-A-4" class="pilcrow">¶</a></p>
 <p id="appendix-A-5">We gratefully thank Yaakov Stein and Ilari Liusvaara for their substantial technical guidance, valuable feedback, and contributions.<a href="#appendix-A-5" class="pilcrow">¶</a></p>
 </section>
@@ -2104,7 +2120,7 @@ mismatches, silent fallback, premature secret derivation, and failure handling.<
           <p id="appendix-C-6.1.1">Added gap analysis<a href="#appendix-C-6.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-C-6.2">
-          <p id="appendix-C-6.2.1">What to model and analyze? <a href="#sec-model-analyze" class="auto internal xref">Section 5.1</a><a href="#appendix-C-6.2.1" class="pilcrow">¶</a></p>
+          <p id="appendix-C-6.2.1">What to model and analyze? <a href="#sec-model-analyze" class="auto internal xref">Section 5.1.1</a><a href="#appendix-C-6.2.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-C-6.3">
           <p id="appendix-C-6.3.1">Added FATT review is harmless<a href="#appendix-C-6.3.1" class="pilcrow">¶</a></p>
