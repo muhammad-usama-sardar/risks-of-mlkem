@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-06-14T03:31:24.383528+00:00",
+  "timestamp": "2026-06-16T03:36:34.407073+00:00",
   "repo": "muhammad-usama-sardar/risks-of-mlkem",
   "labels": [
     {
@@ -47,6 +47,11 @@
       "name": "wontfix",
       "description": "This will not be worked on",
       "color": "ffffff"
+    },
+    {
+      "name": "on hold",
+      "description": "",
+      "color": "834aac"
     }
   ],
   "issues": [
@@ -88,7 +93,7 @@
       "labels": [],
       "body": "Include the technical points from the review: \n\nhttps://mailarchive.ietf.org/arch/msg/tls/jlsYHENwqMv-4XPRvunqKsAL36k/",
       "createdAt": "2026-06-13T09:09:35Z",
-      "updatedAt": "2026-06-13T23:15:32Z",
+      "updatedAt": "2026-06-14T14:51:12Z",
       "closedAt": null,
       "comments": [
         {
@@ -97,6 +102,20 @@
           "body": "Initial pass over Joshua's review against the current editor's copy.\n\nI would filter out WG-process, government-rulemaking, and recommendation-status arguments, and keep only the technical facets below. Some are already covered; I do not think all need new text.\n\n1. General deployment / code complexity. The draft already says cost needs analysis, but the code-complexity subpoint could be more explicit: in broad TLS deployments, ECDHE compatibility remains required for a long time, so standalone ML-KEM does not automatically reduce implementation complexity. This is different from constrained or closed deployments where endpoints are controlled.\n\n2. Wire size / fragmentation. The cost table covers key_share bytes, but the review also asks whether ClientHello fragmentation or middlebox pressure is materially improved by removing the X25519 part. If kept, I would frame this as a measurement question, not as a claim.\n\n3. Constrained / embedded deployments. The review asks for concrete implementer evidence on whether hybrid really blocks adoption in constrained environments, or whether standalone only helps in narrow endpoint-controlled cases. The current cost section partly covers this, but not the implementer-evidence angle.\n\n4. Structured-lattice confidence. The current \"Shiny New Crypto\" section is intentionally short. One technical facet from the review is that confidence in ML-KEM depends not only on age, but also on the structured-lattice setting, reduction assumptions, and ongoing cryptanalysis. This may be a small addition there if we want that facet visible.\n\n5. Alternative hybrid design points. If the motivation is size, constrained deployment, or compatibility, the review points toward asking whether a different hybrid point could address the concern before moving to standalone. This may already be covered by \"depth of hybrids\", but it could be made slightly more concrete.\n\n6. Implementation novelty / stable-reference value. The review questions what behavior is uniquely specified by the standalone draft beyond assigned codepoints and removing ECDH from the hybrid construction. This is partly a publication-necessity point, so I would be careful. If added, I would phrase it neutrally as an implementation-maintainability question, not as a process argument.\n\nAlready covered reasonably well in the current text: formal-methods framing, implementation negative cases, cost not being one scalar value, urgency/timing, publication necessity at a high level, patents/IPR, newness/early-analysis, and the hybrid/standalone security comparison.\n\nPotential minimal PR later: one compact paragraph each for (1) compatibility/code complexity, (2) wire-size/fragmentation as a measurement question, and (3) structured-lattice confidence. I would not touch WG-process or federal-policy arguments.\n",
           "createdAt": "2026-06-13T23:15:32Z",
           "updatedAt": "2026-06-13T23:15:32Z"
+        },
+        {
+          "author": "muhammad-usama-sardar",
+          "authorAssociation": "OWNER",
+          "body": "Thanks. Sounds good, PR is welcome on wherever existing points can be improved or where new points can be added. Please note my latest reorganization.",
+          "createdAt": "2026-06-14T14:09:56Z",
+          "updatedAt": "2026-06-14T14:09:56Z"
+        },
+        {
+          "author": "B1ueD0g",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Follow-up after #11 and #12: I would not add another text PR until those settle, but two concrete next work items seem useful.\n\n1. Implementation-evidence checklist\n\nA useful small appendix or implementation-facing note could separate the evidence an implementation can actually produce from the abstract security argument:\n\n- negotiated group evidence: the implementation can show that the selected group was the intended hybrid or standalone group;\n- component-presence evidence: for hybrid groups, both ECDHE and ML-KEM inputs are present and accepted before key schedule input;\n- transcript-binding evidence: the accepted key exchange inputs are bound to the same handshake transcript and negotiated group;\n- failure-path evidence: malformed shares, missing components, wrong group, transcript mismatch, and silent fallback fail closed;\n- observability evidence: logs, traces, APIs, or test harnesses can distinguish a real hybrid acceptance from a fallback or partial acceptance.\n\nThis could stay explicitly non-normative and implementation-facing, so it does not turn the memo into a test-suite document.\n\n2. Cost-measurement plan\n\nFor the cost discussion, I think the cleanest next step is to avoid a conclusion and instead define what would need to be measured:\n\n- wire bytes at full TLS-handshake granularity, not only key_share fields;\n- ClientHello / ServerHello size, record boundaries, fragmentation, and retry behavior;\n- CPU and memory under representative endpoint classes;\n- implementation complexity: code paths that remain necessary for compatibility, policy, and fallback;\n- operational rollout cost: deployment class, endpoint control, monitoring, and interop/debugging burden.\n\nThis would let the document say \"cost needs evidence by deployment class\" without asserting that standalone ML-KEM is or is not cheaper in general.\n\nI would wait for #11/#12 feedback before turning either into another PR, to avoid creating overlapping text churn.\n",
+          "createdAt": "2026-06-14T14:51:12Z",
+          "updatedAt": "2026-06-14T14:51:12Z"
         }
       ]
     },
@@ -130,7 +149,7 @@
       "labels": [],
       "body": "Separate out primitive vs. protocol integration",
       "createdAt": "2026-06-13T10:26:54Z",
-      "updatedAt": "2026-06-13T14:25:18Z",
+      "updatedAt": "2026-06-14T14:50:00Z",
       "closedAt": null,
       "comments": [
         {
@@ -139,6 +158,13 @@
           "body": "Should we use it as a top-level distinction?",
           "createdAt": "2026-06-13T14:25:18Z",
           "updatedAt": "2026-06-13T14:25:18Z"
+        },
+        {
+          "author": "B1ueD0g",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I think the current top-level split into primitive-level and protocol-level is useful and probably enough for now.\n\nMy suggestion would be:\n\n- keep primitive-level for questions about ML-KEM/X25519 assumptions, CRQC impact, structured-lattice confidence, patents, and designer recommendations;\n- keep protocol-level for TLS integration, deployment cost, codepoint/publication questions, implementation bugs, hybrid depth, and formal-methods scope;\n- avoid adding deployment-level or implementation-level as additional top-level sections unless those parts grow substantially.\n\nThat keeps the document readable as a primer and avoids turning the taxonomy itself into another debate. The deployment/implementation points can still appear under protocol-level, because they are mainly about how the TLS construction is integrated, deployed, and validated.\n\nI opened #11 to fit the review-derived cost/deployment points into the current split rather than changing the taxonomy again.\n",
+          "createdAt": "2026-06-14T14:50:00Z",
+          "updatedAt": "2026-06-14T14:50:00Z"
         }
       ]
     },
@@ -150,11 +176,13 @@
       "state": "OPEN",
       "author": "muhammad-usama-sardar",
       "authorAssociation": "OWNER",
-      "assignees": [],
+      "assignees": [
+        "muhammad-usama-sardar"
+      ],
       "labels": [],
       "body": "",
       "createdAt": "2026-06-14T01:36:22Z",
-      "updatedAt": "2026-06-14T01:36:22Z",
+      "updatedAt": "2026-06-14T14:06:36Z",
       "closedAt": null,
       "comments": []
     }
@@ -635,6 +663,108 @@
           ]
         }
       ]
+    },
+    {
+      "number": 11,
+      "id": "PR_kwDOSdcEOM7mQQ09",
+      "title": "Add deployment facets from review",
+      "url": "https://github.com/muhammad-usama-sardar/risks-of-mlkem/pull/11",
+      "state": "OPEN",
+      "author": "B1ueD0g",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "## Summary\n\nAdds a small set of technical facets from the thorough review pass in #7:\n\n- clarifies that ML-KEM confidence is not only about calendar age, but also structured-lattice assurance, parameter choices, reduction assumptions, and implementation behavior\n- frames wire-size / middlebox questions as full-handshake measurement questions rather than key_share-byte claims\n- separates broad Internet deployments from closed or constrained endpoint-controlled deployments when discussing implementation and operational cost\n- notes that alternative hybrid design points may be relevant when the motivation is size, constrained deployment, or operational simplicity\n\n## Validation\n\n- `git diff --check` passes\n- `make` was attempted locally, but failed in the existing local Ruby/OpenSSL remote-resource fetch path: `SSL_connect SYSCALL returned=5 ... kramdown-rfc2629 get_and_write_resource`. This appears to be the same local environment/network issue seen before, not a markdown diff error.\n\nRelated to #7.",
+      "createdAt": "2026-06-14T14:42:19Z",
+      "updatedAt": "2026-06-16T01:39:57Z",
+      "baseRepository": "muhammad-usama-sardar/risks-of-mlkem",
+      "baseRefName": "main",
+      "baseRefOid": "302f368ed9e0f6cfdd83868d49a4a73c3097a97a",
+      "headRepository": "B1ueD0g/risks-of-mlkem",
+      "headRefName": "songbo-technical-facets-review",
+      "headRefOid": "3bfc4e1ed4191b20577aa344bad10a41d471445b",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "B1ueD0g",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I reworked the intro text again and kept the split explicit as primitive-level vs protocol-level, including a single explicit sentence to prevent formal-method claims from being mixed into deployment/operational points. Also rebased both PRs onto upstream/main@302f368 to keep context aligned. If you want, I can provide a minimal diff excerpt next.",
+          "createdAt": "2026-06-16T01:39:57Z",
+          "updatedAt": "2026-06-16T01:39:57Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOSdcEOM8AAAABC9Cocg",
+          "commit": {
+            "abbreviatedOid": "78311e4"
+          },
+          "author": "muhammad-usama-sardar",
+          "authorAssociation": "OWNER",
+          "state": "CHANGES_REQUESTED",
+          "body": "Please recheck that the added comments are still aligned with primitive-level and protocol-level division.",
+          "createdAt": "2026-06-14T15:58:57Z",
+          "updatedAt": "2026-06-14T16:02:40Z",
+          "comments": [
+            {
+              "originalPosition": 8,
+              "body": "Try to defocus proofs. Do I understand correctly that you are supporting 'new crypto' point by low confidence points.",
+              "createdAt": "2026-06-14T15:58:57Z",
+              "updatedAt": "2026-06-14T16:02:40Z"
+            },
+            {
+              "originalPosition": 19,
+              "body": "By ClientHello size, you mean dependency on other extensions, right?",
+              "createdAt": "2026-06-14T16:00:30Z",
+              "updatedAt": "2026-06-14T16:02:40Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 12,
+      "id": "PR_kwDOSdcEOM7mQU_V",
+      "title": "Defocus formal methods in framing",
+      "url": "https://github.com/muhammad-usama-sardar/risks-of-mlkem/pull/12",
+      "state": "OPEN",
+      "author": "B1ueD0g",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "## Summary\n\nDefocuses formal methods in the opening framing without changing the technical conclusions:\n\n- makes the abstract start with technical facets and deployment reasoning rather than formal analysis\n- describes formal-analysis work as one input to the broader discussion\n- renames the introductory subsection to \"Formal Methods as One Input\"\n- adjusts the motivation text to foreground primitive assumptions, protocol integration, implementation behavior, and operational risk\n\nThis is intended to address the framing direction in #10 while preserving the existing formal-methods content.\n\n## Validation\n\n- `git diff --check` passes\n- `make` was attempted locally, but failed in the existing macOS Ruby/OpenSSL remote-resource fetch path: `SSL_connect SYSCALL returned=5 ... kramdown-rfc2629 get_and_write_resource`. This is the same local environment/network failure seen on the previous PRs, not a markdown diff failure.\n\nAddresses #10.",
+      "createdAt": "2026-06-14T14:49:37Z",
+      "updatedAt": "2026-06-16T01:40:01Z",
+      "baseRepository": "muhammad-usama-sardar/risks-of-mlkem",
+      "baseRefName": "main",
+      "baseRefOid": "302f368ed9e0f6cfdd83868d49a4a73c3097a97a",
+      "headRepository": "B1ueD0g/risks-of-mlkem",
+      "headRefName": "songbo-defocus-formal-methods",
+      "headRefOid": "c6a0dd6c6c38434bc2e8609fede2c52b44c4a9d1",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "muhammad-usama-sardar",
+          "authorAssociation": "OWNER",
+          "body": "Sorry, I was simultaneously working on it. I've pushed my local changes. Please rebase on my changes.",
+          "createdAt": "2026-06-14T15:55:50Z",
+          "updatedAt": "2026-06-14T15:56:12Z"
+        },
+        {
+          "author": "B1ueD0g",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Done \u2014 I rebased this PR onto upstream/main@302f368 and kept the scope changes minimal. The intent is still the same: framing formal methods as one input, not a substitute for deployment/integration text.",
+          "createdAt": "2026-06-16T01:40:01Z",
+          "updatedAt": "2026-06-16T01:40:01Z"
+        }
+      ],
+      "reviews": []
     }
   ]
 }
