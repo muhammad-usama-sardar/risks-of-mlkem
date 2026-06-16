@@ -77,7 +77,8 @@ The memo serves three objectives:
 ### Presenting Different Technical Facets
 
 The memo identifies technical facets that affect deployment reasoning.
-Facets are categorized as **primitive-level** and **protocol-level**.
+Facets are categorized as **primitive-level** and **protocol-level** so that
+formal-security arguments and deployment/integration concerns stay separate.
 Examples include break timing, residual pre-quantum security, deployment cost, patents, and implementation behavior.
 
 ### Minimal Implementation Guidance for Hybrids
@@ -86,7 +87,7 @@ primitive, but also whether a TLS deployment can show that both hybrid
 components were validated, transcript-bound, and fail-closed under the
 negotiated group.
 
-### Technical Insights
+### Formal Methods as One Input
 
 The memo covers the formal methods for hybrid key establishment and standalone ML-KEM in TLS.
 Formal methods mostly operate at the protocol-level.
