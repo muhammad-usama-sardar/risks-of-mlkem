@@ -471,8 +471,16 @@ Technically, a proof of {{I-D.ietf-tls-hybrid-design-09}} is done in the computa
 Some existing computational analysis for standalone ML-KEM in TLS include [this](https://eprint.iacr.org/2021/844), [this](https://eprint.iacr.org/2024/1360), and [this](https://www.mdpi.com/1099-4300/27/12/1242).
 All of these are based on pen-and-paper (computational) proofs.
 
-For implementers, the practical reading of these analyses is a key-schedule and transcript-binding check.
-The question is whether the KEM shared secret is introduced into TLS in a way that preserves the claimed security property.
+For implementers, the practical reading of these analyses is a key-schedule and
+transcript-binding check.  The question is whether the KEM shared secret is
+introduced into TLS in a way that preserves the claimed security property.
+This should not be read as a replacement for malformed-input, API-misuse, or
+fallback testing.  For ML-KEM in particular, invalid ciphertext processing uses
+implicit rejection rather than a conventional decapsulation-failure signal; the
+TLS-level behavior to test is that inconsistent KEM inputs, wrong group
+selection, transcript mismatch, or incomplete fallback paths do not produce a
+usable handshake and do not silently continue under a different negotiated
+security property.
 
 
 
