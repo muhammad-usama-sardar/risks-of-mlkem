@@ -4,8 +4,8 @@
 
 Independent Submission Stream                               M. U. Sardar
 Internet-Draft                                       TU Dresden, Germany
-Intended status: Informational                              14 June 2026
-Expires: 16 December 2026
+Intended status: Informational                              21 June 2026
+Expires: 23 December 2026
 
 
  Analysis of Hybrid Key Establishment and Standalone ML-KEM in TLS 1.3
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 16 December 2026.
+   This Internet-Draft will expire on 23 December 2026.
 
 Copyright Notice
 
@@ -330,7 +330,12 @@ regression, unless CRQC exists to break most ECC keys.
    starting some efforts for detailed analysis.  The extended deadline
    for submission is 22 June 2026.  Please see the latest CFRG chairs
    email (https://mailarchive.ietf.org/arch/msg/
-   cfrg/6K43Ycr062Ym1G0q4WHxZQ2HW8M/) for further details.
+   cfrg/6K43Ycr062Ym1G0q4WHxZQ2HW8M/) for further details.  The
+   confidence question is not only about calendar age.  For deployers,
+   the relevant technical question is how much assurance has accumulated
+   for the structured-lattice setting, the parameter choices, the
+   reduction assumptions, and the implementation behavior of the
+   construction.  That is a risk-management input.
 
 3.1.7.  Outstanding NIST Comments
 
@@ -391,10 +396,23 @@ regression, unless CRQC exists to break most ECC keys.
 
                                   Table 1
 
+   This observation does not by itself settle wire-size or middlebox
+   questions.  Those questions need to be measured at the full TLS
+   handshake level, including ClientHello size, record boundaries,
+   fragmentation behavior, retry paths, and the deployment's existing
+   extension set.
+
    Other "costs" depend on several factors -- including implementation
    details, deployment scenario, latency budget, memory pressure, code
    complexity, and operational rollout cost -- and should not be treated
-   as one scalar value.
+   as one scalar value.  For broad Internet-facing deployments, ECDHE
+   and hybrid support are likely to remain necessary for compatibility
+   and policy reasons, so standalone ML-KEM does not automatically
+   remove the implementation, testing, or operational cost of the
+   traditional component.  The conclusion may be different for closed,
+   constrained, or endpoint-controlled deployments, but that is a
+   deployment-class-specific claim and needs evidence from those
+   environments.
 
    There seems to be a need for a thorough study to understand the
    "cost."  A useful analysis would separate wire bytes, CPU, memory,
@@ -430,7 +448,10 @@ regression, unless CRQC exists to break most ECC keys.
    is only one composition point; other designs could combine module
    lattices, code-based KEMs, or hash-based components.  That broader
    design space is outside the scope of the formal-methods results
-   discussed above.
+   discussed above.  If the motivation for standalone ML-KEM is size,
+   constrained deployment, or operational simplicity, another technical
+   question is whether a different hybrid design point could address
+   that motivation while retaining a second cryptographic component.
 
 4.  Implementation-Facing Negative Cases
 
