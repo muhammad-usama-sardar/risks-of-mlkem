@@ -236,6 +236,11 @@ Please note that this argument is based on the security of *primitives*, rather 
 
 ML-KEM is quite new in the IETF and even in the IRTF.
 CFRG is starting some efforts for detailed analysis. The extended deadline for submission is 22 June 2026. Please see the latest [CFRG chairs email](https://mailarchive.ietf.org/arch/msg/cfrg/6K43Ycr062Ym1G0q4WHxZQ2HW8M/) for further details.
+The confidence question is not only about calendar age.
+For deployers, the relevant technical question is how much assurance has
+accumulated for the structured-lattice setting, the parameter choices, the
+reduction assumptions, and the implementation behavior of the construction.
+That is a risk-management input.
 
 ### Outstanding NIST Comments
 One concrete position is that not all comments submitted during the open review were fully addressed.  Please see comments [here](https://csrc.nist.gov/files/pubs/fips/203/ipd/docs/fips-203-initial-public-comments-2023.pdf).
@@ -272,9 +277,21 @@ Our observation from {{Section 4 of -hybrid}} is that -- for example -- for X255
 | Client share  | 1184               | 32          |
 | Server share  | 1088               | 32          |
 
+This observation does not by itself settle wire-size or middlebox questions.
+Those questions need to be measured at the full TLS handshake level, including
+ClientHello size, record boundaries, fragmentation behavior, retry paths, and
+the deployment's existing extension set.
+
 Other "costs" depend on several factors -- including implementation details,
 deployment scenario, latency budget, memory pressure, code complexity, and
 operational rollout cost -- and should not be treated as one scalar value.
+For broad Internet-facing deployments, ECDHE and hybrid support are likely to
+remain necessary for compatibility and policy reasons, so standalone ML-KEM
+does not automatically remove the implementation, testing, or operational cost
+of the traditional component.
+The conclusion may be different for closed, constrained, or endpoint-controlled
+deployments, but that is a deployment-class-specific claim and needs evidence
+from those environments.
 
 There seems to be a need for a thorough study to understand the "cost."
 A useful analysis would separate wire bytes, CPU, memory, latency, implementation
@@ -303,6 +320,10 @@ The depth of a hybrid is itself a design question.  ML-KEM plus ECC is only one
 composition point; other designs could combine module lattices, code-based KEMs,
 or hash-based components.  That broader design space is outside the scope of the
 formal-methods results discussed above.
+If the motivation for standalone ML-KEM is size, constrained deployment, or
+operational simplicity, another technical question is whether a different
+hybrid design point could address that motivation while retaining a second
+cryptographic component.
 
 
 # Implementation-Facing Negative Cases
