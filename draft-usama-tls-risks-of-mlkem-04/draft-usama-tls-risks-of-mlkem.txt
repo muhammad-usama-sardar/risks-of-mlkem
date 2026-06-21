@@ -1,0 +1,928 @@
+
+
+
+
+Independent Submission Stream                               M. U. Sardar
+Internet-Draft                                       TU Dresden, Germany
+Intended status: Informational                              21 June 2026
+Expires: 23 December 2026
+
+
+ Analysis of Hybrid Key Establishment and Standalone ML-KEM in TLS 1.3
+                 draft-usama-tls-risks-of-mlkem-latest
+
+Abstract
+
+   This memo is a work-in-progress and maps out the technical facets
+   relevant to the quantum-resistant key establishment in TLS 1.3 and
+   provides some preliminary discussion to help developers and
+   policymakers make informed choices.  In particular, it presents
+   hybrid key establishment and standalone ML-KEM in TLS 1.3.  Moreover,
+   it offers minimal implementation guidance for hybrid key
+   establishment.  The memo finally presents technical insights into
+   hybrid key establishment and standalone ML-KEM in TLS 1.3.  Our
+   observation is that hybrid key establishment is preferable over
+   standalone ML-KEM until a powerful CRQC exists which breaks most bits
+   of pre-quantum.  This memo is not a standard nor has it been shown to
+   have consensus of the IETF community.
+
+About This Document
+
+   This note is to be removed before publishing as an RFC.
+
+   The latest revision of this draft can be found at https://muhammad-
+   usama-sardar.github.io/risks-of-mlkem/draft-usama-tls-risks-of-
+   mlkem.html.  Status information for this document may be found at
+   https://datatracker.ietf.org/doc/draft-usama-tls-risks-of-mlkem/.
+
+   Source for this draft and an issue tracker can be found at
+   https://github.com/muhammad-usama-sardar/risks-of-mlkem.
+
+Status of This Memo
+
+   This Internet-Draft is submitted in full conformance with the
+   provisions of BCP 78 and BCP 79.
+
+   Internet-Drafts are working documents of the Internet Engineering
+   Task Force (IETF).  Note that other groups may also distribute
+   working documents as Internet-Drafts.  The list of current Internet-
+   Drafts is at https://datatracker.ietf.org/drafts/current/.
+
+   Internet-Drafts are draft documents valid for a maximum of six months
+   and may be updated, replaced, or obsoleted by other documents at any
+   time.  It is inappropriate to use Internet-Drafts as reference
+   material or to cite them other than as "work in progress."
+
+   This Internet-Draft will expire on 23 December 2026.
+
+Copyright Notice
+
+   Copyright (c) 2026 IETF Trust and the persons identified as the
+   document authors.  All rights reserved.
+
+   This document is subject to BCP 78 and the IETF Trust's Legal
+   Provisions Relating to IETF Documents (https://trustee.ietf.org/
+   license-info) in effect on the date of publication of this document.
+   Please review these documents carefully, as they describe your rights
+   and restrictions with respect to this document.
+
+Table of Contents
+
+   1.  Introduction
+     1.1.  Objectives
+       1.1.1.  Identifying Different Technical Facets
+       1.1.2.  Minimal Implementation Guidance for Hybrid Key
+               Establishment
+       1.1.3.  Technical Insights
+   2.  Conventions and Definitions
+     2.1.  Key Establishment and Key Encapsulation
+   3.  Technical Facets
+     3.1.  Primitive-level
+       3.1.1.  Which breaks first: ML-KEM-768 or X25519?
+       3.1.2.  Does CRQC Break All Bits of Pre-quantum?
+       3.1.3.  Two Hardness Problems
+       3.1.4.  Confidence in ML-KEM
+       3.1.5.  Potentially Outstanding NIST Comments
+       3.1.6.  Patents
+     3.2.  Protocol-level
+       3.2.1.  Policy/Regulations
+       3.2.2.  Urgency
+       3.2.3.  Recommendation of Designers
+       3.2.4.  Cost
+       3.2.5.  Is Publication Necessary?
+       3.2.6.  Formal Mapping of FIPS to IETF BCP14
+       3.2.7.  Implementation Bugs
+       3.2.8.  Depth of Hybrids
+   4.  Implementation-Facing Negative Cases
+     4.1.  Argument Matrix for Implementation Review
+   5.  Technical Analysis
+     5.1.  Minimum Viable Modeling
+     5.2.  Symbolic Analysis
+       5.2.1.  Hybrid Key Establishment
+       5.2.2.  Standalone ML-KEM
+       5.2.3.  Results
+     5.3.  Computational Analysis
+       5.3.1.  Hybrids
+       5.3.2.  Standalone ML-KEM
+   6.  Security Considerations
+   7.  IANA Considerations
+   8.  References
+     8.1.  Normative References
+     8.2.  Informative References
+   Contributors
+   Acknowledgments
+   History
+   Author's Address
+
+1.  Introduction
+
+   Readers are assumed to be familiar with [NistFips203],
+   [I-D.ietf-tls-rfc8446bis], and [I-D.ietf-tls-mlkem].  Please note
+   that the memo has currently several hyperlinks.
+
+1.1.  Objectives
+
+   The memo serves three objectives:
+
+   *  Identifying the underlying technical facets and common
+      complexities of the deployment to provide clarity
+
+   *  Minimal implementation guidance for hybrid key establishment
+
+   *  Summary of formal methods works for hybrid key establishment and
+      standalone ML-KEM in an accessible and intuitive way
+
+1.1.1.  Identifying Different Technical Facets
+
+   The memo identifies technical facets that affect deployment
+   reasoning.  Facets are categorized as *primitive-level* and
+   *protocol-level*. The focus of the latter is on the integration in
+   TLS.  Examples include break timing, residual pre-quantum security,
+   deployment cost, patents, and implementation behavior.
+
+1.1.2.  Minimal Implementation Guidance for Hybrid Key Establishment
+
+   The minimal implementation consideration for hybrid key establishment
+   is not only whether ML-KEM is secure as a primitive, but also whether
+   a TLS deployment can show that both hybrid components were validated,
+   transcript-bound, and fail-closed under the negotiated group.
+
+1.1.3.  Technical Insights
+
+   The memo covers the formal methods for hybrid key establishment and
+   standalone ML-KEM in TLS.  Formal methods mostly operate at the
+   protocol-level.  Formal methods can provide additional value in order
+   to maintain the high cryptographic assurance of TLS.  This includes
+   _symbolic_ and _computational_ analysis (to be interpreted as in SoK
+   (https://eprint.iacr.org/2019/1393.pdf)) of integration of standalone
+   ML-KEM in the context of TLS.  Specifically, it covers the formal
+   analysis [FATT-CHANCE] in ProVerif on the potential issue of
+   asymmetry.  The analysis confirms that asymmetry is not a problem.
+
+   Formal analysis can address some protocol-composition questions, but
+   it does not settle every deployment or policy question relevant to
+   standalone ML-KEM and hybrid key establishment.
+
+1.1.3.1.  Motivation
+
+   Since we have no guarantee on whether ECDHE will break before ML-KEM,
+   it seems appropriate to do thorough cryptographic analysis.
+   We believe the Harvest Now, Decrypt Later (HNDL) attack applies
+   equally well to standalone ML-KEM.
+
+   An adversary can record all traffic and decrypt it later when ML-KEM
+   is broken.  The opinions of the community on this matter vary from
+   "ML-KEM is secure" to "ML-KEM is probably already secretly broken."
+   Formal methods can operate under the assumption that ML-KEM is
+   secure, and focus on the integration of ML-KEM in TLS under this
+   assumption.
+
+   *  As an example, formal methods can help justify design choices,
+      such as the preference for hybrid key establishments.  It can also
+      help identify all the assumptions under which the properties hold.
+
+   *  _Computational_ analysis -- using tools such as CryptoVerif --
+      seems like a reasonable approach to ensure security of ML-KEM in
+      TLS, such as binding shared secret ss to the TLS transcript hash.
+
+   We believe that the focus of symbolic analysis ought to be on the
+   *integration* details (transcript binding, key schedule, agreement)
+   for standalone ML-KEM in the context of TLS, rather than the
+   *primitive* itself.
+
+1.1.3.2.  Intuition
+
+   Leaking out the ECDHE key from hybrid key establishment should
+   downgrade the security to the level of a standalone ML-KEM.
+   Therefore, hybrid key establishment is _in general_ more secure,
+   unless:
+
+   *  ECDHE is fully broken, in which case it still falls equivalent to
+      standalone ML-KEM,
+
+   *  in the _hypothetical_ scenario that there is an implementation bug
+      in the ECDHE part which is triggered only in composition.  We are
+      not aware of any concrete evidence of such a scenario.
+
+   We believe that _in general_:
+
+   1. Migration from ECDHE to hybrid key establishment is security
+   improvement.
+   2. Migration from hybrid key establishment to standalone ML-KEM
+   is security regression, unless CRQC exists to break most ECC keys.
+
+2.  Conventions and Definitions
+
+   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+   "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+   "OPTIONAL" in this document are to be interpreted as described in
+   BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all
+   capitals, as shown here.
+
+   *  Symbolic analysis: see SoK (https://eprint.iacr.org/2019/1393.pdf)
+
+   *  Computational analysis: see SoK
+      (https://eprint.iacr.org/2019/1393.pdf)
+
+   *  Standalone ML-KEM refers to [I-D.ietf-tls-mlkem].
+
+   *  Hybrid key establishment refers to [I-D.ietf-tls-ecdhe-mlkem] and
+      [I-D.ietf-tls-hybrid-design].
+
+   We believe that symbolic and computational models are complementary
+   and not a substitute of each other.
+
+2.1.  Key Establishment and Key Encapsulation
+
+   In traditional key exchange (DHKE), both endpoints send their public
+   key shares g^x and g^y to derive a shared secret g^xy.
+
+   In key encapsulation, there is essentially only one endpoint (say
+   client) which generates the key pair (dk,ek) where dk represents the
+   _secret decapsulation key_ and ek represents the _public
+   encapsulation key_. In a KEM, only one of the endpoints (client in
+   above example) sends the public encapsulation key ek and the peer
+   (server) sends a ciphertext ct.
+
+3.  Technical Facets
+
+   The list of technical facets is not exhaustive and does not try to
+   prioritize one facet over another.  If an important facet is missing,
+   the most useful contribution is a precise and concise PR with
+   proposed text and references.
+
+3.1.  Primitive-level
+
+3.1.1.  Which breaks first: ML-KEM-768 or X25519?
+
+   A core uncertainty for any hybrid and standalone comparison is:
+
+   Which of the two cryptographic mechanisms breaks first?
+   How does that relate to the CRQC being developed?
+   How many bits of pre-quantum cryptography can that CRQC actually
+   break?
+
+   All three variables may remain uncertain for a long period of time.
+   This makes it difficult to reduce the question to one simple ordering
+   of "secure" and "insecure" choices.
+
+3.1.2.  Does CRQC Break All Bits of Pre-quantum?
+
+   The impact of a CRQC on pre-quantum cryptography may not be uniform
+   across all algorithms, security levels, and attack models.  One
+   concrete position is that a CRQC may break only a few bits
+   (https://cr.yp.to/papers/mldsa-20260601.pdf#breakable-keys) rather
+   than all effective pre-quantum security.  This matters because a
+   hybrid construction depends on the residual value of the traditional
+   component after a quantum advance.
+
+3.1.3.  Two Hardness Problems
+
+   Given the very different type of cryptographic constructions
+   involved, one may assume independence between a break of ML-KEM and a
+   break of the traditional key-exchange component (say X25519):
+
+  If the probability of one being broken over the next n years is p, and
+  the probability of the other being broken over the next n years is q,
+  then the probability of both being broken is pq.
+
+   Please see this (https://github.com/FiloSottile/ecc-vs-lattices-long-
+   bet#2a-what-counts-as-a-break) for what "broken" may mean here modulo
+   some exclusions (https://github.com/FiloSottile/ecc-vs-lattices-long-
+   bet#5-exclusions).
+
+   However, a reasonable position is that, in reality, cryptography is
+   much more complicated than that and depending on the algorithms and
+   the composition method, the probability can clearly be smaller than
+   pq.
+
+3.1.4.  Confidence in ML-KEM
+
+   ML-KEM is quite new in the IETF and even in the IRTF.  CFRG is
+   starting some efforts for detailed analysis.  The extended deadline
+   for submission is 22 June 2026.  Please see the latest CFRG chairs
+   email (https://mailarchive.ietf.org/arch/msg/
+   cfrg/6K43Ycr062Ym1G0q4WHxZQ2HW8M/) for further details.
+
+   The confidence question is not only about calendar age.  For
+   deployers, the relevant technical question is how much assurance has
+   accumulated for the structured-lattice setting, the parameter
+   choices, the reduction assumptions, and the implementation behavior
+   of the construction.  That is a risk-management input.
+
+3.1.5.  Potentially Outstanding NIST Comments
+
+   One concrete position is that not all comments submitted during the
+   open review were fully addressed.  Please see comments here
+   (https://csrc.nist.gov/files/pubs/fips/203/ipd/docs/fips-203-initial-
+   public-comments-2023.pdf).
+
+3.1.6.  Patents
+
+   Some concerns related to patents on ML-KEM have been raised.  See
+   some relevant patents here (https://datatracker.ietf.org/ipr/
+   search/?submit=draft&id=draft-ietf-tls-mlkem).
+
+3.2.  Protocol-level
+
+3.2.1.  Policy/Regulations
+
+   Some countries have a regulatory requirement for hybrid key
+   establishment.  This is a deployment and compliance constraint, which
+   overrides all technical questions.
+
+3.2.2.  Urgency
+
+   It is unclear _whether_ and if applicable _when_ Cryptographically-
+   Relevant Quantum Computer (CRQC) will eventually become practical.
+   Public assessments range from skepticism based on the difficulty of
+   the physics (see this (https://eprint.iacr.org/2025/1237)) to
+   migration targets that aim to be _prepared_ as early as 2029 (see
+   Google 2029 (https://blog.google/innovation-and-ai/technology/safety-
+   security/cryptography-migration-timeline/) and Cloudflare 2029
+   (https://blog.cloudflare.com/post-quantum-roadmap/)).  The technical
+   details behind some public timeline claims are not yet fully public.
+   In particular, Google has not even released the *quantum circuit*
+   underlying their recent claims -- apparently the reason for this
+   urgency.  These claims are therefore best treated as deployment-
+   planning inputs rather than as proof of a specific CRQC arrival date.
+
+   Moreover, in our understanding, these deadlines are for PQ-based
+   protection in general.  Since hybrid key establishment is widely in
+   use, these deadlines are mainly for quantum-safe _authentication_.
+
+   A separate deployment point is that publication timing does not by
+   itself control deployment timing.  Implementations, such as OpenSSL,
+   already include standalone ML-KEM support, and deployments can
+   _enable_ available code according to their own policy and risk
+   assessment.
+
+3.2.3.  Recommendation of Designers
+
+   The authors of Kyber/ML-KEM (see ref (https://pq-crystals.org/kyber/
+   index.shtml)) say:
+
+   For users who are interested in using Kyber, we recommend the
+   following:
+
+   * Use Kyber in a so-called hybrid mode in combination with
+   established "pre-quantum" security; for example in combination
+   with elliptic-curve Diffie-Hellman.
+   [...]
+
+3.2.4.  Cost
+
+   Cost may be the motivation for standalone ML-KEM in TLS but we are
+   not aware of any supporting analysis.  Our observation from Section 4
+   of [I-D.ietf-tls-ecdhe-mlkem] is that -- for example -- for
+   X25519MLKEM768, the traditional part seems negligible compared to ML-
+   KEM part in key_exchange:
+
+     +================+==================+===========================+
+     | Bytes in field | PQ part (ML-KEM) | Traditional part (X25519) |
+     +================+==================+===========================+
+     | Client share   | 1184             | 32                        |
+     +----------------+------------------+---------------------------+
+     | Server share   | 1088             | 32                        |
+     +----------------+------------------+---------------------------+
+
+                                  Table 1
+
+   This observation does not by itself settle wire-size or middlebox
+   questions.  Those questions need to be measured at the full TLS
+   handshake level, including ClientHello size, record boundaries,
+   fragmentation behavior, retry paths, and the deployment's existing
+   extension set.
+
+   Other costs depend on several factors -- including implementation
+   details, deployment scenario, latency budget, memory pressure, code
+   complexity, and operational rollout cost -- and should not be treated
+   as one scalar value.  For broad Internet-facing deployments, ECDHE
+   and hybrid key establishment support are likely to remain necessary
+   for compatibility and policy reasons, so standalone ML-KEM does not
+   automatically remove the implementation, testing, or operational cost
+   of the traditional component.  The conclusion may be different for
+   closed, constrained, or endpoint-controlled deployments, but that is
+   a deployment-class-specific claim and needs analysis of those
+   environments.
+
+   There seems to be a need for a thorough study to understand the cost.
+   A useful analysis would separate wire bytes, CPU, memory, latency,
+   implementation complexity, and operational rollout cost.
+
+3.2.5.  Is Publication Necessary?
+
+   Code Points for ML-KEM have already been assigned.
+   [I-D.barnes-tls-this-could-have-been-an-email] provides detailed
+   rationale as to why publication of such documents and the debates
+   around that may be unnecessary.  In our understanding,
+   [I-D.pwouters-crypto-current-practices] makes similar arguments.
+
+3.2.6.  Formal Mapping of FIPS to IETF BCP14
+
+   As discussed on the TLS mailing-list, we are not aware of any formal
+   mapping of the FIPS recommendations to the IETF BCP14 terminology,
+   such as SHOULD vs. MUST.  In general, re-using FIPS recommendations
+   may be ambiguous for IETF readers and implementers.
+
+3.2.7.  Implementation Bugs
+
+   Implementation bugs are a separate risk from primitive-level
+   cryptanalysis.  Hybrid key establishment may mitigate some single-
+   component failures, but only if the implementation actually validates
+   both components, binds them to the same transcript, derives traffic
+   secrets only after both components are accepted, and fails closed
+   when either component fails.
+
+3.2.8.  Depth of Hybrids
+
+   The depth of a hybrid is itself a design question.  ML-KEM plus ECC
+   is only one composition point; other designs could combine module
+   lattices, code-based KEMs, or hash-based components.  If the
+   motivation for standalone ML-KEM is size, constrained deployment, or
+   operational simplicity, another technical question is whether a
+   different hybrid design in the space could address that motivation
+   while retaining a second cryptographic component.
+
+4.  Implementation-Facing Negative Cases
+
+   A short set of negative cases can help implementers check that the
+   intended hybrid binding property is reflected in their APIs,
+   transcript handling, and key schedule integration.
+
+   In particular, implementations of hybrid key establishment ought to
+   reject, or fail safely on, cases such as the following:
+
+   *  *Malformed or missing shares*: The negotiated group is a hybrid
+      group, but one component of the peer key share is missing,
+      malformed, or associated with a different group.
+
+   *  *Mixed transcript context*: The ECDHE and KEM values are
+      individually well-formed, but assembled from different handshakes,
+      transcript contexts, or negotiated groups.
+
+   *  *Fallback after hybrid negotiation*: A peer attempts to continue
+      the handshake as standalone ECDHE or standalone ML-KEM after a
+      hybrid group was negotiated.
+
+   *  *Premature secret derivation*: Application traffic secrets are
+      derived before both hybrid components have been validated and
+      accepted under the negotiated group.
+
+   *  *API/logging ambiguity*: Exported state, logs, traces, or
+      implementation APIs make a hybrid exchange appear as if only one
+      component was used or accepted.
+
+   They are implementation-facing checks that help bridge the "both
+   components are bound and accepted" property to concrete failure modes
+   that implementations can accidentally mishandle.
+
+4.1.  Argument Matrix for Implementation Review
+
+   The discussion above can be read as an argument matrix for
+   implementers and reviewers.  The point is not to resolve every policy
+   preference in this memo, but to make each recurring argument map to a
+   concrete review question.
+
+   +=======================+=======================+==================+
+   | Argument              | Implementation-facing | Why it matters   |
+   |                       | review question       |                  |
+   +=======================+=======================+==================+
+   | Hybrid key            | Does the              | Otherwise a      |
+   | establishment retains | implementation make   | successful       |
+   | two components.       | it clear that both    | handshake may    |
+   |                       | the ECDHE and ML-KEM  | not actually     |
+   |                       | components were       | reflect the      |
+   |                       | present, validated,   | "both components |
+   |                       | and bound to the same | are bound and    |
+   |                       | negotiated group and  | accepted"        |
+   |                       | transcript?           | property.        |
+   +-----------------------+-----------------------+------------------+
+   | Standalone ML-KEM has | Are failures in       | A standalone     |
+   | a single KEM shared   | encapsulation,        | construction has |
+   | secret.               | decapsulation,        | no second key-   |
+   |                       | transcript binding,   | exchange         |
+   |                       | and key-schedule      | component to     |
+   |                       | input handled as      | preserve         |
+   |                       | fail-closed errors    | confidentiality  |
+   |                       | rather than as retry  | if the ML-KEM    |
+   |                       | or fallback paths?    | path is          |
+   |                       |                       | mishandled.      |
+   +-----------------------+-----------------------+------------------+
+   | Hybrid fallback is    | After a hybrid group  | Silent           |
+   | useful only when it   | is negotiated, can    | continuation     |
+   | is explicit.          | either endpoint       | changes the      |
+   |                       | silently continue as  | negotiated       |
+   |                       | standalone ECDHE or   | security         |
+   |                       | standalone ML-KEM?    | property and     |
+   |                       |                       | makes interop    |
+   |                       |                       | failures hard to |
+   |                       |                       | distinguish from |
+   |                       |                       | downgrades.      |
+   +-----------------------+-----------------------+------------------+
+   | Cost claims are       | Are claimed savings   | Treating cost as |
+   | deployment-dependent. | measured separately   | a single value   |
+   |                       | for wire bytes, CPU,  | can hide whether |
+   |                       | memory, latency, code | a deployment is  |
+   |                       | complexity, and       | trading away     |
+   |                       | operational rollout?  | cryptographic    |
+   |                       |                       | robustness for a |
+   |                       |                       | negligible or    |
+   |                       |                       | unmeasured gain. |
+   +-----------------------+-----------------------+------------------+
+   | Formal models do not  | Do APIs, logs,        | Reviewers need   |
+   | cover every           | exported state, and   | observable       |
+   | implementation        | test harnesses expose | evidence that    |
+   | interface.            | enough detail to show | the              |
+   |                       | which component       | implementation   |
+   |                       | failed or succeeded?  | behavior matches |
+   |                       |                       | the protocol-    |
+   |                       |                       | level claim.     |
+   +-----------------------+-----------------------+------------------+
+
+                                 Table 2
+
+   This matrix is deliberately small.  It is intended to help a reviewer
+   decide whether a concrete implementation or deployment argument
+   belongs in the formal-methods discussion, in implementation guidance,
+   or in a separate operational cost analysis.
+
+5.  Technical Analysis
+
+5.1.  Minimum Viable Modeling
+
+   Based on the discussion on TLS mailing-list, simply replacing ideal
+   DHKE by ideal ML-KEM in the formal model is not very useful.  We
+   ought to focus on the more security-critical questions about
+   integration of ML-KEM in TLS.  We present a few high-level
+   observations to consider for technical analysis:
+
+   *  The model ought to consider that any agent could have initiated
+      the TLS, rather than assigning the agents with static roles of
+      client and server in the model.  When agents are assigned non-
+      static roles, it would be interesting to see whether the asymmetry
+      issue becomes visible in some property.
+
+   *  Different failure modes can be modeled.
+
+   *  A large part of the problem is the careful investigation of what
+      to model, at which abstraction level, under what threat model,
+      under what system model, under what implementation scenarios etc.
+
+   *  It will be interesting to see some analysis about any subtle cases
+      where hybrid key establishment in TLS is _not_ at least as good as
+      standalone ML-KEM in TLS, since hybrid key establishment is the de
+      facto industry standard.
+
+   *  We believe brainstorming about some robustness (vs. security)
+      properties would also be useful.  Even if the security properties
+      hold, does standalone ML-KEM make side-channel leakage easier?
+      This might be a valuable consideration for the implementers.
+
+   *  Analysis may be helpful to ensure that the changes -- such as the
+      removal of hash function (cf. Appendix C.1, bullet 3 in
+      [NistFips203]) -- from Kyber to ML-KEM preserve the security
+      proofs of Kyber.
+
+   Any analysis on these or related security and robustness matters is
+   very welcome as a PR.
+
+5.2.  Symbolic Analysis
+
+   For implementers, the symbolic view can be read as a component-
+   failure exercise.  Instead of asking how hard ML-KEM or ECDHE is to
+   break, the analysis may ask whether security properties still hold
+   under Dolev-Yao attacker if one component secret is already available
+   to the adversary.
+
+   For brevity, we omit other assumptions in the properties below and
+   focus on the difference.  This assumes the hybrid construction to be
+   secure.
+
+5.2.1.  Hybrid Key Establishment
+
+   Hybrid key establishment still maintains the DHKE part.  From formal
+   (symbolic) analysis perspective, g^x and g^y are still sent in hybrid
+   key establishment, g^xy is still computed.  From formal (symbolic)
+   analysis perspective, ML-KEM is complementary to that.
+
+   Specifically, from Section 4 of [I-D.ietf-tls-ecdhe-mlkem], for the
+   symbolic analysis, X25519MLKEM768 in TLS may be viewed as:
+
+   client's key_exchange value = ek || gx
+   server's key_exchange value = ct || gy
+   shared secret = ss || gxy
+
+   Formally, the property hybrid key establishment should provide is:
+
+   Security properties of TLS hold unless *both* `gxy` and `ss` are
+   available to the adversary.
+
+   In short, hybrid key establishment preserves ECDHE component gxy, and
+   concatenates ML-KEM component ss as an additional factor.  So as long
+   as _at least_ one of these two secrets is not available to the
+   adversary, all security properties should hold.  In particular, even
+   if ML-KEM is completely broken, i.e., ss is available to the
+   adversary, the protocol retains the security level of ECDHE.
+
+5.2.2.  Standalone ML-KEM
+
+   At the symbolic level, some analysis -- such as this
+   (https://eprint.iacr.org/2022/1111.pdf) for KEMTLS in Tamarin --
+   exists.  In our understanding, both client and server encapsulate,
+   which may bring the symmetry.  The formal property standalone ML-KEM
+   provides is:
+
+   Security properties of TLS hold unless `ss` is available to the
+   adversary.
+
+5.2.3.  Results
+
+   The symbolic analysis [FATT-CHANCE] was done in ProVerif by Nadim
+   Kobeissi, who concludes:
+
+   The hybrid neutralizes every weakness standalone ML-KEM carries,
+   both the confidentiality single point of failure and the
+   authentication (key-confirmation) failure that rides along
+   with it, by demanding that both of its components fail at once;
+   and moving from today’s classical (EC)DHE to a hybrid never gives
+   up ground, because the classical guarantee survives intact inside
+   the combination. That is the precise sense in which the hybrid
+   strictly dominates standalone.
+
+   None of this says standalone ML-KEM is broken. Under its stated
+   assumption, that ML-KEM holds, it is secure under our models.
+   The argument against it is one of robustness, not of any
+   present-day attack: it stakes everything on a single, relatively
+   young assumption, where the hybrid keeps a mature fallback in
+   reserve. For a deployer who cannot afford to be wrong about
+   lattice cryptography for the lifetime of the data being protected,
+   that distinction is the whole game. The two caveats bound the
+   picture honestly: reuse is a real and quantifiable cost rather
+   than a catastrophe, and the role-asymmetry worry, while genuinely
+   the draft’s headline concern, did not surface as a distinct
+   vulnerability in the server-authenticated, one-initiator-per-session
+   setting analyzed here.
+
+   Under the stated model assumptions, the results confirm that
+   integrating a KEM into TLS is secure as long as the primitive itself
+   is secure.  In our understanding, the results also imply a clear
+   preference for hybrids under the Dolev-Yao model: if the shared
+   secret from ML-KEM becomes available to the adversary (for example,
+   due to an implementation bug), standalone ML-KEM loses both
+   confidentiality and the server authentication property.  This should
+   not be read as saying that the signature algorithm or
+   CertificateVerify mechanism is itself broken.  Rather, once the only
+   key-establishment secret is available to the adversary, the Finished-
+   key agreement property captured by the model no longer holds.  Under
+   the same condition, hybrid key establishment still preserves these
+   modeled properties as long as the (EC)DHE secret is not available to
+   the adversary.  We believe this applies until a powerful CRQC exists
+   which breaks *most* of the bits of pre-quantum, where the condition
+   of (EC)DHE being available to the adversary is violated.
+
+   A practical reading of the result from implementer's and
+   policymaker's perspective is:
+
+   *  Standalone ML-KEM has no second key-establishment component if ss
+      is exposed or mishandled.
+
+   *  Hybrid key establishment retains a surviving ECDHE component if ss
+      is exposed but gxy remains secret.
+
+   *  Implementation tests should therefore verify not only that the
+      handshake succeeds, but that both hybrid components were present,
+      validated, transcript-bound, and fail-closed before traffic
+      secrets are derived.
+
+   The artifacts are available here (https://github.com/symbolicsoft/
+   reftls) for independent review.
+
+5.3.  Computational Analysis
+
+5.3.1.  Hybrids
+
+   Technically, a proof of [I-D.ietf-tls-hybrid-design-09] is done in
+   the computational model using CryptoVerif (cf. ref
+   (https://bblanche.gitlabpages.inria.fr/publications/
+   BlanchetJacommeCSF24.pdf)).  As per discussion on TLS mailing-list,
+   it appears that the proof applies to the latest version of the spec
+   [I-D.ietf-tls-hybrid-design], as there seem to be no substantive
+   changes from the perspective of formal proof.
+
+5.3.2.  Standalone ML-KEM
+
+   Some existing computational analysis for standalone ML-KEM in TLS
+   include this (https://eprint.iacr.org/2021/844), this
+   (https://eprint.iacr.org/2024/1360), and this
+   (https://www.mdpi.com/1099-4300/27/12/1242).  All of these are based
+   on pen-and-paper (computational) proofs.
+
+   For implementers, the practical reading of these analyses is a key-
+   schedule and transcript-binding check.  The question is whether the
+   KEM shared secret is introduced into TLS in a way that preserves the
+   claimed security property.  This should not be read as a replacement
+   for malformed-input, API-misuse, or fallback testing.  For ML-KEM in
+   particular, invalid ciphertext processing uses implicit rejection
+   rather than a conventional decapsulation-failure signal; the TLS-
+   level behavior to test is that inconsistent KEM inputs, wrong group
+   selection, transcript mismatch, or incomplete fallback paths do not
+   produce a usable handshake and do not silently continue under a
+   different negotiated security property.
+
+6.  Security Considerations
+
+   The whole document is about improving security considerations.
+
+   Like all security proofs, formal analysis is only as strong as its
+   assumptions and model.  The scope is typically limited, and the model
+   does not necessarily capture real-world deployment complexity,
+   implementation details, operational constraints, or misuse scenarios.
+   Technically, formal proof only guarantees anything if all the
+   assumptions hold, which is unlikely in practice.  Hence, formal
+   methods should be used as complementary to increase confidence and
+   not as substitute of other analysis methods.
+
+   For implementations, this means that formal-methods results should be
+   paired with negative testing and review evidence for malformed
+   shares, transcript mismatches, silent fallback, premature secret
+   derivation, and failure handling.
+
+7.  IANA Considerations
+
+   This memo has no IANA actions.
+
+8.  References
+
+8.1.  Normative References
+
+   [I-D.ietf-tls-mlkem]
+              Connolly, D., "ML-KEM Post-Quantum Key Agreement for TLS
+              1.3", Work in Progress, Internet-Draft, draft-ietf-tls-
+              mlkem-07, 12 February 2026,
+              <https://datatracker.ietf.org/doc/html/draft-ietf-tls-
+              mlkem-07>.
+
+   [I-D.ietf-tls-rfc8446bis]
+              Rescorla, E., "The Transport Layer Security (TLS) Protocol
+              Version 1.3", Work in Progress, Internet-Draft, draft-
+              ietf-tls-rfc8446bis-14, 13 September 2025,
+              <https://datatracker.ietf.org/doc/html/draft-ietf-tls-
+              rfc8446bis-14>.
+
+   [NistFips203]
+              "Module-lattice-based key-encapsulation mechanism
+              standard", National Institute of Standards and Technology
+              (U.S.), DOI 10.6028/nist.fips.203, August 2024,
+              <https://doi.org/10.6028/nist.fips.203>.
+
+   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
+              Requirement Levels", BCP 14, RFC 2119,
+              DOI 10.17487/RFC2119, March 1997,
+              <https://www.rfc-editor.org/rfc/rfc2119>.
+
+   [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
+              2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
+              May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
+
+8.2.  Informative References
+
+   [FATT-CHANCE]
+              Kobeissi, N., "FATT Chance: On the Robustness of
+              Standalone and Hybrid ML-KEM Key Exchange in TLS 1.3",
+              Cryptology ePrint Archive, Report 2026/1147 , 2026,
+              <https://eprint.iacr.org/2026/1147>.
+
+   [I-D.barnes-tls-this-could-have-been-an-email]
+              Barnes, R., "Stop Doing Cryptographic Algorithm Drafts
+              when Email to IANA is All You Need", Work in Progress,
+              Internet-Draft, draft-barnes-tls-this-could-have-been-an-
+              email-00, 23 February 2026,
+              <https://datatracker.ietf.org/doc/html/draft-barnes-tls-
+              this-could-have-been-an-email-00>.
+
+   [I-D.ietf-tls-ecdhe-mlkem]
+              Kwiatkowski, K., Kampanakis, P., Westerbaan, B., and D.
+              Stebila, "Post-quantum hybrid ECDHE-MLKEM Key Agreement
+              for TLSv1.3", Work in Progress, Internet-Draft, draft-
+              ietf-tls-ecdhe-mlkem-05, 26 May 2026,
+              <https://datatracker.ietf.org/doc/html/draft-ietf-tls-
+              ecdhe-mlkem-05>.
+
+   [I-D.ietf-tls-hybrid-design]
+              Stebila, D., Fluhrer, S., and S. Gueron, "Hybrid key
+              exchange in TLS 1.3", Work in Progress, Internet-Draft,
+              draft-ietf-tls-hybrid-design-16, 7 September 2025,
+              <https://datatracker.ietf.org/doc/html/draft-ietf-tls-
+              hybrid-design-16>.
+
+   [I-D.ietf-tls-hybrid-design-09]
+              Stebila, D., Fluhrer, S., and S. Gueron, "Hybrid key
+              exchange in TLS 1.3", Work in Progress, Internet-Draft,
+              draft-ietf-tls-hybrid-design-09, 7 September 2023,
+              <https://datatracker.ietf.org/doc/html/draft-ietf-tls-
+              hybrid-design-09>.
+
+   [I-D.pwouters-crypto-current-practices]
+              Wouters, P., "Current practices for new cryptography at
+              the IETF", Work in Progress, Internet-Draft, draft-
+              pwouters-crypto-current-practices-00, 3 November 2024,
+              <https://datatracker.ietf.org/doc/html/draft-pwouters-
+              crypto-current-practices-00>.
+
+   [I-D.usama-tls-fatt-extension]
+              Sardar, M. U., "Extensions to TLS FATT Process", Work in
+              Progress, Internet-Draft, draft-usama-tls-fatt-extension-
+              07, 2 May 2026, <https://datatracker.ietf.org/doc/html/
+              draft-usama-tls-fatt-extension-07>.
+
+   [rfc3552]  Rescorla, E. and B. Korver, "Guidelines for Writing RFC
+              Text on Security Considerations", BCP 72, RFC 3552,
+              DOI 10.17487/RFC3552, July 2003,
+              <https://www.rfc-editor.org/rfc/rfc3552>.
+
+Contributors
+
+   Nadim Kobeissi performed a thorough formal analysis Section 5.2.3 at
+   high priority based on our call for analysis in previous versions of
+   the memo to get a confirmation.
+
+   Text in Section 4 was proposed by Songbo Bu and largely used as-is.
+   He also proposed revisions in Section 3 and Section 5, in particular
+   implementer's perspective.
+
+   Text in Section 6 is based on the proposal by John Preuß Mattsson.
+
+   Section 3 is based on mailing-list discussion, referenced technical
+   facets, and deployment questions raised during review.
+
+   We gratefully thank Yaakov Stein and Ilari Liusvaara for their
+   substantial technical guidance, valuable feedback, and contributions.
+
+Acknowledgments
+
+   We thank Eric Rescorla, Brian E.  Carpenter, Tibor Jager, and Eliot
+   Lear for their valuable feedback.
+
+   We acknowledge several IETF participants who have contributed to this
+   memo with their insights.
+
+   The research work is funded by German Research Foundation ("Deutsche
+   Forschungsgemeinschaft.")
+
+History
+
+   -00
+
+   *  On popular demand, moved from [I-D.usama-tls-fatt-extension] to an
+      independent I-D
+
+   *  Major change: added Section 2.1
+
+   *  Some minor clarifications
+
+   -01
+
+   *  Added justification based on FATT process
+
+   *  Reorganization, specially in motivation
+
+   *  Added some common arguments: Section 3
+
+   *  Comparison with hybrid key establishment
+
+   -02
+
+   *  Added gap analysis
+
+   *  What to model and analyze?  Section 5.1
+
+   *  Added FATT review is harmless
+
+   *  Extended comparison with hybrid key establishment
+
+   *  Opinion of designers Section 3.2.3
+
+   -03
+
+   *  Completely restructured and reframed after confirmation by formal
+      analysis
+
+   *  Added implementation-facing negative cases and argument matrix
+
+   *  Some new arguments: implementation bugs, depth of hybrids, policy,
+      all bits, which primitive breaks first?
+
+   -04
+
+   *  Remove links to opinion of IETF participants
+
+   *  Inform the reader of the technical facets
+
+   *  Implementer's perspective
+
+Author's Address
+
+   Muhammad Usama Sardar
+   TU Dresden, Germany
+   Email: muhammad_usama.sardar@tu-dresden.de
