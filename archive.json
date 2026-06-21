@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-06-16T03:36:34.407073+00:00",
+  "timestamp": "2026-06-21T03:37:13.991959+00:00",
   "repo": "muhammad-usama-sardar/risks-of-mlkem",
   "labels": [
     {
@@ -676,7 +676,7 @@
       "labels": [],
       "body": "## Summary\n\nAdds a small set of technical facets from the thorough review pass in #7:\n\n- clarifies that ML-KEM confidence is not only about calendar age, but also structured-lattice assurance, parameter choices, reduction assumptions, and implementation behavior\n- frames wire-size / middlebox questions as full-handshake measurement questions rather than key_share-byte claims\n- separates broad Internet deployments from closed or constrained endpoint-controlled deployments when discussing implementation and operational cost\n- notes that alternative hybrid design points may be relevant when the motivation is size, constrained deployment, or operational simplicity\n\n## Validation\n\n- `git diff --check` passes\n- `make` was attempted locally, but failed in the existing local Ruby/OpenSSL remote-resource fetch path: `SSL_connect SYSCALL returned=5 ... kramdown-rfc2629 get_and_write_resource`. This appears to be the same local environment/network issue seen before, not a markdown diff error.\n\nRelated to #7.",
       "createdAt": "2026-06-14T14:42:19Z",
-      "updatedAt": "2026-06-16T01:39:57Z",
+      "updatedAt": "2026-06-18T14:11:56Z",
       "baseRepository": "muhammad-usama-sardar/risks-of-mlkem",
       "baseRefName": "main",
       "baseRefOid": "302f368ed9e0f6cfdd83868d49a4a73c3097a97a",
@@ -694,6 +694,13 @@
           "body": "I reworked the intro text again and kept the split explicit as primitive-level vs protocol-level, including a single explicit sentence to prevent formal-method claims from being mixed into deployment/operational points. Also rebased both PRs onto upstream/main@302f368 to keep context aligned. If you want, I can provide a minimal diff excerpt next.",
           "createdAt": "2026-06-16T01:39:57Z",
           "updatedAt": "2026-06-16T01:39:57Z"
+        },
+        {
+          "author": "B1ueD0g",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I rechecked the two review points against the current diff.\n\n- On the low-confidence/new-crypto point: yes, the intended framing is primitive-level risk management, not a protocol-level formal-methods claim. The added sentence now says this is not a proof that standalone ML-KEM is unsafe; it is an assurance/risk input around structured-lattice assumptions, parameters, reductions, and implementation behavior.\n- On ClientHello size: yes, I mean the full handshake shape, including other extensions already present in the deployment, record boundaries, fragmentation behavior, and retry paths. The point is that key_share bytes alone do not settle the middlebox/interoperability question.\n\nSo my reading is that the primitive/protocol split is now explicit enough. If you prefer, I can still drop either paragraph rather than keep iterating on wording.",
+          "createdAt": "2026-06-18T14:11:56Z",
+          "updatedAt": "2026-06-18T14:11:56Z"
         }
       ],
       "reviews": [
@@ -737,13 +744,13 @@
       "labels": [],
       "body": "## Summary\n\nDefocuses formal methods in the opening framing without changing the technical conclusions:\n\n- makes the abstract start with technical facets and deployment reasoning rather than formal analysis\n- describes formal-analysis work as one input to the broader discussion\n- renames the introductory subsection to \"Formal Methods as One Input\"\n- adjusts the motivation text to foreground primitive assumptions, protocol integration, implementation behavior, and operational risk\n\nThis is intended to address the framing direction in #10 while preserving the existing formal-methods content.\n\n## Validation\n\n- `git diff --check` passes\n- `make` was attempted locally, but failed in the existing macOS Ruby/OpenSSL remote-resource fetch path: `SSL_connect SYSCALL returned=5 ... kramdown-rfc2629 get_and_write_resource`. This is the same local environment/network failure seen on the previous PRs, not a markdown diff failure.\n\nAddresses #10.",
       "createdAt": "2026-06-14T14:49:37Z",
-      "updatedAt": "2026-06-16T01:40:01Z",
+      "updatedAt": "2026-06-18T14:11:56Z",
       "baseRepository": "muhammad-usama-sardar/risks-of-mlkem",
       "baseRefName": "main",
       "baseRefOid": "302f368ed9e0f6cfdd83868d49a4a73c3097a97a",
       "headRepository": "B1ueD0g/risks-of-mlkem",
       "headRefName": "songbo-defocus-formal-methods",
-      "headRefOid": "c6a0dd6c6c38434bc2e8609fede2c52b44c4a9d1",
+      "headRefOid": "406004a5182c11054c83c8bdb8ceed4b5de29272",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -762,8 +769,41 @@
           "body": "Done \u2014 I rebased this PR onto upstream/main@302f368 and kept the scope changes minimal. The intent is still the same: framing formal methods as one input, not a substitute for deployment/integration text.",
           "createdAt": "2026-06-16T01:40:01Z",
           "updatedAt": "2026-06-16T01:40:01Z"
+        },
+        {
+          "author": "B1ueD0g",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Fixed one small structure issue after rechecking the rendered section: the branch had kept the old `### Technical Insights` heading directly before `### Formal Methods as One Input`. I removed the old heading so the subsection now has a single title. `git diff --check` passes.",
+          "createdAt": "2026-06-18T14:11:56Z",
+          "updatedAt": "2026-06-18T14:11:56Z"
         }
       ],
+      "reviews": []
+    },
+    {
+      "number": 13,
+      "id": "PR_kwDOSdcEOM7n_EeW",
+      "title": "Clarify implementer reading of computational analyses",
+      "url": "https://github.com/muhammad-usama-sardar/risks-of-mlkem/pull/13",
+      "state": "OPEN",
+      "author": "B1ueD0g",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "This is a small follow-up to the discussion in #6.\n\nThe change keeps the computational-analysis section useful for implementers while narrowing the claim:\n\n- the analyses are read as key-schedule and transcript-binding checks;\n- they do not replace malformed-input, API-misuse, or fallback testing;\n- for ML-KEM, invalid ciphertext handling is framed around implicit rejection and TLS-level outcomes, not a conventional decapsulation-failure signal;\n- the implementation-facing question is whether inconsistent KEM inputs, wrong group selection, transcript mismatch, or incomplete fallback paths can produce a usable handshake or silently continue under a different negotiated security property.\n\nI kept this separate from #11 and #12 so it can be reviewed independently and skipped if it is too late for -04.\n\nValidation:\n\n- `git diff --check` passes.\n- Local `make` did not complete because kramdown failed while fetching an external resource over Ruby/OpenSSL (`SSL_connect SYSCALL returned=5`), before producing XML. I did not see a Markdown/diff-check issue locally; the GitHub editor-copy check should be the useful build signal here.\n\nRelated to #6.\n",
+      "createdAt": "2026-06-18T14:21:05Z",
+      "updatedAt": "2026-06-18T14:21:06Z",
+      "baseRepository": "muhammad-usama-sardar/risks-of-mlkem",
+      "baseRefName": "main",
+      "baseRefOid": "302f368ed9e0f6cfdd83868d49a4a73c3097a97a",
+      "headRepository": "B1ueD0g/risks-of-mlkem",
+      "headRefName": "songbo-computational-implementation-boundary",
+      "headRefOid": "9ce47aab7a43ade217f95a03e9956230341f34fd",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
       "reviews": []
     }
   ]
