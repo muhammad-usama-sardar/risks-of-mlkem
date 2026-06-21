@@ -240,7 +240,7 @@ The confidence question is not only about calendar age.
 For deployers, the relevant technical question is how much assurance has
 accumulated for the structured-lattice setting, the parameter choices, the
 reduction assumptions, and the implementation behavior of the construction.
-That is a risk-management input rather than a proof that standalone ML-KEM is
+That is a risk-management input.
 unsafe.
 
 ### Outstanding NIST Comments
