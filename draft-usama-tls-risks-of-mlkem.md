@@ -23,12 +23,6 @@ normative:
   NistFips203: DOI.10.6028/NIST.FIPS.203
   I-D.ietf-tls-mlkem:
   I-D.ietf-tls-rfc8446bis:
-  TLS-FATT:
-     author:
-        org: IETF TLS WG
-     title: TLS FATT Process
-     target: https://github.com/tlswg/tls-fatt
-     date: June 2025
 
 informative:
   I-D.usama-tls-fatt-extension:
