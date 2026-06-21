@@ -86,7 +86,7 @@ primitive, but also whether a TLS deployment can show that both hybrid
 components were validated, transcript-bound, and fail-closed under the
 negotiated group.
 
-### Formal Methods as One Input
+### Technical Insights
 
 The memo covers the formal methods for hybrid key establishment and standalone ML-KEM in TLS.
 Formal methods mostly operate at the protocol-level.
