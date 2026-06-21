@@ -241,7 +241,6 @@ For deployers, the relevant technical question is how much assurance has
 accumulated for the structured-lattice setting, the parameter choices, the
 reduction assumptions, and the implementation behavior of the construction.
 That is a risk-management input.
-unsafe.
 
 ### Outstanding NIST Comments
 One concrete position is that not all comments submitted during the open review were fully addressed.  Please see comments [here](https://csrc.nist.gov/files/pubs/fips/203/ipd/docs/fips-203-initial-public-comments-2023.pdf).
