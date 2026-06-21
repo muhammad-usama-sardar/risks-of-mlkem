@@ -785,9 +785,6 @@ Table of Contents
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
               May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
 
-   [TLS-FATT] IETF TLS WG, "TLS FATT Process", June 2025,
-              <https://github.com/tlswg/tls-fatt>.
-
 8.2.  Informative References
 
    [FATT-CHANCE]
