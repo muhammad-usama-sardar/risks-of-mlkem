@@ -77,7 +77,7 @@ The memo serves three objectives:
 ### Presenting Different Technical Facets
 
 The memo identifies technical facets that affect deployment reasoning.
-Facets are categorized as **primitive-level** and **protocol-level** so that
+Facets are categorized as **primitive-level** and **protocol-level**.
 formal-security arguments and deployment/integration concerns stay separate.
 Examples include break timing, residual pre-quantum security, deployment cost, patents, and implementation behavior.
 
