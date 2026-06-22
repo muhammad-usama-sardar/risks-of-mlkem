@@ -66,7 +66,7 @@ The memo serves three objectives:
 
 * Identifying the underlying technical facets and common complexities of the deployment to provide clarity
 * Minimal implementation guidance for hybrid key establishment
-* Summary of formal methods works for hybrid key establishment and standalone ML-KEM in an accessible and intuitive way
+* Summary of technical insights for hybrid key establishment and standalone ML-KEM in an accessible and intuitive way
 
 ### Identifying Different Technical Facets
 
