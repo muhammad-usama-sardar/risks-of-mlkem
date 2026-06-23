@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-06-21T03:37:13.991959+00:00",
+  "timestamp": "2026-06-23T02:46:23.458658+00:00",
   "repo": "muhammad-usama-sardar/risks-of-mlkem",
   "labels": [
     {
@@ -60,15 +60,15 @@
       "id": "I_kwDOSdcEOM8AAAABFXUYPg",
       "title": "Practical view of computational analysis",
       "url": "https://github.com/muhammad-usama-sardar/risks-of-mlkem/issues/6",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "muhammad-usama-sardar",
       "authorAssociation": "OWNER",
       "assignees": [],
       "labels": [],
       "body": "From [proposed PR](https://github.com/muhammad-usama-sardar/risks-of-mlkem/pull/5/changes#diff-4fa784baf8475c32070d6723d7a273efdfc4344ce4a2c2241d9d4089724809b6R169)\n\n> Wrong ciphertexts, decapsulation failures, wrong transcript context, or wrong group selection must not lead to a usable traffic secret.\n\nIs computational analysis actually implying this?",
       "createdAt": "2026-06-13T08:50:18Z",
-      "updatedAt": "2026-06-13T23:13:22Z",
-      "closedAt": null,
+      "updatedAt": "2026-06-21T21:04:55Z",
+      "closedAt": "2026-06-21T21:04:54Z",
       "comments": [
         {
           "author": "B1ueD0g",
@@ -76,6 +76,13 @@
           "body": "I would not read the existing computational analyses as directly implying those concrete implementation negative cases.\n\nMore precise framing: the analyses identify protocol/model assumptions that implementations need to preserve at the TLS integration boundary. In particular, the KEM shared secret should be bound to the negotiated group and transcript, and traffic secrets should only be used after the normal TLS handshake checks succeed.\n\nFor ML-KEM specifically, \"decapsulation failure\" is imprecise because ML-KEM uses implicit rejection rather than a conventional failure signal. A bad ciphertext should result in different derived secrets and then fail at Finished; malformed key_share, wrong group, wrong transcript context, and fallback behavior are TLS integration / conformance checks around the proof assumptions, not direct conclusions of the computational proof.\n\nPossible shorter text for later:\n\n> For implementers, these analyses are best read as identifying assumptions the TLS implementation must preserve, not as replacing malformed-input, API-misuse, or fail-closed testing.\n",
           "createdAt": "2026-06-13T23:13:21Z",
           "updatedAt": "2026-06-13T23:13:21Z"
+        },
+        {
+          "author": "muhammad-usama-sardar",
+          "authorAssociation": "OWNER",
+          "body": "Addressed in #13 ",
+          "createdAt": "2026-06-21T21:04:55Z",
+          "updatedAt": "2026-06-21T21:04:55Z"
         }
       ]
     },
@@ -93,7 +100,7 @@
       "labels": [],
       "body": "Include the technical points from the review: \n\nhttps://mailarchive.ietf.org/arch/msg/tls/jlsYHENwqMv-4XPRvunqKsAL36k/",
       "createdAt": "2026-06-13T09:09:35Z",
-      "updatedAt": "2026-06-14T14:51:12Z",
+      "updatedAt": "2026-06-22T08:23:43Z",
       "closedAt": null,
       "comments": [
         {
@@ -116,6 +123,13 @@
           "body": "Follow-up after #11 and #12: I would not add another text PR until those settle, but two concrete next work items seem useful.\n\n1. Implementation-evidence checklist\n\nA useful small appendix or implementation-facing note could separate the evidence an implementation can actually produce from the abstract security argument:\n\n- negotiated group evidence: the implementation can show that the selected group was the intended hybrid or standalone group;\n- component-presence evidence: for hybrid groups, both ECDHE and ML-KEM inputs are present and accepted before key schedule input;\n- transcript-binding evidence: the accepted key exchange inputs are bound to the same handshake transcript and negotiated group;\n- failure-path evidence: malformed shares, missing components, wrong group, transcript mismatch, and silent fallback fail closed;\n- observability evidence: logs, traces, APIs, or test harnesses can distinguish a real hybrid acceptance from a fallback or partial acceptance.\n\nThis could stay explicitly non-normative and implementation-facing, so it does not turn the memo into a test-suite document.\n\n2. Cost-measurement plan\n\nFor the cost discussion, I think the cleanest next step is to avoid a conclusion and instead define what would need to be measured:\n\n- wire bytes at full TLS-handshake granularity, not only key_share fields;\n- ClientHello / ServerHello size, record boundaries, fragmentation, and retry behavior;\n- CPU and memory under representative endpoint classes;\n- implementation complexity: code paths that remain necessary for compatibility, policy, and fallback;\n- operational rollout cost: deployment class, endpoint control, monitoring, and interop/debugging burden.\n\nThis would let the document say \"cost needs evidence by deployment class\" without asserting that standalone ML-KEM is or is not cheaper in general.\n\nI would wait for #11/#12 feedback before turning either into another PR, to avoid creating overlapping text churn.\n",
           "createdAt": "2026-06-14T14:51:12Z",
           "updatedAt": "2026-06-14T14:51:12Z"
+        },
+        {
+          "author": "muhammad-usama-sardar",
+          "authorAssociation": "OWNER",
+          "body": "#11 and #12 are both merged now. \n\nWe can wait for ISE review and keep this on hold. Here are some thoughts for potential PR for this issue:\n\nFor each point, please see whether it falls in the category of **primitive-level**, **protocol-level**, or implementation section. There are grey areas however, and it's fine.\n\nThen see whether the point is already covered in some existing point, or otherwise, should it be a really new bullet point.\n\nPlease make sure there are no repetitions in the draft. Everything we add should bring in some new value.",
+          "createdAt": "2026-06-22T08:23:43Z",
+          "updatedAt": "2026-06-22T08:23:43Z"
         }
       ]
     },
@@ -124,23 +138,31 @@
       "id": "I_kwDOSdcEOM8AAAABFXin5w",
       "title": "Focus on the positives and negatives",
       "url": "https://github.com/muhammad-usama-sardar/risks-of-mlkem/issues/8",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "muhammad-usama-sardar",
       "authorAssociation": "OWNER",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2026-06-13T10:26:25Z",
-      "updatedAt": "2026-06-13T10:26:25Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2026-06-21T21:12:40Z",
+      "closedAt": "2026-06-21T21:12:40Z",
+      "comments": [
+        {
+          "author": "muhammad-usama-sardar",
+          "authorAssociation": "OWNER",
+          "body": "Addressed in -04.",
+          "createdAt": "2026-06-21T21:12:40Z",
+          "updatedAt": "2026-06-21T21:12:40Z"
+        }
+      ]
     },
     {
       "number": 9,
       "id": "I_kwDOSdcEOM8AAAABFXisFw",
       "title": "Expose the complexities and facets of the issue",
       "url": "https://github.com/muhammad-usama-sardar/risks-of-mlkem/issues/9",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "muhammad-usama-sardar",
       "authorAssociation": "OWNER",
       "assignees": [
@@ -149,8 +171,8 @@
       "labels": [],
       "body": "Separate out primitive vs. protocol integration",
       "createdAt": "2026-06-13T10:26:54Z",
-      "updatedAt": "2026-06-14T14:50:00Z",
-      "closedAt": null,
+      "updatedAt": "2026-06-21T21:03:04Z",
+      "closedAt": "2026-06-21T21:03:04Z",
       "comments": [
         {
           "author": "muhammad-usama-sardar",
@@ -165,6 +187,13 @@
           "body": "I think the current top-level split into primitive-level and protocol-level is useful and probably enough for now.\n\nMy suggestion would be:\n\n- keep primitive-level for questions about ML-KEM/X25519 assumptions, CRQC impact, structured-lattice confidence, patents, and designer recommendations;\n- keep protocol-level for TLS integration, deployment cost, codepoint/publication questions, implementation bugs, hybrid depth, and formal-methods scope;\n- avoid adding deployment-level or implementation-level as additional top-level sections unless those parts grow substantially.\n\nThat keeps the document readable as a primer and avoids turning the taxonomy itself into another debate. The deployment/implementation points can still appear under protocol-level, because they are mainly about how the TLS construction is integrated, deployed, and validated.\n\nI opened #11 to fit the review-derived cost/deployment points into the current split rather than changing the taxonomy again.\n",
           "createdAt": "2026-06-14T14:50:00Z",
           "updatedAt": "2026-06-14T14:50:00Z"
+        },
+        {
+          "author": "muhammad-usama-sardar",
+          "authorAssociation": "OWNER",
+          "body": "Tried to address it in -04. Closing it for now.",
+          "createdAt": "2026-06-21T21:03:04Z",
+          "updatedAt": "2026-06-21T21:03:04Z"
         }
       ]
     },
@@ -173,7 +202,7 @@
       "id": "I_kwDOSdcEOM8AAAABFZy1Ow",
       "title": "Defocus formal methods",
       "url": "https://github.com/muhammad-usama-sardar/risks-of-mlkem/issues/10",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "muhammad-usama-sardar",
       "authorAssociation": "OWNER",
       "assignees": [
@@ -182,7 +211,56 @@
       "labels": [],
       "body": "",
       "createdAt": "2026-06-14T01:36:22Z",
-      "updatedAt": "2026-06-14T14:06:36Z",
+      "updatedAt": "2026-06-21T21:04:00Z",
+      "closedAt": "2026-06-21T21:03:59Z",
+      "comments": [
+        {
+          "author": "muhammad-usama-sardar",
+          "authorAssociation": "OWNER",
+          "body": "To be clear, defocus means that the current Sec. 3 and 4 should **not** mention formal methods at all. ",
+          "createdAt": "2026-06-21T19:58:52Z",
+          "updatedAt": "2026-06-21T19:58:52Z"
+        },
+        {
+          "author": "muhammad-usama-sardar",
+          "authorAssociation": "OWNER",
+          "body": "Tried to address it in -04. Closing it for now.",
+          "createdAt": "2026-06-21T21:03:59Z",
+          "updatedAt": "2026-06-21T21:03:59Z"
+        }
+      ]
+    },
+    {
+      "number": 14,
+      "id": "I_kwDOSdcEOM8AAAABGNkYdw",
+      "title": "Add Songbo Bu as co-author for -05",
+      "url": "https://github.com/muhammad-usama-sardar/risks-of-mlkem/issues/14",
+      "state": "OPEN",
+      "author": "muhammad-usama-sardar",
+      "authorAssociation": "OWNER",
+      "assignees": [
+        "muhammad-usama-sardar"
+      ],
+      "labels": [],
+      "body": "",
+      "createdAt": "2026-06-21T20:22:56Z",
+      "updatedAt": "2026-06-22T12:20:52Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 15,
+      "id": "I_kwDOSdcEOM8AAAABGQL7Hg",
+      "title": "Reductions",
+      "url": "https://github.com/muhammad-usama-sardar/risks-of-mlkem/issues/15",
+      "state": "OPEN",
+      "author": "muhammad-usama-sardar",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "See [this](https://www.ietf.org/archive/id/draft-liu-cfrg-ntru-family-security-considerations-00.html#section-4)",
+      "createdAt": "2026-06-22T07:54:22Z",
+      "updatedAt": "2026-06-22T07:54:22Z",
       "closedAt": null,
       "comments": []
     }
@@ -669,24 +747,26 @@
       "id": "PR_kwDOSdcEOM7mQQ09",
       "title": "Add deployment facets from review",
       "url": "https://github.com/muhammad-usama-sardar/risks-of-mlkem/pull/11",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "B1ueD0g",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "## Summary\n\nAdds a small set of technical facets from the thorough review pass in #7:\n\n- clarifies that ML-KEM confidence is not only about calendar age, but also structured-lattice assurance, parameter choices, reduction assumptions, and implementation behavior\n- frames wire-size / middlebox questions as full-handshake measurement questions rather than key_share-byte claims\n- separates broad Internet deployments from closed or constrained endpoint-controlled deployments when discussing implementation and operational cost\n- notes that alternative hybrid design points may be relevant when the motivation is size, constrained deployment, or operational simplicity\n\n## Validation\n\n- `git diff --check` passes\n- `make` was attempted locally, but failed in the existing local Ruby/OpenSSL remote-resource fetch path: `SSL_connect SYSCALL returned=5 ... kramdown-rfc2629 get_and_write_resource`. This appears to be the same local environment/network issue seen before, not a markdown diff error.\n\nRelated to #7.",
       "createdAt": "2026-06-14T14:42:19Z",
-      "updatedAt": "2026-06-18T14:11:56Z",
+      "updatedAt": "2026-06-21T17:48:40Z",
       "baseRepository": "muhammad-usama-sardar/risks-of-mlkem",
       "baseRefName": "main",
       "baseRefOid": "302f368ed9e0f6cfdd83868d49a4a73c3097a97a",
       "headRepository": "B1ueD0g/risks-of-mlkem",
       "headRefName": "songbo-technical-facets-review",
-      "headRefOid": "3bfc4e1ed4191b20577aa344bad10a41d471445b",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "ee39c43a9b44c39f5c9c8b248d10967496d80fd6",
+      "closedAt": "2026-06-21T17:48:39Z",
+      "mergedAt": "2026-06-21T17:48:39Z",
+      "mergedBy": "muhammad-usama-sardar",
+      "mergeCommit": {
+        "oid": "c04b610475af465278fd6ca6b3e6d4fd44286c30"
+      },
       "comments": [
         {
           "author": "B1ueD0g",
@@ -729,6 +809,62 @@
               "updatedAt": "2026-06-14T16:02:40Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOSdcEOM8AAAABDpusxg",
+          "commit": {
+            "abbreviatedOid": "3bfc4e1"
+          },
+          "author": "muhammad-usama-sardar",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "Thanks, will merge with some things reverted.",
+          "createdAt": "2026-06-21T17:35:40Z",
+          "updatedAt": "2026-06-21T17:45:27Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "That's not really the reason in my mind. There are grey areas where both apply.",
+              "createdAt": "2026-06-21T17:35:40Z",
+              "updatedAt": "2026-06-21T17:45:27Z"
+            },
+            {
+              "originalPosition": 15,
+              "body": "I prefer the old one.",
+              "createdAt": "2026-06-21T17:35:57Z",
+              "updatedAt": "2026-06-21T17:45:27Z"
+            },
+            {
+              "originalPosition": 5,
+              "body": "```suggestion\nFacets are categorized as **primitive-level** and **protocol-level**.\n```",
+              "createdAt": "2026-06-21T17:38:53Z",
+              "updatedAt": "2026-06-21T17:45:27Z"
+            },
+            {
+              "originalPosition": 6,
+              "body": "```suggestion\n```",
+              "createdAt": "2026-06-21T17:39:06Z",
+              "updatedAt": "2026-06-21T17:45:27Z"
+            },
+            {
+              "originalPosition": 15,
+              "body": "```suggestion\n### Technical Insights\n```",
+              "createdAt": "2026-06-21T17:39:21Z",
+              "updatedAt": "2026-06-21T17:45:27Z"
+            },
+            {
+              "originalPosition": 27,
+              "body": "```suggestion\nThat is a risk-management input.\n```",
+              "createdAt": "2026-06-21T17:40:39Z",
+              "updatedAt": "2026-06-21T17:45:27Z"
+            },
+            {
+              "originalPosition": 28,
+              "body": "```suggestion\n\n```",
+              "createdAt": "2026-06-21T17:40:48Z",
+              "updatedAt": "2026-06-21T17:45:27Z"
+            }
+          ]
         }
       ]
     },
@@ -737,24 +873,26 @@
       "id": "PR_kwDOSdcEOM7mQU_V",
       "title": "Defocus formal methods in framing",
       "url": "https://github.com/muhammad-usama-sardar/risks-of-mlkem/pull/12",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "B1ueD0g",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "## Summary\n\nDefocuses formal methods in the opening framing without changing the technical conclusions:\n\n- makes the abstract start with technical facets and deployment reasoning rather than formal analysis\n- describes formal-analysis work as one input to the broader discussion\n- renames the introductory subsection to \"Formal Methods as One Input\"\n- adjusts the motivation text to foreground primitive assumptions, protocol integration, implementation behavior, and operational risk\n\nThis is intended to address the framing direction in #10 while preserving the existing formal-methods content.\n\n## Validation\n\n- `git diff --check` passes\n- `make` was attempted locally, but failed in the existing macOS Ruby/OpenSSL remote-resource fetch path: `SSL_connect SYSCALL returned=5 ... kramdown-rfc2629 get_and_write_resource`. This is the same local environment/network failure seen on the previous PRs, not a markdown diff failure.\n\nAddresses #10.",
       "createdAt": "2026-06-14T14:49:37Z",
-      "updatedAt": "2026-06-18T14:11:56Z",
+      "updatedAt": "2026-06-22T08:16:58Z",
       "baseRepository": "muhammad-usama-sardar/risks-of-mlkem",
       "baseRefName": "main",
-      "baseRefOid": "302f368ed9e0f6cfdd83868d49a4a73c3097a97a",
+      "baseRefOid": "c655ef3a79ddae51e7ace0e7291b4b4ed50c3c81",
       "headRepository": "B1ueD0g/risks-of-mlkem",
       "headRefName": "songbo-defocus-formal-methods",
-      "headRefOid": "406004a5182c11054c83c8bdb8ceed4b5de29272",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "0f357bb1cbfbc346d5746c616caff285929a5b9d",
+      "closedAt": "2026-06-22T08:16:58Z",
+      "mergedAt": "2026-06-22T08:16:58Z",
+      "mergedBy": "muhammad-usama-sardar",
+      "mergeCommit": {
+        "oid": "d40d33a7e1634fbaa1f7148a35c58625cf0a1ac9"
+      },
       "comments": [
         {
           "author": "muhammad-usama-sardar",
@@ -778,33 +916,181 @@
           "updatedAt": "2026-06-18T14:11:56Z"
         }
       ],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOSdcEOM8AAAABDpvzeg",
+          "commit": {
+            "abbreviatedOid": "406004a"
+          },
+          "author": "muhammad-usama-sardar",
+          "authorAssociation": "OWNER",
+          "state": "CHANGES_REQUESTED",
+          "body": "",
+          "createdAt": "2026-06-21T17:53:13Z",
+          "updatedAt": "2026-06-21T17:55:53Z",
+          "comments": [
+            {
+              "originalPosition": 10,
+              "body": "Contrary to the desired 'defocus,' it actually adds the focus on formal analysis.",
+              "createdAt": "2026-06-21T17:53:13Z",
+              "updatedAt": "2026-06-21T17:55:53Z"
+            },
+            {
+              "originalPosition": 22,
+              "body": "Same applies here. Don't mention formal analysis unless really required.",
+              "createdAt": "2026-06-21T17:53:57Z",
+              "updatedAt": "2026-06-21T17:55:53Z"
+            },
+            {
+              "originalPosition": 31,
+              "body": "Please revert it back.",
+              "createdAt": "2026-06-21T17:54:06Z",
+              "updatedAt": "2026-06-21T17:55:53Z"
+            },
+            {
+              "originalPosition": 41,
+              "body": "Could you please clarify how this change adds value.",
+              "createdAt": "2026-06-21T17:55:46Z",
+              "updatedAt": "2026-06-21T17:55:53Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOSdcEOM8AAAABDqiE4Q",
+          "commit": {
+            "abbreviatedOid": "0f357bb"
+          },
+          "author": "B1ueD0g",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-06-22T03:28:50Z",
+          "updatedAt": "2026-06-22T03:28:51Z",
+          "comments": [
+            {
+              "originalPosition": 10,
+              "body": "Agreed. I rebased on the current main and dropped this abstract change. The PR no longer adds formal-analysis wording to the abstract.",
+              "createdAt": "2026-06-22T03:28:51Z",
+              "updatedAt": "2026-06-22T03:28:51Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOSdcEOM8AAAABDqiHEg",
+          "commit": {
+            "abbreviatedOid": "0f357bb"
+          },
+          "author": "B1ueD0g",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-06-22T03:29:05Z",
+          "updatedAt": "2026-06-22T03:29:05Z",
+          "comments": [
+            {
+              "originalPosition": 22,
+              "body": "Agreed. I removed that added sentence. The remaining PR is intentionally narrow and does not introduce a new formal-analysis framing paragraph.",
+              "createdAt": "2026-06-22T03:29:05Z",
+              "updatedAt": "2026-06-22T03:29:05Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOSdcEOM8AAAABDqiISw",
+          "commit": {
+            "abbreviatedOid": "0f357bb"
+          },
+          "author": "B1ueD0g",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-06-22T03:29:14Z",
+          "updatedAt": "2026-06-22T03:29:14Z",
+          "comments": [
+            {
+              "originalPosition": 31,
+              "body": "Agreed. I restored `### Technical Insights` by rebasing on current main and dropping the earlier heading change.",
+              "createdAt": "2026-06-22T03:29:14Z",
+              "updatedAt": "2026-06-22T03:29:14Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOSdcEOM8AAAABDqiJ5w",
+          "commit": {
+            "abbreviatedOid": "0f357bb"
+          },
+          "author": "B1ueD0g",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-06-22T03:29:26Z",
+          "updatedAt": "2026-06-22T03:29:26Z",
+          "comments": [
+            {
+              "originalPosition": 41,
+              "body": "I agree the previous text was not worth keeping. I removed it. The PR now only changes the objective label from \u201cformal methods works\u201d to \u201ctechnical insights\u201d, so the framing is broader without changing the technical discussion section.",
+              "createdAt": "2026-06-22T03:29:26Z",
+              "updatedAt": "2026-06-22T03:29:26Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOSdcEOM8AAAABDr076Q",
+          "commit": {
+            "abbreviatedOid": "0f357bb"
+          },
+          "author": "muhammad-usama-sardar",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "Thank you!",
+          "createdAt": "2026-06-22T08:15:27Z",
+          "updatedAt": "2026-06-22T08:15:27Z",
+          "comments": []
+        }
+      ]
     },
     {
       "number": 13,
       "id": "PR_kwDOSdcEOM7n_EeW",
       "title": "Clarify implementer reading of computational analyses",
       "url": "https://github.com/muhammad-usama-sardar/risks-of-mlkem/pull/13",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "B1ueD0g",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "This is a small follow-up to the discussion in #6.\n\nThe change keeps the computational-analysis section useful for implementers while narrowing the claim:\n\n- the analyses are read as key-schedule and transcript-binding checks;\n- they do not replace malformed-input, API-misuse, or fallback testing;\n- for ML-KEM, invalid ciphertext handling is framed around implicit rejection and TLS-level outcomes, not a conventional decapsulation-failure signal;\n- the implementation-facing question is whether inconsistent KEM inputs, wrong group selection, transcript mismatch, or incomplete fallback paths can produce a usable handshake or silently continue under a different negotiated security property.\n\nI kept this separate from #11 and #12 so it can be reviewed independently and skipped if it is too late for -04.\n\nValidation:\n\n- `git diff --check` passes.\n- Local `make` did not complete because kramdown failed while fetching an external resource over Ruby/OpenSSL (`SSL_connect SYSCALL returned=5`), before producing XML. I did not see a Markdown/diff-check issue locally; the GitHub editor-copy check should be the useful build signal here.\n\nRelated to #6.\n",
       "createdAt": "2026-06-18T14:21:05Z",
-      "updatedAt": "2026-06-18T14:21:06Z",
+      "updatedAt": "2026-06-21T17:59:29Z",
       "baseRepository": "muhammad-usama-sardar/risks-of-mlkem",
       "baseRefName": "main",
       "baseRefOid": "302f368ed9e0f6cfdd83868d49a4a73c3097a97a",
       "headRepository": "B1ueD0g/risks-of-mlkem",
       "headRefName": "songbo-computational-implementation-boundary",
       "headRefOid": "9ce47aab7a43ade217f95a03e9956230341f34fd",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2026-06-21T17:59:29Z",
+      "mergedAt": "2026-06-21T17:59:29Z",
+      "mergedBy": "muhammad-usama-sardar",
+      "mergeCommit": {
+        "oid": "a32b1e34b02134f6c8214d9ea736134554c9c3f7"
+      },
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOSdcEOM8AAAABDpwLKQ",
+          "commit": {
+            "abbreviatedOid": "9ce47aa"
+          },
+          "author": "muhammad-usama-sardar",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "Thanks, for future, please:\n\n- If there are no changes in exisiting text (as the first 2 sentences), please don't change their line numbers, otherwise it makes review difficult to figure out what has changed.\n- one sentence per line\n",
+          "createdAt": "2026-06-21T17:59:16Z",
+          "updatedAt": "2026-06-21T17:59:16Z",
+          "comments": []
+        }
+      ]
     }
   ]
 }
