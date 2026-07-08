@@ -18,6 +18,10 @@ author:
     fullname: "Muhammad Usama Sardar"
     organization: TU Dresden, Germany
     email: "muhammad_usama.sardar@tu-dresden.de"
+ -
+    fullname: "Songbo Bu"
+    organization: Shanghai Guan An Information Technology Co., Ltd., China
+    email: "bluedognull@gmail.com"
 
 normative:
   NistFips203: DOI.10.6028/NIST.FIPS.203
@@ -28,7 +32,6 @@ informative:
   I-D.usama-tls-fatt-extension:
   I-D.pwouters-crypto-current-practices:
   I-D.barnes-tls-this-could-have-been-an-email:
-  rfc3552:
   I-D.ietf-tls-ecdhe-mlkem: hybrid
   I-D.ietf-tls-hybrid-design-09:
   I-D.ietf-tls-hybrid-design:
