@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-07-09T02:29:33.605182+00:00",
+  "timestamp": "2026-07-12T02:12:31.974921+00:00",
   "repo": "muhammad-usama-sardar/risks-of-mlkem",
   "labels": [
     {
@@ -235,7 +235,7 @@
       "id": "I_kwDOSdcEOM8AAAABGNkYdw",
       "title": "Add Songbo Bu as co-author for -05",
       "url": "https://github.com/muhammad-usama-sardar/risks-of-mlkem/issues/14",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "muhammad-usama-sardar",
       "authorAssociation": "OWNER",
       "assignees": [
@@ -244,8 +244,8 @@
       "labels": [],
       "body": "",
       "createdAt": "2026-06-21T20:22:56Z",
-      "updatedAt": "2026-06-22T12:20:52Z",
-      "closedAt": null,
+      "updatedAt": "2026-07-09T23:51:53Z",
+      "closedAt": "2026-07-09T23:51:53Z",
       "comments": []
     },
     {
@@ -1097,24 +1097,26 @@
       "id": "PR_kwDOSdcEOM7vgFSI",
       "title": "Songbo as co-author",
       "url": "https://github.com/muhammad-usama-sardar/risks-of-mlkem/pull/16",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "muhammad-usama-sardar",
       "authorAssociation": "OWNER",
       "assignees": [],
       "labels": [],
       "body": "Closes #14 ",
       "createdAt": "2026-07-08T23:14:29Z",
-      "updatedAt": "2026-07-09T01:46:59Z",
+      "updatedAt": "2026-07-09T23:51:52Z",
       "baseRepository": "muhammad-usama-sardar/risks-of-mlkem",
       "baseRefName": "main",
       "baseRefOid": "d40d33a7e1634fbaa1f7148a35c58625cf0a1ac9",
       "headRepository": "muhammad-usama-sardar/risks-of-mlkem",
       "headRefName": "coauthor",
       "headRefOid": "7b36c1885c6f863f6264fcfe4b119b63ea5236b5",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2026-07-09T23:51:52Z",
+      "mergedAt": "2026-07-09T23:51:52Z",
+      "mergedBy": "muhammad-usama-sardar",
+      "mergeCommit": {
+        "oid": "720e46ffa2cfb196967fb5fbf9bce4758b9f8421"
+      },
       "comments": [],
       "reviews": [
         {
